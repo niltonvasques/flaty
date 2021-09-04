@@ -1,5 +1,6 @@
 require 'gosu'
 require './background'
+require './bird'
 
 class GameWindow < Gosu::Window
   SCREEN_WIDTH   = 1280
@@ -10,15 +11,17 @@ class GameWindow < Gosu::Window
     self.caption = "Ruby Game Demo"
 
     @background = Background.new
-
+    @bird = Bird.new
   end
 
   def update
     @background.update
+    @bird.update
   end
 
   def draw
     @background.draw
+    @bird.draw
   end
 end
 
