@@ -7,6 +7,8 @@ class Bird < GameObject
   FG_SPEED = 30.0 / FRAME_DURATION
   SCALE = 3
 
+  attr_reader :score
+
   def initialize
     bird_tiles = Gosu::Image.load_tiles('assets/seagull_tiles.png', 32, 40)
 
@@ -17,6 +19,14 @@ class Bird < GameObject
     @scaled_height = tiles[0].width * SCALE
 
     @elapsed = 0
+    @score = 0
+
+    volume  = 2
+    speed   = 2
+    looping = true
+
+    steps_sound = Gosu::Sample.new('assets/sounds/dragonflap.mp3')
+    steps_sound.play(volume, speed, looping)
   end
 
   def update
@@ -37,6 +47,18 @@ class Bird < GameObject
     self.speed = -FG_SPEED if Gosu.button_down? Gosu::KB_LEFT
     self.speed = FG_SPEED if Gosu.button_down? Gosu::KB_RIGHT
 
-    self.current = ((@elapsed / 200) % 4) + (self.speed < 0 ? 6 : 0)
+    self.current = ((@elapsed / 220) % 4) + (self.speed < 0 ? 6 : 0)
+  end
+
+  def collect_stars(stars)
+    stars.reject! do |star|
+      if Gosu.distance(self.x + @scaled_width / 2, self.y + @scaled_height / 2, star.x, star.y) < 15
+        @score += 10
+        #@beep.play
+        true
+      else
+        false
+      end
+    end
   end
 end

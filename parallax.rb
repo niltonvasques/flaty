@@ -4,6 +4,8 @@ require './game_object'
 class Parallax < GameObject
   #attr_accessor :image, :width, :height, :x1, :x2, :y, :z, :speed
 
+  # connecting two images one after the other in the horizontal path
+  # with this strategy, when the ending of one image appears, the next one is already on the screen
   def update(backward)
     if !backward
       if self.x1 + self.scaled_width > 0 and (self.x2 > self.x1 or self.x2 + self.scaled_width < 0)

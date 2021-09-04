@@ -40,7 +40,7 @@ class Background
     #return if @reverse
 
     # ensure that the background will remains moving, but in a slow pace when the bird is not
-    # accelarating
+    # accelerating
     speed = FG_SPEED / 6 if speed == 0
 
     @big_mountain.speed = speed.abs / 10
