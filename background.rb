@@ -28,7 +28,7 @@ class Background
   def update
     @elapsed += FRAME_DURATION
 
-    if Gosu.button_down? Gosu::KB_LEFT
+    if Gosu.button_down? Gosu::KB_R
       @reverse = !@reverse if (@elapsed - @reverse_at) > 1000
       @reverse_at = @elapsed
     end

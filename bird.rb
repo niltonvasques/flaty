@@ -10,6 +10,12 @@ class Bird
     @birds = Gosu::Image.load_tiles('assets/seagull_tiles.png', 32, 40)
 
     @bird = @birds[0]
+
+    @scaled_width = @bird.width * SCALE
+    @scaled_height = @bird.width * SCALE
+
+    @move_x = 0
+    @move_y = GameWindow::SCREEN_HEIGHT / 2
     @current = 0
 
     @elapsed = 0
@@ -19,13 +25,19 @@ class Bird
     @elapsed += FRAME_DURATION
 
     @current = (@elapsed / 200) % 4
-    puts @current
+
+    @move_x -= 5 if Gosu.button_down? Gosu::KB_LEFT
+    @move_x += 5 if Gosu.button_down? Gosu::KB_RIGHT
+    @move_y -= 5 if Gosu.button_down? Gosu::KB_UP
+    @move_y += 5 if Gosu.button_down? Gosu::KB_DOWN
+    @move_x = 0 if @move_x < 0
+    @move_x = GameWindow::SCREEN_WIDTH - @scaled_width if @move_x + @scaled_width > GameWindow::SCREEN_WIDTH
+    @move_y = 0 if @move_y < 0
+    @move_y = GameWindow::SCREEN_HEIGHT - @scaled_height if @move_y + @scaled_height > GameWindow::SCREEN_HEIGHT
   end
 
   def draw
-    x = 0
-    y = GameWindow::SCREEN_HEIGHT / 2
-    @birds[@current].draw(0, y, 0, scale_x = SCALE, scale_y = SCALE)
+    @birds[@current].draw(@move_x, @move_y, 0, scale_x = SCALE, scale_y = SCALE)
   end
 
   private

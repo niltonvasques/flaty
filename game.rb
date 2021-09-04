@@ -23,6 +23,14 @@ class GameWindow < Gosu::Window
     @background.draw
     @bird.draw
   end
+
+  def button_down(id)
+    if id == Gosu::KB_ESCAPE
+      close
+    else
+      super
+    end
+  end
 end
 
 window = GameWindow.new
