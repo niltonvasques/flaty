@@ -22,8 +22,6 @@ class Bird < GameObject
   def update
     @elapsed += FRAME_DURATION
 
-    self.current = (@elapsed / 200) % 4
-
     prev_x = self.x
 
     self.x -= 5 if Gosu.button_down? Gosu::KB_LEFT
@@ -38,5 +36,7 @@ class Bird < GameObject
     self.speed = 0
     self.speed = -FG_SPEED if Gosu.button_down? Gosu::KB_LEFT
     self.speed = FG_SPEED if Gosu.button_down? Gosu::KB_RIGHT
+
+    self.current = ((@elapsed / 200) % 4) + (self.speed < 0 ? 6 : 0)
   end
 end
