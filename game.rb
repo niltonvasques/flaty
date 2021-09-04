@@ -1,6 +1,11 @@
 require 'gosu'
+require 'pry-byebug'
 require './background'
 require './bird'
+
+module ZLayers
+  BG, PLAYER, UI = *0..2
+end
 
 class GameWindow < Gosu::Window
   SCREEN_WIDTH   = 1280
@@ -12,6 +17,7 @@ class GameWindow < Gosu::Window
 
     @background = Background.new
     @bird = Bird.new
+    @font = Gosu::Font.new(20)
   end
 
   def update
@@ -20,6 +26,7 @@ class GameWindow < Gosu::Window
   end
 
   def draw
+    draw_fps
     @background.draw
     @bird.draw
   end
@@ -30,6 +37,12 @@ class GameWindow < Gosu::Window
     else
       super
     end
+  end
+
+  private
+
+  def draw_fps
+    @font.draw_text("FPS: #{Gosu.fps}", 10, 10, ZLayers::UI, 1.0, 1.0, Gosu::Color::GREEN)
   end
 end
 
