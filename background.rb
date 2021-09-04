@@ -32,9 +32,9 @@ class Background
 
     return if @paused
 
-    @mountains.x1, @mountains.x2 = parallax(@mountains.x1, @mountains.x2, @mountains.scaled_width, @mountains.speed)
-    @trees.x1, @trees.x2 = parallax(@trees.x1, @trees.x2, @trees.scaled_width, @trees.speed)
-    @fg.x1, @fg.x2       = parallax(@fg.x1, @fg.x2, @fg.scaled_width, @fg.speed)
+    parallax(@mountains)
+    parallax(@trees)
+    parallax(@fg)
   end
 
   def draw
@@ -52,17 +52,16 @@ class Background
 
   private
 
-  def parallax(x1, x2, width, speed)
-    if x1 + width > 0 and (x2 > x1 or x2 + width < 0)
-      x1 -= speed
-      x2 = x1 + width
+  def parallax(obj)
+    if obj.x1 + obj.scaled_width > 0 and (obj.x2 > obj.x1 or obj.x2 + obj.scaled_width < 0)
+      obj.x1 -= obj.speed
+      obj.x2 = obj.x1 + obj.scaled_width
       #puts "1: (#{@elapsed / 1000}) #{x1}...#{x2}"
     else
-      x2 -= speed
-      x1 = x2 + width
+      obj.x2 -= obj.speed
+      obj.x1 = obj.x2 + obj.scaled_width
       #puts "2: (#{@elapsed / 1000}) #{x1}...#{x2}"
     end
-    [x1, x2]
   end
 
   def image_position(image, speed)
