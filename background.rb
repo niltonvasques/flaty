@@ -7,15 +7,15 @@ class Background
 
   def initialize
     @background_image = Gosu::Image.new('assets/mountain/bg.png', tileable: true)
-    @fg_trees = Gosu::Image.new('assets/mountain/foreground-trees.png', tileable: true)
+    fg_img = Gosu::Image.new('assets/mountain/foreground-trees.png', tileable: true)
     trees_img = Gosu::Image.new('assets/mountain/distant-trees.png', tileable: true)
-    @mountains = Gosu::Image.new('assets/mountain/mountains.png', tileable: true)
+    mountains_img = Gosu::Image.new('assets/mountain/mountains.png', tileable: true)
     @bg_scale_x = GameWindow::SCREEN_WIDTH / @background_image.width.to_f
     @bg_scale_y = GameWindow::SCREEN_HEIGHT / @background_image.height.to_f
 
-    @fg = image_position(@fg_trees)
-
+    @fg = image_position(fg_img)
     @trees = image_position(trees_img)
+    @mountains = image_position(mountains_img)
 
     @paused = false
     @paused_at = 0
