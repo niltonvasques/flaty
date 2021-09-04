@@ -14,6 +14,7 @@ class GameWindow < Gosu::Window
   end
 
   def update
+    @background.update
   end
 
   def draw
