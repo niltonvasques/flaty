@@ -13,9 +13,9 @@ class Background
     @bg_scale_x = GameWindow::SCREEN_WIDTH / @background_image.width.to_f
     @bg_scale_y = GameWindow::SCREEN_HEIGHT / @background_image.height.to_f
 
-    @fg = image_position(fg_img)
-    @trees = image_position(trees_img)
-    @mountains = image_position(mountains_img)
+    @fg        = image_position(fg_img, FG_SPEED)
+    @trees     = image_position(trees_img, FG_SPEED / 3)
+    @mountains = image_position(mountains_img, FG_SPEED / 6)
 
     @paused = false
     @paused_at = 0
@@ -32,12 +32,16 @@ class Background
 
     return if @paused
 
-    @trees.x1, @trees.x2 = parallax(@trees.x1, @trees.x2, @trees.scaled_width, FG_SPEED / 3)
-    @fg.x1, @fg.x2       = parallax(@fg.x1, @fg.x2, @fg.scaled_width, FG_SPEED)
+    @mountains.x1, @mountains.x2 = parallax(@mountains.x1, @mountains.x2, @mountains.scaled_width, @mountains.speed)
+    @trees.x1, @trees.x2 = parallax(@trees.x1, @trees.x2, @trees.scaled_width, @trees.speed)
+    @fg.x1, @fg.x2       = parallax(@fg.x1, @fg.x2, @fg.scaled_width, @fg.speed)
   end
 
   def draw
     @background_image.draw(0, 0, 0, scale_x = @bg_scale_x, scale_y = @bg_scale_y)
+
+    @mountains.image.draw(@mountains.x1, @mountains.y, 0, scale_x = @bg_scale_x, scale_y = @bg_scale_y)
+    @mountains.image.draw(@mountains.x2, @mountains.y, 0, scale_x = @bg_scale_x, scale_y = @bg_scale_y)
 
     @trees.image.draw(@trees.x1, @trees.y, 0, scale_x = @bg_scale_x, scale_y = @bg_scale_y)
     @trees.image.draw(@trees.x2, @trees.y, 0, scale_x = @bg_scale_x, scale_y = @bg_scale_y)
@@ -61,13 +65,14 @@ class Background
     [x1, x2]
   end
 
-  def image_position(image)
+  def image_position(image, speed)
     OpenStruct.new(
       image: image,
       scaled_width: image.width * @bg_scale_x,
       x1: 0,
       x2: (image.width * @bg_scale_x),
-      y: GameWindow::SCREEN_HEIGHT - (image.height * @bg_scale_y)
+      y: GameWindow::SCREEN_HEIGHT - (image.height * @bg_scale_y),
+      speed: speed
     )
   end
 end
