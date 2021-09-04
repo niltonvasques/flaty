@@ -21,7 +21,7 @@ class GameWindow < Gosu::Window
   end
 
   def update
-    @background.update
+    @background.update(@bird.speed)
     @bird.update
   end
 

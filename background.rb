@@ -29,7 +29,7 @@ class Background
     @forward = true
   end
 
-  def update
+  def update(speed)
     @elapsed += FRAME_DURATION
 
     if Gosu.button_down? Gosu::KB_R
@@ -39,6 +39,12 @@ class Background
 
     #return if @reverse
 
+    @big_mountain.speed = speed.abs / 10
+    @mountains.speed = speed.abs / 6
+    @trees.speed = speed.abs / 3
+    @fg.speed = speed.abs
+
+    @reverse = speed < 0
     @big_mountain.update(@reverse)
     @mountains.update(@reverse)
     @trees.update(@reverse)

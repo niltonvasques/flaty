@@ -11,7 +11,7 @@ class Bird < GameObject
     bird_tiles = Gosu::Image.load_tiles('assets/seagull_tiles.png', 32, 40)
 
     super(tiles: bird_tiles, x: 0, y: GameWindow::SCREEN_HEIGHT / 2, current: 0,
-          scale_x: SCALE, scale_y: SCALE)
+          scale_x: SCALE, scale_y: SCALE, speed: 0)
 
     @scaled_width = tiles[0].width * SCALE
     @scaled_height = tiles[0].width * SCALE
@@ -24,6 +24,8 @@ class Bird < GameObject
 
     self.current = (@elapsed / 200) % 4
 
+    prev_x = self.x
+
     self.x -= 5 if Gosu.button_down? Gosu::KB_LEFT
     self.x += 5 if Gosu.button_down? Gosu::KB_RIGHT
     self.y -= 5 if Gosu.button_down? Gosu::KB_UP
@@ -32,5 +34,9 @@ class Bird < GameObject
     self.x = GameWindow::SCREEN_WIDTH - @scaled_width if self.x + @scaled_width > GameWindow::SCREEN_WIDTH
     self.y = 0 if self.y < 0
     self.y = GameWindow::SCREEN_HEIGHT - @scaled_height if self.y + @scaled_height > GameWindow::SCREEN_HEIGHT
+
+    self.speed = 0
+    self.speed = -FG_SPEED if Gosu.button_down? Gosu::KB_LEFT
+    self.speed = FG_SPEED if Gosu.button_down? Gosu::KB_RIGHT
   end
 end
