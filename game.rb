@@ -18,10 +18,6 @@ class GameWindow < Gosu::Window
   end
 
   def draw
-    x = 0
-    y = 0
-    z = 0
-
     @background.draw
   end
 end

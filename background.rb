@@ -1,20 +1,21 @@
 require 'gosu'
+require 'ostruct'
 
 class Background
   FRAME_DURATION = 1000 / 60
-  FG_SPEED = 300.0 / FRAME_DURATION
+  FG_SPEED = 100.0 / FRAME_DURATION
 
   def initialize
     @background_image = Gosu::Image.new('assets/mountain/bg.png', tileable: true)
-    @foreground_image = Gosu::Image.new('assets/mountain/foreground-trees.png', tileable: true)
+    @fg_trees = Gosu::Image.new('assets/mountain/foreground-trees.png', tileable: true)
+    trees_img = Gosu::Image.new('assets/mountain/distant-trees.png', tileable: true)
+    @mountains = Gosu::Image.new('assets/mountain/mountains.png', tileable: true)
     @bg_scale_x = GameWindow::SCREEN_WIDTH / @background_image.width.to_f
     @bg_scale_y = GameWindow::SCREEN_HEIGHT / @background_image.height.to_f
 
-    @fg_scaled_width = (@foreground_image.width * 4.5)
+    @fg = image_position(@fg_trees)
 
-    @fg_y = GameWindow::SCREEN_HEIGHT - (@foreground_image.height * 4.5)
-    @fg_x1 = 0
-    @fg_x2 = @fg_x1 + (@foreground_image.width * 4.5)
+    @trees = image_position(trees_img)
 
     @paused = false
     @paused_at = 0
@@ -31,22 +32,42 @@ class Background
 
     return if @paused
 
-    if @fg_x1 + @fg_scaled_width > 0 and (@fg_x2 > @fg_x1 or @fg_x2 + @fg_scaled_width < 0)
-      @fg_x1 -= FG_SPEED
-      @fg_x2 = @fg_x1 + @fg_scaled_width
-      puts "1: (#{@elapsed / 1000}) #{@fg_x1}...#{@fg_x2}"
-    else
-      @fg_x2 -= FG_SPEED
-      @fg_x1 = @fg_x2 + @fg_scaled_width
-      puts "2: (#{@elapsed / 1000}) #{@fg_x1}...#{@fg_x2}"
-    end
+    @trees.x1, @trees.x2 = parallax(@trees.x1, @trees.x2, @trees.scaled_width, FG_SPEED / 3)
+    @fg.x1, @fg.x2       = parallax(@fg.x1, @fg.x2, @fg.scaled_width, FG_SPEED)
   end
 
   def draw
     @background_image.draw(0, 0, 0, scale_x = @bg_scale_x, scale_y = @bg_scale_y)
 
-    @foreground_image.draw(@fg_x1, @fg_y, 0, scale_x = 4.5, scale_y = 4.5)
+    @trees.image.draw(@trees.x1, @trees.y, 0, scale_x = @bg_scale_x, scale_y = @bg_scale_y)
+    @trees.image.draw(@trees.x2, @trees.y, 0, scale_x = @bg_scale_x, scale_y = @bg_scale_y)
 
-    @foreground_image.draw(@fg_x2, @fg_y, 0, scale_x = 4.5, scale_y = 4.5)
+    @fg.image.draw(@fg.x1, @fg.y, 0, scale_x = @bg_scale_x, scale_y = @bg_scale_y)
+    @fg.image.draw(@fg.x2, @fg.y, 0, scale_x = @bg_scale_x, scale_y = @bg_scale_y)
+  end
+
+  private
+
+  def parallax(x1, x2, width, speed)
+    if x1 + width > 0 and (x2 > x1 or x2 + width < 0)
+      x1 -= speed
+      x2 = x1 + width
+      #puts "1: (#{@elapsed / 1000}) #{x1}...#{x2}"
+    else
+      x2 -= speed
+      x1 = x2 + width
+      #puts "2: (#{@elapsed / 1000}) #{x1}...#{x2}"
+    end
+    [x1, x2]
+  end
+
+  def image_position(image)
+    OpenStruct.new(
+      image: image,
+      scaled_width: image.width * @bg_scale_x,
+      x1: 0,
+      x2: (image.width * @bg_scale_x),
+      y: GameWindow::SCREEN_HEIGHT - (image.height * @bg_scale_y)
+    )
   end
 end
