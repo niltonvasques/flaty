@@ -27,6 +27,8 @@ class Bird < GameObject
 
     steps_sound = Gosu::Sample.new('assets/sounds/dragonflap.mp3')
     steps_sound.play(volume, speed, looping)
+
+    @beep = Gosu::Sample.new('assets/sounds/beep.wav')
   end
 
   def update
@@ -52,9 +54,9 @@ class Bird < GameObject
 
   def collect_stars(stars)
     stars.reject! do |star|
-      if Gosu.distance(self.x + @scaled_width / 2, self.y + @scaled_height / 2, star.x, star.y) < 15
+      if Gosu.distance(self.x + @scaled_width / 2, self.y + @scaled_height / 2, star.x, star.y) < 30
         @score += 10
-        #@beep.play
+        @beep.play
         true
       else
         false
