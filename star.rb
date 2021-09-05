@@ -7,8 +7,8 @@ class Star < GameObject
     super({ speed: 0 })
 
     @animation = animation
-    self.x = rand * GameWindow::SCREEN_WIDTH
-    self.y = rand * GameWindow::SCREEN_HEIGHT
+    self.x = rand * GameWindow::SCREEN_WIDTH + 100
+    self.y = rand * (GameWindow::SCREEN_HEIGHT - 100) + 50 # prevent stars to born too high
     self.current = 0
   end
 
