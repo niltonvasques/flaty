@@ -10,10 +10,16 @@ class GameWindow < Gosu::Window
     super(SCREEN_WIDTH, SCREEN_HEIGHT, fullscreen: false)
     self.caption = "Ruby Falcon in the Dusk"
 
+    # state
+    @paused = false
+    @paused_at = 0
+
     @dusk_level = DuskLevel.new
   end
 
   def update
+    return if paused?
+
     @dusk_level.update
   end
 
@@ -27,6 +33,21 @@ class GameWindow < Gosu::Window
     else
       super
     end
+  end
+
+  def paused?
+    if Gosu.button_down? Gosu::KB_P
+      if (Gosu.milliseconds - @paused_at) > 1000
+        @paused = !@paused
+        @paused_at = Gosu.milliseconds
+        if @paused
+          @dusk_level.pause
+        else
+          @dusk_level.play
+        end
+      end
+    end
+    @paused
   end
 end
 

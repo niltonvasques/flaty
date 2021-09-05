@@ -9,19 +9,12 @@ module ZLayers
 end
 
 class DuskLevel
-  SCREEN_WIDTH   = 1280
-  SCREEN_HEIGHT  = 720
-
   def initialize
     # assets
     @star_anim = Gosu::Image.load_tiles("assets/star.png", 25, 25)
     @font = Gosu::Font.new(20)
     @song = Gosu::Song.new('assets/sounds/dusk_theme.mp3')
     @song.play
-
-    # state
-    @paused = false
-    @paused_at = 0
 
     # objects
     @background = Background.new
@@ -30,8 +23,6 @@ class DuskLevel
   end
 
   def update
-    return if paused?
-
     @bird.update
     @stars.each { |star| star.update(@bird.speed) }
     @background.update(@bird.speed)
@@ -50,33 +41,25 @@ class DuskLevel
 
     @background.draw
 
-    return if @paused
-
     @bird.draw
     @stars.each { |star| star.draw }
+  end
+
+  def pause
+    @song.pause
+    @bird.pause
+  end
+
+  def play
+    @song.play
+    @bird.play
   end
 
   private
 
   def draw_ui
     @font.draw_text("FPS: #{Gosu.fps}", 10, 10, ZLayers::UI, 1.0, 1.0, Gosu::Color::GREEN)
-    @font.draw_text("Score: #{@bird.score}", SCREEN_WIDTH - 100, 10, ZLayers::UI, 1.0, 1.0, Gosu::Color::RED)
-  end
-
-  def paused?
-    if Gosu.button_down? Gosu::KB_P
-      if (Gosu.milliseconds - @paused_at) > 1000
-        @paused = !@paused
-        @paused_at = Gosu.milliseconds
-        if @paused
-          @song.pause
-          @bird.pause
-        else
-          @song.play
-          @bird.play
-        end
-      end
-    end
-    @paused
+    @font.draw_text("Score: #{@bird.score}", GameWindow::SCREEN_WIDTH - 100, 10,
+                    ZLayers::UI, 1.0, 1.0, Gosu::Color::RED)
   end
 end
