@@ -25,16 +25,13 @@ class Background
 
     @reverse = false
     @reverse_at = 0
-    @elapsed = 0
     @forward = true
   end
 
   def update(speed)
-    @elapsed += FRAME_DURATION
-
     if Gosu.button_down? Gosu::KB_R
-      @reverse = !@reverse if (@elapsed - @reverse_at) > 1000
-      @reverse_at = @elapsed
+      @reverse = !@reverse if (Gosu.milliseconds - @reverse_at) > 1000
+      @reverse_at = Gosu.milliseconds
     end
 
     #return if @reverse

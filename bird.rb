@@ -18,7 +18,6 @@ class Bird < GameObject
     @scaled_width = tiles[0].width * SCALE
     @scaled_height = tiles[0].width * SCALE
 
-    @elapsed = 0
     @score = 0
 
     volume  = 2
@@ -32,8 +31,6 @@ class Bird < GameObject
   end
 
   def update
-    @elapsed += FRAME_DURATION
-
     prev_x = self.x
 
     self.x -= 5 if Gosu.button_down? Gosu::KB_LEFT
@@ -49,7 +46,7 @@ class Bird < GameObject
     self.speed = -FG_SPEED if Gosu.button_down? Gosu::KB_LEFT
     self.speed = FG_SPEED if Gosu.button_down? Gosu::KB_RIGHT
 
-    self.current = ((@elapsed / 220) % 4) + (self.speed < 0 ? 6 : 0)
+    self.current = ((Gosu.milliseconds / 220) % 4) + (self.speed < 0 ? 6 : 0)
   end
 
   def collect_stars(stars)
