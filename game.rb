@@ -41,7 +41,7 @@ class GameWindow < Gosu::Window
 
     @bird.collect_stars(@stars)
 
-    if rand(100) < 4 and @stars.size < 25
+    if rand(100) < 4 and @stars.size < 10
       @stars.push(Star.new(@star_anim))
     end
 
