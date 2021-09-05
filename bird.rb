@@ -11,14 +11,13 @@ class Bird < GameObject
   def initialize
     bird_tiles = Gosu::Image.load_tiles('assets/seagull_tiles.png', 32, 40)
 
-    super(tiles: bird_tiles, x: 0, y: GameWindow::SCREEN_HEIGHT / 2, current: 0,
+    super(tiles: bird_tiles, x: 20, y: GameWindow::SCREEN_HEIGHT / 2, current: 0,
           scale_x: SCALE, scale_y: SCALE, speed: 0)
 
     @scaled_width = tiles[0].width * SCALE
     @scaled_height = tiles[0].width * SCALE
 
     @score = 0
-
 
     @wings = Gosu::Sample.new('assets/sounds/dragonflap.mp3')
     play
@@ -27,18 +26,22 @@ class Bird < GameObject
   end
 
   def update
-    self.x -= 5 if Gosu.button_down? Gosu::KB_LEFT
-    self.x += 5 if Gosu.button_down? Gosu::KB_RIGHT
+    delta = Gosu.milliseconds - self.updated_at
+    self.updated_at = Gosu.milliseconds
+
+    self.speed = 50
+    self.speed = -SPEED if Gosu.button_down? Gosu::KB_LEFT
+    self.speed = SPEED if Gosu.button_down? Gosu::KB_RIGHT
+
+    dt_speed = self.speed * (delta / 1000.0)
+
+    self.x += dt_speed if self.speed.abs > 50
     self.y -= 5 if Gosu.button_down? Gosu::KB_UP
     self.y += 5 if Gosu.button_down? Gosu::KB_DOWN
     self.x = 0 if self.x < 0
     self.x = GameWindow::SCREEN_WIDTH - @scaled_width if self.x + @scaled_width > GameWindow::SCREEN_WIDTH
     self.y = 0 if self.y < 0
     self.y = GameWindow::SCREEN_HEIGHT - @scaled_height if self.y + @scaled_height > GameWindow::SCREEN_HEIGHT
-
-    self.speed = 0
-    self.speed = -SPEED if Gosu.button_down? Gosu::KB_LEFT
-    self.speed = SPEED if Gosu.button_down? Gosu::KB_RIGHT
 
     anim_speed = self.speed == 0 ? 220 : 80
 
