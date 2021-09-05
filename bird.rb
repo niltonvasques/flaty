@@ -43,7 +43,9 @@ class Bird < GameObject
     self.speed = -FG_SPEED if Gosu.button_down? Gosu::KB_LEFT
     self.speed = FG_SPEED if Gosu.button_down? Gosu::KB_RIGHT
 
-    self.current = ((Gosu.milliseconds / 220) % 4) + (self.speed < 0 ? 6 : 0)
+    anim_speed = self.speed == 0 ? 220 : 80
+
+    self.current = ((Gosu.milliseconds / anim_speed) % 4) + (self.speed < 0 ? 6 : 0)
   end
 
   def collect_stars(stars)
