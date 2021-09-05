@@ -7,7 +7,7 @@ class GameWindow < Gosu::Window
   SCREEN_HEIGHT  = 720
 
   def initialize
-    super(SCREEN_WIDTH, SCREEN_HEIGHT, fullscreen: true)
+    super(SCREEN_WIDTH, SCREEN_HEIGHT, fullscreen: false)
     self.caption = "Ruby Falcon in the Dusk"
 
     # state
@@ -16,6 +16,8 @@ class GameWindow < Gosu::Window
 
     @dusk_level = DuskLevel.new
   end
+
+  def needs_cursor?; false; end
 
   def update
     return if paused?
