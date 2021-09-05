@@ -3,6 +3,7 @@ require 'pry-byebug'
 require './background'
 require './bird'
 require './star'
+require './level_loader'
 
 module ZLayers
   BG, STARS, PLAYER, UI = *0..3
@@ -15,6 +16,8 @@ class DuskLevel
     @font = Gosu::Font.new(20)
     @song = Gosu::Song.new('assets/sounds/dusk_theme.mp3')
     @song.play
+
+    @level_tiles = Level.new
 
     # objects
     @background = Background.new
@@ -43,6 +46,8 @@ class DuskLevel
 
     @bird.draw
     @stars.each { |star| star.draw }
+
+    @level_tiles.draw
   end
 
   def pause
