@@ -33,7 +33,7 @@ class Bird < GameObject
     self.speed = -SPEED if Gosu.button_down? Gosu::KB_LEFT
     self.speed = SPEED if Gosu.button_down? Gosu::KB_RIGHT
 
-    dt_speed = self.speed * (delta / 1000.0)
+    dt_speed = (self.speed * (delta / 1000.0)) * 0.25 # reduce screen movement by 4
 
     self.x += dt_speed if self.speed.abs > 50
     self.y -= 5 if Gosu.button_down? Gosu::KB_UP
