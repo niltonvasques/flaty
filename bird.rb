@@ -3,8 +3,7 @@ require 'ostruct'
 require './game_object'
 
 class Bird < GameObject
-  FRAME_DURATION = 1000 / 60
-  FG_SPEED = 30.0 / FRAME_DURATION
+  SPEED = 300 # pixels per second
   SCALE = 3
 
   attr_reader :score
@@ -28,8 +27,6 @@ class Bird < GameObject
   end
 
   def update
-    prev_x = self.x
-
     self.x -= 5 if Gosu.button_down? Gosu::KB_LEFT
     self.x += 5 if Gosu.button_down? Gosu::KB_RIGHT
     self.y -= 5 if Gosu.button_down? Gosu::KB_UP
@@ -40,8 +37,8 @@ class Bird < GameObject
     self.y = GameWindow::SCREEN_HEIGHT - @scaled_height if self.y + @scaled_height > GameWindow::SCREEN_HEIGHT
 
     self.speed = 0
-    self.speed = -FG_SPEED if Gosu.button_down? Gosu::KB_LEFT
-    self.speed = FG_SPEED if Gosu.button_down? Gosu::KB_RIGHT
+    self.speed = -SPEED if Gosu.button_down? Gosu::KB_LEFT
+    self.speed = SPEED if Gosu.button_down? Gosu::KB_RIGHT
 
     anim_speed = self.speed == 0 ? 220 : 80
 
