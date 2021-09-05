@@ -20,12 +20,9 @@ class Bird < GameObject
 
     @score = 0
 
-    volume  = 2
-    speed   = 2
-    looping = true
 
-    steps_sound = Gosu::Sample.new('assets/sounds/dragonflap.mp3')
-    steps_sound.play(volume, speed, looping)
+    @wings = Gosu::Sample.new('assets/sounds/dragonflap.mp3')
+    play
 
     @beep = Gosu::Sample.new('assets/sounds/beep.wav')
   end
@@ -59,5 +56,16 @@ class Bird < GameObject
         false
       end
     end
+  end
+
+  def pause
+    @wings_playing.pause
+  end
+
+  def play
+    volume  = 2
+    speed   = 2
+    looping = true
+    @wings_playing = @wings.play(volume, speed, looping)
   end
 end
