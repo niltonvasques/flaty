@@ -27,6 +27,8 @@ class Tile < GameObject
 end
 
 class Level < GameObject
+  attr_accessor :stars
+
   def initialize
     super({ x: 0, y: 0 })
     @tilemap = Gosu::Image.load_tiles("assets/tiles.png", Tile::SIZE, Tile::SIZE, tileable: true)

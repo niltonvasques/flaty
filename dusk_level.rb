@@ -16,7 +16,7 @@ class DuskLevel
     @song = Gosu::Song.new('assets/sounds/dusk_theme.mp3')
     @song.play
 
-    @level_tiles = Level.new
+    @level = Level.new
 
     # objects
     @background = Background.new
@@ -27,11 +27,9 @@ class DuskLevel
   def update
     @bird.update
     @background.update(@bird.speed)
-    @level_tiles.update(@bird.speed)
+    @level.update(@bird.speed)
 
-    #@bird.collect_stars(@stars)
-
-    #@stars.reject! { |star| star.x < 0 }
+    @bird.collect_stars(@level.stars)
   end
 
   def draw
@@ -41,7 +39,7 @@ class DuskLevel
 
     @bird.draw
 
-    @level_tiles.draw
+    @level.draw
   end
 
   def pause
