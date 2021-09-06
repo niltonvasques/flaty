@@ -12,7 +12,7 @@ class Bird < GameObject
     bird_tiles = Gosu::Image.load_tiles('assets/seagull_tiles.png', 32, 40)
 
     super(tiles: bird_tiles, x: 20, y: GameWindow::SCREEN_HEIGHT / 2, current: 0,
-          scale_x: SCALE, scale_y: SCALE, speed: 0)
+          z: ZLayers::PLAYER, scale_x: SCALE, scale_y: SCALE, speed: 0)
 
     @scaled_width = tiles[0].width * SCALE
     @scaled_height = tiles[0].width * SCALE
