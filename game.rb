@@ -13,13 +13,21 @@ class GameWindow < Gosu::Window
     # state
     @paused = false
     @paused_at = 0
+    @@updated_at = 0
+    @@delta_seconds = 0
 
     @dusk_level = DuskLevel.new
+  end
+
+  def self.delta
+    @@delta_seconds
   end
 
   def needs_cursor?; false; end
 
   def update
+    @@delta_seconds = (Gosu.milliseconds - @@updated_at) / 1000.0
+    @@updated_at = Gosu.milliseconds
     return if paused?
 
     @dusk_level.update

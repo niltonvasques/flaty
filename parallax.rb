@@ -7,8 +7,7 @@ class Parallax < GameObject
   # connecting two images one after the other in the horizontal path
   # with this strategy, when the ending of one image appears, the next one is already on the screen
   def update(backward)
-    local_speed = adjusted_speed(Gosu.milliseconds - self.updated_at)
-    self.updated_at = Gosu.milliseconds
+    local_speed = self.speed * GameWindow.delta
 
     if !backward
       if self.x1 + self.scaled_width > 0 and (self.x2 > self.x1 or self.x2 + self.scaled_width < 0)
