@@ -6,13 +6,12 @@ require './star'
 require './level_loader'
 
 module ZLayers
-  BG, STARS, PLAYER, UI = *0..3
+  BG, TILE, STARS, PLAYER, UI = *0..4
 end
 
 class DuskLevel
   def initialize
     # assets
-    @star_anim = Gosu::Image.load_tiles("assets/star.png", 25, 25)
     @font = Gosu::Font.new(20)
     @song = Gosu::Song.new('assets/sounds/dusk_theme.mp3')
     @song.play
@@ -27,16 +26,12 @@ class DuskLevel
 
   def update
     @bird.update
-    @stars.each { |star| star.update(@bird.speed) }
     @background.update(@bird.speed)
+    @level_tiles.update(@bird.speed)
 
-    @bird.collect_stars(@stars)
+    #@bird.collect_stars(@stars)
 
-    if rand(100) < 4 and @stars.size < 10
-      @stars.push(Star.new(@star_anim))
-    end
-
-    @stars.reject! { |star| star.x < 0 }
+    #@stars.reject! { |star| star.x < 0 }
   end
 
   def draw
@@ -45,7 +40,6 @@ class DuskLevel
     @background.draw
 
     @bird.draw
-    @stars.each { |star| star.draw }
 
     @level_tiles.draw
   end
