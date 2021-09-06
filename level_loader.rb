@@ -35,7 +35,6 @@ class Level < GameObject
     @tiles = []
     @stars = Array.new
     create_tiles
-    create_stars
   end
 
   def update(speed)
@@ -60,17 +59,6 @@ class Level < GameObject
           @tiles << Tile.new(x: screen_x, y: screen_y, z: ZLayers::TILE, image: @tilemap[tile_pos],
                              scale_x: tile_scale, scale_y: tile_scale)
         end
-      end
-    end
-  end
-
-  def create_stars
-    tile_scale = (GameWindow::SCREEN_WIDTH / 50) / Tile::SIZE.to_f
-    @level_tiles.width.times do |x|
-      screen_x = (GameWindow::SCREEN_WIDTH / 50) * x
-      @level_tiles.height.times do |y|
-        screen_y = ((GameWindow::SCREEN_HEIGHT / @level_tiles.height) * (y+1))
-        tile = @level_tiles[x,y]
         if tile == Tile::STAR
           @stars.push(Star.new(@star_anim, x: screen_x, y: screen_y))
         end
