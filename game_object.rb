@@ -14,7 +14,10 @@ class GameObject < OpenStruct
   def draw
     return if outside_window?
 
-    current_image.draw(x, y, z, scale_x = self.scale_x, scale_y = self.scale_y)
+    new_x = World.camera.translate_x(x)
+    new_y = World.camera.translate_y(y)
+
+    current_image.draw(new_x, new_y, z, scale_x = self.scale_x, scale_y = self.scale_y)
   end
 
   def outside_window?

@@ -35,18 +35,15 @@ class LevelLoader
 
     tile_scale = (GameWindow::SCREEN_WIDTH / 50) / Tile::SIZE.to_f
     level_tiles.width.times do |x|
-      screen_x = (GameWindow::SCREEN_WIDTH / 50) * x
       level_tiles.height.times do |y|
-        screen_y = ((GameWindow::SCREEN_HEIGHT / level_tiles.height) * (y+1))
         tile = level_tiles[x,y]
         if tile != Tile::EMPTY and tile != Tile::STAR
           tile_pos = Tile::TILES[tile]
-          world.tiles << Tile.new(x: screen_x, y: screen_y, z: ZLayers::TILE,
-                                   image: tilemap[tile_pos], scale_x: tile_scale,
-                                   scale_y: tile_scale)
+          world.tiles << Tile.new(x: x, y: y, z: ZLayers::TILE, image: tilemap[tile_pos],
+                                  scale_x: tile_scale, scale_y: tile_scale)
         end
         if tile == Tile::STAR
-          world.stars.push(Star.new(star_anim, x: screen_x, y: screen_y))
+          world.stars.push(Star.new(star_anim, x: x, y: y))
         end
       end
     end

@@ -4,34 +4,72 @@ require './background'
 require './bird'
 require './star'
 require './level_loader'
+require './vector_2d'
 
 module ZLayers
   BG, TILE, STARS, PLAYER, UI = *0..4
 end
 
 class Camera
-  attr_accessor :width, :height, :x, :y
+  attr_accessor :width, :height, :position
 
   def initialize(width, height)
     self.width = width
     self.height = height
-    self.x = self.y = 0
+    look(width / 2, height / 2)
   end
 
   def look(x, y)
-    self.x = x
-    self.y = y
+    self.position = Vector2d[x.to_f, y.to_f]
+  end
+
+  def width_pixels
+    self.width * World::UNIT_X
+  end
+
+  def height_pixels
+    self.height * World::UNIT_Y
+  end
+
+  def shift_x
+    self.position.x - (self.width / 2)
+  end
+
+  def shift_y
+    self.position.y - (self.height / 2)
+  end
+
+  def pixel_to_unit_x(w)
+    w / World::UNIT_X.to_f
+  end
+
+  def pixel_to_unit_y(h)
+    h / World::UNIT_Y.to_f
+  end
+
+  def translate_x(x)
+    (x - shift_x) * World::UNIT_X
+  end
+
+  def translate_y(y)
+    (y - shift_y) * World::UNIT_X
   end
 end
 
 class World
+  SCREEN_WIDTH   = 1280
+  SCREEN_HEIGHT  = 720
   CAMERA_WIDTH_UNITS  = 50
   CAMERA_HEIGHT_UNITS = 28
+  UNIT_X = SCREEN_WIDTH / CAMERA_WIDTH_UNITS
+  UNIT_Y = SCREEN_HEIGHT / CAMERA_HEIGHT_UNITS
 
   attr_accessor :tiles, :stars
 
   def initialize
-    @camera = Camera.new(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
+    @@camera = Camera.new(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
+    @@camera.look(CAMERA_WIDTH_UNITS / 2.0, CAMERA_HEIGHT_UNITS / 2.0)
+    puts @@camera.position
 
     # assets
     @font = Gosu::Font.new(20)
@@ -43,6 +81,10 @@ class World
     @bird = Bird.new
     self.stars = Array.new
     self.tiles = Array.new
+  end
+
+  def self.camera
+    @@camera
   end
 
   def update
