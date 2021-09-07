@@ -4,8 +4,8 @@ require './game_object'
 require './vector_2d'
 
 class Bird < GameObject
-  IDLE_SPEED = Vector2d[0, 0].freeze
-  SPEED = 5#10 # units per second
+  IDLE_SPEED = Vector2d[2, 0].freeze
+  SPEED = 10 # units per second
   SCALE = 3
 
   attr_reader :score
@@ -25,13 +25,18 @@ class Bird < GameObject
     self.previous_position = self.position.dup
   end
 
-  def update
+  def update(collision = Collision::NONE)
     self.previous_position = self.position.dup
-    self.speed = IDLE_SPEED.dup
-    self.speed = Vector2d[-SPEED, 0] if Gosu.button_down? Gosu::KB_LEFT
-    self.speed = Vector2d[SPEED, 0] if Gosu.button_down? Gosu::KB_RIGHT
-    self.speed.y = -SPEED if Gosu.button_down? Gosu::KB_UP
-    self.speed.y = SPEED if Gosu.button_down? Gosu::KB_DOWN
+    if Collision.right?(collision)
+      self.speed = Vector2d[0,0]
+    else
+      self.speed = IDLE_SPEED.dup
+    end
+    self.speed = Vector2d[-SPEED, 0] if Gosu.button_down? Gosu::KB_LEFT and !Collision.left?(collision)
+    self.speed = Vector2d[SPEED, 0] if Gosu.button_down? Gosu::KB_RIGHT and !Collision.right?(collision)
+
+    self.speed.y = -SPEED if Gosu.button_down? Gosu::KB_UP and !Collision.top?(collision)
+    self.speed.y = SPEED if Gosu.button_down? Gosu::KB_DOWN and !Collision.bottom?(collision)
 
     dt_speed = self.speed * GameWindow.delta
 
