@@ -92,11 +92,13 @@ class World
   end
 
   def update
+    self.level.tiles.each { |tile| tile.debug = Gosu::Color::GREEN } if GameWindow.debug
+
+    previous_position = @bird.previous_position.dup
+
     @bird.update
+
     candidates = @level.around(@bird)
-    puts "bird(#{@bird.x}, #{@bird.y})(#{@bird.width}, #{@bird.height})"
-    puts "around(#{@bird.x.to_i}, #{@bird.y.to_i}): #{@level.around(@bird).map { |t| t.position }}"
-    self.level.tiles.each { |tile| tile.debug = Gosu::Color::GREEN }
     collision = Collision::NONE
 
     candidates.each do |obj|
@@ -104,11 +106,41 @@ class World
       collision |= @bird.colliding?(obj)
     end
 
-    puts Collision.to_s(collision)
-    if collision != Collision::NONE
+    if Collision.bottom?(collision)
       @bird.reset
-      @bird.update(collision)
+      @bird.update(Collision::BOTTOM)
+
+      collision = Collision::NONE
+      candidates.each do |obj|
+        obj.debug = Gosu::Color::CYAN
+        collision |= @bird.colliding?(obj)
+      end
     end
+
+    if Collision.right?(collision)
+      @bird.reset
+      @bird.update(Collision::RIGHT)
+
+      collision = Collision::NONE
+      candidates.each do |obj|
+        obj.debug = Gosu::Color::CYAN
+        collision |= @bird.colliding?(obj)
+      end
+    end
+
+    if Collision.left?(collision)
+      @bird.reset
+      @bird.update(Collision::LEFT)
+
+      collision = Collision::NONE
+      candidates.each do |obj|
+        obj.debug = Gosu::Color::CYAN
+        collision |= @bird.colliding?(obj)
+      end
+    end
+
+
+    @bird.reset if collision != Collision::NONE
 
     self.stars.each(&:update)
     @@camera.look(@bird.x, @bird.y)
