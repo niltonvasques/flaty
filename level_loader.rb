@@ -1,5 +1,6 @@
 require 'chunky_png'
 require './world'
+require './vector_2d'
 
 class Tile < GameObject
   SCREEN_WIDTH   = 1280
@@ -43,11 +44,12 @@ class LevelLoader
         tile = level_tiles[x,y]
         if tile != Tile::EMPTY and tile != Tile::STAR
           tile_pos = Tile::TILES[tile]
-          world.tiles << Tile.new(x: x, y: y, z: ZLayers::TILE, image: tilemap[tile_pos],
+          world.tiles << Tile.new(position: Vector2d[x, y], z: ZLayers::TILE,
+                                  image: tilemap[tile_pos],
                                   scale_x: tile_scale, scale_y: tile_scale)
         end
         if tile == Tile::STAR
-          world.stars.push(Star.new(star_anim, x: x, y: y))
+          world.stars.push(Star.new(star_anim, position: Vector2d[x, y]))
         end
       end
     end

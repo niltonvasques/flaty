@@ -34,6 +34,8 @@ class Background
       @reverse_at = Gosu.milliseconds
     end
 
+    speed = speed.x
+
     #return if @reverse
 
     # ensure that the background will remains moving, but in a slow pace when the bird is not

@@ -1,9 +1,10 @@
 require 'gosu'
 require 'ostruct'
 require './game_object'
+require './vector_2d'
 
 class Bird < GameObject
-  IDLE_SPEED = 2
+  IDLE_SPEED = Vector2d[2, 0].freeze
   SPEED = 10 # units per second
   SCALE = 3
 
@@ -12,8 +13,8 @@ class Bird < GameObject
   def initialize
     bird_tiles = Gosu::Image.load_tiles('assets/seagull_tiles.png', 32, 40)
 
-    super(tiles: bird_tiles, x: 1, y: 14, current: 0, debug: Gosu::Color::RED,
-          z: ZLayers::PLAYER, scale_x: SCALE, scale_y: SCALE, speed: 0)
+    super(tiles: bird_tiles, position: Vector2d[1, 14], current: 0, debug: Gosu::Color::RED,
+          z: ZLayers::PLAYER, scale_x: SCALE, scale_y: SCALE, speed: IDLE_SPEED.dup)
 
     @score = 0
 
@@ -24,19 +25,20 @@ class Bird < GameObject
   end
 
   def update
-    self.speed = IDLE_SPEED
-    self.speed = -SPEED if Gosu.button_down? Gosu::KB_LEFT
-    self.speed = SPEED if Gosu.button_down? Gosu::KB_RIGHT
+    self.speed = IDLE_SPEED.dup
+    self.speed = Vector2d[-SPEED, 0] if Gosu.button_down? Gosu::KB_LEFT
+    self.speed = Vector2d[SPEED, 0] if Gosu.button_down? Gosu::KB_RIGHT
+    self.speed.y = -SPEED if Gosu.button_down? Gosu::KB_UP
+    self.speed.y = SPEED if Gosu.button_down? Gosu::KB_DOWN
 
     dt_speed = self.speed * GameWindow.delta
 
-    self.x += dt_speed
-    self.y -= SPEED * GameWindow.delta if Gosu.button_down? Gosu::KB_UP
-    self.y += SPEED * GameWindow.delta if Gosu.button_down? Gosu::KB_DOWN
+    puts "speed: #{speed} -> #{dt_speed}"
+    self.position += dt_speed
 
     anim_speed = self.speed == IDLE_SPEED ? 220 : 80
 
-    self.current = ((Gosu.milliseconds / anim_speed) % 4) + (self.speed < 0 ? 6 : 0)
+    self.current = ((Gosu.milliseconds / anim_speed) % 4) + (self.speed.x < 0 ? 6 : 0)
   end
 
   def collect_stars(stars)

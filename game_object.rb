@@ -1,11 +1,15 @@
 require 'gosu'
 require 'ostruct'
+require './vector_2d'
 
 class GameObject < OpenStruct
   #attr_accessor :image, :width, :height, :x, :y, :z, :speed
 
   def initialize(opts = {})
-    default = { speed: 0, scale_x: 1, scale_y: 1, current: 0, camera: true, debug: false }
+    default = {
+      position: Vector2d[0,0], z: 0,
+      speed: 0, scale_x: 1, scale_y: 1, current: 0, camera: true, debug: false
+    }
     super(default.merge(opts))
 
     unless current_image.nil?
@@ -13,6 +17,9 @@ class GameObject < OpenStruct
       self.height = World.camera.pixel_to_unit_y(current_image.height * self.scale_y)
     end
   end
+
+  def x; self.position.x; end
+  def y; self.position.y; end
 
   def update
   end
@@ -24,8 +31,8 @@ class GameObject < OpenStruct
     new_y = self.y
 
     if self.camera
-      new_x = World.camera.translate_x(x)
-      new_y = World.camera.translate_y(y)
+      new_x = World.camera.translate_x(self.x)
+      new_y = World.camera.translate_y(self.y)
     end
 
     current_image.draw(new_x, new_y, z, scale_x = self.scale_x, scale_y = self.scale_y)
