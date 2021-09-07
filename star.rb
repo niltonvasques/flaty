@@ -5,8 +5,7 @@ class Star < GameObject
     super(opts.merge({ tiles: animation }))
   end
 
-  def update(speed)
-    self.x -= speed * GameWindow.delta
+  def update
     self.current = Gosu.milliseconds / 100 % self.tiles.size
   end
 

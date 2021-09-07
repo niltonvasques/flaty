@@ -9,6 +9,7 @@ class Tile < GameObject
   HEIGHT  = (SCREEN_WIDTH / 28)
 
   EMPTY  = 0xFFFFFFFF
+  GRASS_FLOOR = 0x002F00FF
   WOOD   = 0xCB815EFF
   HORIZONTAL_WOOD = 0x995D4FFF
   LEAF   = 0x71AA34FF
@@ -16,15 +17,12 @@ class Tile < GameObject
   STAR = 0xFFFF00FF
 
   TILES = {
+    GRASS_FLOOR => 2 + 0 * 20,
     WOOD => 16 + 5 * 20,
     LEAF => 18 + 1 * 20,
     HORIZONTAL_WOOD => 19 + 5 * 20,
     WOOD_INTERSECTION => 17 + 5 * 20,
   }
-
-  def update(speed)
-    self.x -= speed * GameWindow.delta
-  end
 end
 
 class LevelLoader
@@ -32,6 +30,7 @@ class LevelLoader
     tilemap = Gosu::Image.load_tiles("assets/tiles.png", Tile::SIZE, Tile::SIZE, tileable: true)
     star_anim = Gosu::Image.load_tiles("assets/star.png", 25, 25)
     level_tiles = self.load_tiles
+    World.camera.bounds.width = level_tiles.width
 
     tile_scale = (GameWindow::SCREEN_WIDTH / 50) / Tile::SIZE.to_f
     level_tiles.width.times do |x|

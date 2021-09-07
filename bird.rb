@@ -3,6 +3,7 @@ require 'ostruct'
 require './game_object'
 
 class Bird < GameObject
+  IDLE_SPEED = 2
   SPEED = 10 # units per second
   SCALE = 3
 
@@ -26,21 +27,17 @@ class Bird < GameObject
   end
 
   def update
-    self.speed = 2
+    self.speed = IDLE_SPEED
     self.speed = -SPEED if Gosu.button_down? Gosu::KB_LEFT
     self.speed = SPEED if Gosu.button_down? Gosu::KB_RIGHT
 
-    dt_speed = self.speed * GameWindow.delta # reduce screen movement by 4
+    dt_speed = self.speed * GameWindow.delta
 
-    self.x += dt_speed if self.speed.abs > 2
+    self.x += dt_speed
     self.y -= SPEED * GameWindow.delta if Gosu.button_down? Gosu::KB_UP
     self.y += SPEED * GameWindow.delta if Gosu.button_down? Gosu::KB_DOWN
-    #self.x = 0 if self.x < 0
-    #self.x = GameWindow::SCREEN_WIDTH - @width if self.x + @width > GameWindow::SCREEN_WIDTH
-    #self.y = 0 if self.y < 0
-    #self.y = GameWindow::SCREEN_HEIGHT - @height if self.y + @height > GameWindow::SCREEN_HEIGHT
 
-    anim_speed = self.speed == 0 ? 220 : 80
+    anim_speed = self.speed == IDLE_SPEED ? 220 : 80
 
     self.current = ((Gosu.milliseconds / anim_speed) % 4) + (self.speed < 0 ? 6 : 0)
   end

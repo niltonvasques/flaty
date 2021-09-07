@@ -5,21 +5,27 @@ require './bird'
 require './star'
 require './level_loader'
 require './vector_2d'
+require './rect'
 
 module ZLayers
   BG, TILE, STARS, PLAYER, UI = *0..4
 end
 
 class Camera
-  attr_accessor :width, :height, :position
+  NOT_BOUNDED = -1
+  attr_accessor :width, :height, :position, :bounds
 
   def initialize(width, height)
     self.width = width
     self.height = height
+    self.bounds = Rect[(width / 2), (height / 2)-1, NOT_BOUNDED, NOT_BOUNDED]
     look(width / 2, height / 2)
   end
 
   def look(x, y)
+    y = self.bounds.y if self.bounds.y != NOT_BOUNDED and y > self.bounds.y
+    x = self.bounds.x if self.bounds.x != NOT_BOUNDED and x < self.bounds.x
+    x = self.bounds.width if self.bounds.width != NOT_BOUNDED and x > self.bounds.width
     self.position = Vector2d[x.to_f, y.to_f]
   end
 
@@ -68,8 +74,7 @@ class World
 
   def initialize
     @@camera = Camera.new(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
-    @@camera.look(0, 0)
-    puts @@camera.position
+    @@camera.look(CAMERA_WIDTH_UNITS / 2.0, CAMERA_HEIGHT_UNITS / 2.0)
 
     # assets
     @font = Gosu::Font.new(20)
@@ -89,10 +94,8 @@ class World
 
   def update
     @bird.update
+    self.stars.each(&:update)
     @@camera.look(@bird.x, @bird.y)
-
-    self.stars.each { |star| star.update(@bird.speed) }
-    self.tiles.each { |tile| tile.update(@bird.speed) }
 
     @background.update(@bird.speed)
 
