@@ -21,6 +21,21 @@ module Collision
     collision & RIGHT == RIGHT
   end
 
+  def self.detect(obj1, obj2)
+    if (obj1.x + obj1.width >= obj2.x and obj1.x <= obj2.x + obj2.width and
+        obj1.y + obj1.height >= obj2.y and obj1.y <= obj2.y + obj2.height)
+      collision = Collision::NONE
+      collision |= Collision::RIGHT if obj2.x < obj1.x
+      collision |= Collision::LEFT if obj2.x > obj1.x
+      collision |= Collision::BOTTOM if obj2.y < obj1.y
+      collision |= Collision::TOP if obj2.y > obj1.y
+
+      return collision
+    end
+
+    Collision::NONE
+  end
+
   def self.to_s(collision)
     result = ""
     result += "top " if self.top? collision
@@ -81,17 +96,6 @@ class GameObject < OpenStruct
   end
 
   def colliding?(obj)
-    if (obj.x + obj.width >= self.x and obj.x <= self.x + self.width and
-        obj.y + obj.height >= self.y and obj.y <= self.y + self.height)
-      collision = Collision::NONE
-      collision |= Collision::RIGHT if self.x < obj.x
-      collision |= Collision::LEFT if self.x > obj.x
-      collision |= Collision::BOTTOM if self.y < obj.y
-      collision |= Collision::TOP if self.y > obj.y
-
-      return collision
-    end
-
-    Collision::NONE
+    Collision.detect(obj, self)
   end
 end

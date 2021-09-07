@@ -97,7 +97,6 @@ class World
     @bird.update
 
     new_position = @bird.position.dup
-    previous_position = @bird.previous_position.dup
 
     candidates = @level.around(@bird)
     collision = Collision::NONE
@@ -119,7 +118,7 @@ class World
 
     if Collision.right?(collision)
       @bird.position.y = new_position.y
-      @bird.position.x = previous_position.x
+      @bird.position.x = @bird.previous_position.x
 
       collision = Collision::NONE
       candidates.each do |obj|
@@ -142,11 +141,10 @@ class World
     @bird.reset if collision != Collision::NONE
 
     self.stars.each(&:update)
-    @@camera.look(@bird.x, @bird.y)
-
+    @bird.collect_stars(stars)
     @background.update(@bird.speed)
 
-    @bird.collect_stars(stars)
+    @@camera.look(@bird.x, @bird.y)
   end
 
   def draw
