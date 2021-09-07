@@ -15,7 +15,7 @@ class Background
     @bg_scale_x = GameWindow::SCREEN_WIDTH / bg_img.width.to_f
     @bg_scale_y = GameWindow::SCREEN_HEIGHT / bg_img.height.to_f
 
-    @bg = GameObject.new(image: bg_img, x: 0, y: 0, z: ZLayers::BG,
+    @bg = GameObject.new(image: bg_img, x: 0, y: 0, z: ZLayers::BG, camera: false,
                          scale_x: @bg_scale_x, scale_y: @bg_scale_y)
 
     @fg        = build_layer(fg_img, FG_SPEED)
@@ -64,6 +64,7 @@ class Background
 
   def build_layer(image, speed)
     Parallax.new(
+      camera: false,
       image: image,
       scaled_width: image.width * @bg_scale_x,
       x1: 0,

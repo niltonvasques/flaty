@@ -68,7 +68,7 @@ class World
 
   def initialize
     @@camera = Camera.new(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
-    @@camera.look(CAMERA_WIDTH_UNITS / 2.0, CAMERA_HEIGHT_UNITS / 2.0)
+    @@camera.look(0, 0)
     puts @@camera.position
 
     # assets
@@ -89,6 +89,7 @@ class World
 
   def update
     @bird.update
+    @@camera.look(@bird.x, @bird.y)
 
     self.stars.each { |star| star.update(@bird.speed) }
     self.tiles.each { |tile| tile.update(@bird.speed) }
