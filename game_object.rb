@@ -8,10 +8,11 @@ class GameObject < OpenStruct
 
   def initialize(opts = {})
     default = {
-      position: Vector2d[0,0], z: 0,
-      speed: 0, scale_x: 1, scale_y: 1, current: 0, camera: true, debug: false
+      position: Vector2d[0,0], z: 0, previous_position: Vector2d[0,0],
+      speed: Vector2d[0,0], scale_x: 1, scale_y: 1, current: 0, camera: true, debug: false
     }
     super(default.merge(opts))
+    self.previous_position = self.position.dup
 
     unless current_image.nil?
       self.width = World.camera.pixel_to_unit_x(current_image.width * self.scale_x)
@@ -23,6 +24,13 @@ class GameObject < OpenStruct
   def y; self.position.y; end
 
   def update
+    self.previous_position = self.position.dup
+
+    self.position += self.speed * GameWindow.delta
+  end
+
+  def reset
+    self.position = self.previous_position
   end
 
   def draw
