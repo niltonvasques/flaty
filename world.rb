@@ -96,49 +96,7 @@ class World
 
     @bird.update
 
-    new_position = @bird.position.dup
-
-    candidates = @level.around(@bird)
-    collision = Collision::NONE
-
-    candidates.each do |obj|
-      obj.debug = Gosu::Color::CYAN
-      collision |= @bird.colliding?(obj)
-    end
-
-    if Collision.bottom?(collision)
-      @bird.position.y = @bird.previous_position.y
-
-      collision = Collision::NONE
-      candidates.each do |obj|
-        obj.debug = Gosu::Color::CYAN
-        collision |= @bird.colliding?(obj)
-      end
-    end
-
-    if Collision.right?(collision)
-      @bird.position.y = new_position.y
-      @bird.position.x = @bird.previous_position.x
-
-      collision = Collision::NONE
-      candidates.each do |obj|
-        obj.debug = Gosu::Color::CYAN
-        collision |= @bird.colliding?(obj)
-      end
-    end
-
-    if Collision.left?(collision)
-      @bird.position.y = new_position.y
-      @bird.position.x = @bird.previous_position.x
-
-      collision = Collision::NONE
-      candidates.each do |obj|
-        obj.debug = Gosu::Color::CYAN
-        collision |= @bird.colliding?(obj)
-      end
-    end
-
-    @bird.reset if collision != Collision::NONE
+    Collision.update_collisions(@bird, @level)
 
     self.stars.each(&:update)
     @bird.collect_stars(stars)
