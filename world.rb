@@ -94,9 +94,10 @@ class World
   def update
     self.level.tiles.each { |tile| tile.debug = Gosu::Color::GREEN } if GameWindow.debug
 
-    previous_position = @bird.previous_position.dup
-
     @bird.update
+
+    new_position = @bird.position.dup
+    previous_position = @bird.previous_position.dup
 
     candidates = @level.around(@bird)
     collision = Collision::NONE
@@ -107,8 +108,7 @@ class World
     end
 
     if Collision.bottom?(collision)
-      @bird.reset
-      @bird.update(Collision::BOTTOM)
+      @bird.position.y = @bird.previous_position.y
 
       collision = Collision::NONE
       candidates.each do |obj|
@@ -118,8 +118,8 @@ class World
     end
 
     if Collision.right?(collision)
-      @bird.reset
-      @bird.update(Collision::RIGHT)
+      @bird.position.y = new_position.y
+      @bird.position.x = previous_position.x
 
       collision = Collision::NONE
       candidates.each do |obj|
@@ -129,8 +129,8 @@ class World
     end
 
     if Collision.left?(collision)
-      @bird.reset
-      @bird.update(Collision::LEFT)
+      @bird.position.y = new_position.y
+      @bird.position.x = @bird.previous_position.x
 
       collision = Collision::NONE
       candidates.each do |obj|
@@ -138,7 +138,6 @@ class World
         collision |= @bird.colliding?(obj)
       end
     end
-
 
     @bird.reset if collision != Collision::NONE
 
