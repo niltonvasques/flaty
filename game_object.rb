@@ -2,6 +2,35 @@ require 'gosu'
 require 'ostruct'
 require './vector_2d'
 
+module Collision
+  NONE, LEFT, RIGHT, TOP, BOTTOM = *[0, 1, 2, 4, 8]
+
+  def self.top?(collision)
+    collision & TOP == TOP
+  end
+
+  def self.bottom?(collision)
+    collision & BOTTOM == BOTTOM
+  end
+
+  def self.left?(collision)
+    collision & LEFT == LEFT
+  end
+
+  def self.right?(collision)
+    collision & RIGHT == RIGHT
+  end
+
+  def self.to_s(collision)
+    result = ""
+    result += "top " if self.top? collision
+    result += "bottom " if self.bottom? collision
+    result += "left " if self.left? collision
+    result += "right " if self.right? collision
+    result
+  end
+end
+
 class GameObject < OpenStruct
   #attr_accessor :image, :width, :height, :x, :y, :z, :speed
 
@@ -49,5 +78,20 @@ class GameObject < OpenStruct
   def current_image
     return image if image
     tiles[current]
+  end
+
+  def colliding?(obj)
+    if (obj.x + obj.width >= self.x and obj.x <= self.x + self.width and
+        obj.y + obj.height >= self.y and obj.y <= self.y + self.height)
+      collision = Collision::NONE
+      collision |= Collision::RIGHT if self.x < obj.x
+      collision |= Collision::LEFT if self.x > obj.x
+      collision |= Collision::BOTTOM if self.y < obj.y
+      collision |= Collision::TOP if self.y > obj.y
+
+      return collision
+    end
+
+    Collision::NONE
   end
 end

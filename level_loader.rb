@@ -48,12 +48,30 @@ class Level
     @tilesmap[y.to_i * @width + x.to_i]
   end
 
-  def around(x, y)
+  def around(object)
     tiles = []
-    tiles << at(x + 1, y) unless at(x + 1, y).nil?
-    tiles << at(x - 1, y) unless at(x - 1, y).nil?
-    tiles << at(x, y + 1) unless at(x, y + 1).nil?
-    tiles << at(x, y - 1) unless at(x, y - 1).nil?
+    start_x = object.x.ceil - 1
+    start_y = object.y.ceil - 1
+    puts "looking (#{start_x}..#{(object.x + object.width).ceil},#{start_y})"
+    start_x.upto((object.x + object.width).ceil - 1) do |x|
+      tiles << at(x, start_y) unless at(x, start_y).nil?
+    end
+    start_y = (object.y + object.height).ceil - 1
+    puts "looking (#{start_x}..#{(object.x + object.width).ceil},#{start_y})"
+    start_x.upto((object.x + object.width).ceil - 1) do |x|
+      tiles << at(x, start_y) unless at(x, start_y).nil?
+    end
+    start_y = object.y.ceil
+    start_x = object.x.ceil - 1
+    puts "looking (#{start_x},#{start_y}..#{(object.y + object.height).ceil})"
+    start_y.upto((object.y + object.height).ceil - 1) do |y|
+      tiles << at(start_x, y) unless at(start_x, y).nil?
+    end
+    start_x = (object.x + object.width).ceil - 1
+    puts "looking (#{start_x},#{start_y}..#{(object.y + object.height).ceil})"
+    start_y.upto((object.y + object.height).ceil - 1) do |y|
+      tiles << at(start_x, y) unless at(start_x, y).nil?
+    end
     tiles
   end
 

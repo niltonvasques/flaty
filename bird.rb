@@ -4,8 +4,8 @@ require './game_object'
 require './vector_2d'
 
 class Bird < GameObject
-  IDLE_SPEED = Vector2d[2, 0].freeze
-  SPEED = 10 # units per second
+  IDLE_SPEED = Vector2d[0, 0].freeze
+  SPEED = 5#10 # units per second
   SCALE = 3
 
   attr_reader :score
@@ -22,9 +22,11 @@ class Bird < GameObject
     play
 
     @beep = Gosu::Sample.new('assets/sounds/beep.wav')
+    self.previous_position = self.position.dup
   end
 
   def update
+    self.previous_position = self.position.dup
     self.speed = IDLE_SPEED.dup
     self.speed = Vector2d[-SPEED, 0] if Gosu.button_down? Gosu::KB_LEFT
     self.speed = Vector2d[SPEED, 0] if Gosu.button_down? Gosu::KB_RIGHT
@@ -38,6 +40,10 @@ class Bird < GameObject
     anim_speed = self.speed == IDLE_SPEED ? 220 : 80
 
     self.current = ((Gosu.milliseconds / anim_speed) % 4) + (self.speed.x < 0 ? 6 : 0)
+  end
+
+  def reset
+    self.position = self.previous_position
   end
 
   def collect_stars(stars)

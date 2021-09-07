@@ -93,10 +93,22 @@ class World
 
   def update
     @bird.update
-    puts "around(#{@bird.x.to_i}, #{@bird.y.to_i}): #{@level.around(@bird.x, @bird.y).map { |t| t.position }}"
+    candidates = @level.around(@bird)
+    puts "bird(#{@bird.x}, #{@bird.y})(#{@bird.width}, #{@bird.height})"
+    puts "around(#{@bird.x.to_i}, #{@bird.y.to_i}): #{@level.around(@bird).map { |t| t.position }}"
+    self.level.tiles.each { |tile| tile.debug = Gosu::Color::GREEN }
+    candidates.each do |obj|
+      obj.debug = Gosu::Color::CYAN
+      collision = @bird.colliding?(obj)
+      puts Collision.to_s(collision)
+      if collision != Collision::NONE
+        @bird.reset
+        break
+      end
+    end
 
     self.stars.each(&:update)
-    @@camera.look(@bird.x, @bird.y)
+    #@@camera.look(@bird.x, @bird.y)
 
     @background.update(@bird.speed)
 
