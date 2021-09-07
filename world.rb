@@ -18,7 +18,7 @@ class Camera
   def initialize(width, height)
     self.width = width
     self.height = height
-    self.bounds = Rect[(width / 2), (height / 2)-1, NOT_BOUNDED, NOT_BOUNDED]
+    self.bounds = Rect[(width / 2), (height / 2), NOT_BOUNDED, NOT_BOUNDED]
     look(width / 2, height / 2)
   end
 
@@ -67,10 +67,10 @@ class World
   SCREEN_HEIGHT  = 720
   CAMERA_WIDTH_UNITS  = 50
   CAMERA_HEIGHT_UNITS = 28
-  UNIT_X = SCREEN_WIDTH / CAMERA_WIDTH_UNITS
-  UNIT_Y = SCREEN_HEIGHT / CAMERA_HEIGHT_UNITS
+  UNIT_X = SCREEN_WIDTH / CAMERA_WIDTH_UNITS.to_f
+  UNIT_Y = SCREEN_HEIGHT / CAMERA_HEIGHT_UNITS.to_f
 
-  attr_accessor :tiles, :stars
+  attr_accessor :level, :stars
 
   def initialize
     @@camera = Camera.new(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
@@ -85,7 +85,6 @@ class World
     @background = Background.new
     @bird = Bird.new
     self.stars = Array.new
-    self.tiles = Array.new
   end
 
   def self.camera
@@ -94,6 +93,8 @@ class World
 
   def update
     @bird.update
+    puts "around(#{@bird.x.to_i}, #{@bird.y.to_i}): #{@level.around(@bird.x, @bird.y).map { |t| t.position }}"
+
     self.stars.each(&:update)
     @@camera.look(@bird.x, @bird.y)
 
@@ -110,7 +111,9 @@ class World
     @bird.draw
 
     self.stars.each(&:draw)
-    self.tiles.each(&:draw)
+    self.level.tiles.each(&:draw)
+
+    draw_grid if GameWindow.debug
   end
 
   def pause
@@ -129,5 +132,15 @@ class World
     @font.draw_text("FPS: #{Gosu.fps}", 10, 10, ZLayers::UI, 1.0, 1.0, Gosu::Color::GREEN)
     @font.draw_text("Score: #{@bird.score}", GameWindow::SCREEN_WIDTH - 100, 10,
                     ZLayers::UI, 1.0, 1.0, Gosu::Color::RED)
+  end
+
+  def draw_grid
+    color = Gosu::Color::YELLOW
+    CAMERA_WIDTH_UNITS.times do |x|
+      Gosu.draw_line(x * UNIT_X, 0, color, x * UNIT_X, SCREEN_HEIGHT, color, z = 100, mode = :default)
+    end
+    CAMERA_HEIGHT_UNITS.times do |y|
+      Gosu.draw_line(0, y * UNIT_Y, color, SCREEN_WIDTH, y * UNIT_Y, color, z = 100, mode = :default)
+    end
   end
 end

@@ -33,7 +33,6 @@ class Bird < GameObject
 
     dt_speed = self.speed * GameWindow.delta
 
-    puts "speed: #{speed} -> #{dt_speed}"
     self.position += dt_speed
 
     anim_speed = self.speed == IDLE_SPEED ? 220 : 80
