@@ -23,6 +23,11 @@ class Tile < GameObject
     HORIZONTAL_WOOD => 19 + 5 * 20,
     WOOD_INTERSECTION => 17 + 5 * 20,
   }
+
+  def initialize(opts = {})
+    default = { debug: Gosu::Color::GREEN }
+    super(default.merge(opts))
+  end
 end
 
 class LevelLoader

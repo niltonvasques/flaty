@@ -12,11 +12,8 @@ class Bird < GameObject
   def initialize
     bird_tiles = Gosu::Image.load_tiles('assets/seagull_tiles.png', 32, 40)
 
-    super(tiles: bird_tiles, x: 1, y: 14, current: 0,
+    super(tiles: bird_tiles, x: 1, y: 14, current: 0, debug: Gosu::Color::RED,
           z: ZLayers::PLAYER, scale_x: SCALE, scale_y: SCALE, speed: 0)
-
-    @width = World.camera.pixel_to_unit_x(tiles[0].width * SCALE)
-    @height = World.camera.pixel_to_unit_y(tiles[0].height * SCALE)
 
     @score = 0
 
@@ -44,7 +41,7 @@ class Bird < GameObject
 
   def collect_stars(stars)
     stars.reject! do |star|
-      if Gosu.distance(self.x + @width / 2, self.y + @height / 2, star.x, star.y) < 1
+      if Gosu.distance(self.x + self.width / 2, self.y + self.height / 2, star.x, star.y) < 1
         @score += 10
         @beep.play
         true

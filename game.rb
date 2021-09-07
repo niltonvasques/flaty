@@ -16,6 +16,7 @@ class GameWindow < Gosu::Window
     @paused_at = 0
     @@updated_at = 0
     @@delta_seconds = 0
+    @@debug = false
 
     @world = World.new
     LevelLoader.create_tiles(@world)
@@ -23,6 +24,10 @@ class GameWindow < Gosu::Window
 
   def self.delta
     @@delta_seconds
+  end
+
+  def self.debug
+    @@debug
   end
 
   def needs_cursor?; false; end
@@ -42,6 +47,8 @@ class GameWindow < Gosu::Window
   def button_down(id)
     if id == Gosu::KB_ESCAPE
       close
+    elsif id == Gosu::KB_D
+      @@debug = !@@debug
     else
       super
     end
