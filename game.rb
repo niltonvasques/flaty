@@ -1,6 +1,7 @@
 require 'gosu'
 require 'pry-byebug'
-require './dusk_level'
+require './world'
+require './level_loader'
 
 class GameWindow < Gosu::Window
   SCREEN_WIDTH   = 1280
@@ -16,7 +17,8 @@ class GameWindow < Gosu::Window
     @@updated_at = 0
     @@delta_seconds = 0
 
-    @dusk_level = DuskLevel.new
+    @world = World.new
+    LevelLoader.create_tiles(@world)
   end
 
   def self.delta
@@ -30,11 +32,11 @@ class GameWindow < Gosu::Window
     @@updated_at = Gosu.milliseconds
     return if paused?
 
-    @dusk_level.update
+    @world.update
   end
 
   def draw
-    @dusk_level.draw
+    @world.draw
   end
 
   def button_down(id)
@@ -51,9 +53,9 @@ class GameWindow < Gosu::Window
         @paused = !@paused
         @paused_at = Gosu.milliseconds
         if @paused
-          @dusk_level.pause
+          @world.pause
         else
-          @dusk_level.play
+          @world.play
         end
       end
     end
