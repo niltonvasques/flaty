@@ -1,4 +1,4 @@
-# Game Dev
+# Ruby games
 
 ### Requirements
 
@@ -12,6 +12,11 @@ bundle install -j 5
 ```sh
 ruby game.rb
 ```
+
+## Screenshots
+
+![image](https://user-images.githubusercontent.com/2291529/132454674-e3d9ff3b-5883-42ad-a2d5-b55361b318f8.png)
+![image](https://user-images.githubusercontent.com/2291529/132454752-9fa7db1f-4696-4da9-a51f-efbc193c9948.png)
 
 # References
 
