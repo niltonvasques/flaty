@@ -1,5 +1,18 @@
 # Game Dev
 
+### Requirements
+
+```sh
+rvm install ruby-3.0.2
+bundle install -j 5
+```
+
+### Running
+
+```sh
+ruby game.rb
+```
+
 # References
 
 https://github.com/gosu/gosu/wiki/Basic-Concepts
