@@ -8,7 +8,7 @@ class GameWindow < Gosu::Window
   SCREEN_HEIGHT  = 720
 
   def initialize
-    super(SCREEN_WIDTH, SCREEN_HEIGHT, fullscreen: false)
+    super(SCREEN_WIDTH, SCREEN_HEIGHT, fullscreen: true)
     self.caption = "Ruby Falcon in the Dusk"
 
     # state

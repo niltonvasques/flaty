@@ -100,9 +100,9 @@ class World
 
     self.stars.each(&:update)
     @bird.collect_stars(stars)
-    @background.update(@bird.speed)
-
     @@camera.look(@bird.x, @bird.y)
+
+    @background.update(@bird.speed) if @@camera.position.x == @bird.x
   end
 
   def draw
