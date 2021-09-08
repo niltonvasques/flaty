@@ -61,7 +61,8 @@ class GameObject < OpenStruct
   end
 
   def outside_window?
-    self.x > GameWindow::SCREEN_WIDTH or (self.x + current_image.width * self.scale_x) < 0
+    return false unless self.camera
+    not World.camera.visible?(self)
   end
 
   def current_image

@@ -29,6 +29,12 @@ class Camera
     self.position = Vector2d[x.to_f, y.to_f]
   end
 
+  def visible?(obj)
+    return false if obj.x > (self.position.x + self.width / 2.0)
+    return false if obj.x + obj.width < (self.position.x - self.width / 2.0)
+    true
+  end
+
   def width_pixels
     self.width * World::UNIT_X
   end
