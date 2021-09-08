@@ -8,7 +8,7 @@ class GameObject < OpenStruct
 
   def initialize(opts = {})
     default = {
-      position: Vector2d[0,0], z: 0, previous_position: Vector2d[0,0],
+      position: Vector2d[0,0], z: 0, previous_position: Vector2d[0,0], acceleration: Vector2d[0,0],
       speed: Vector2d[0,0], scale_x: 1, scale_y: 1, current: 0, camera: true, debug: false,
       rect: Rect[0, 0, 0, 0], angle: 0
     }

@@ -127,6 +127,35 @@ class LevelLoader
     end
   end
 
+  def self.generate(world)
+    tilemap = Gosu::Image.load_tiles("assets/tiles.png", Tile::SIZE, Tile::SIZE, tileable: true)
+    width = 200
+    height = 28
+    World.camera.bounds.width = width
+    level = Level.new(200, 28)
+    world.level = level
+
+    scale_x = (World::UNIT_X) / Tile::SIZE.to_f
+    scale_y = (World::UNIT_Y) / Tile::SIZE.to_f
+
+    x = 20
+    pipes_space = 6
+    pipe_height = 14
+    while x < width
+      height.times do |y|
+        if y > pipe_height or y < pipe_height - pipes_space
+          level.add_tile(Tile.new(position: Vector2d[x, y], z: ZLayers::TILE,
+                                  image: tilemap[18 + 1 * 20],
+                                  scale_x: scale_x, scale_y: scale_y))
+        end
+      end
+      pipe_height = [pipe_height + (rand * (10) * (rand > 0.5 ? 1 : -1)).to_i, 22].min
+      pipe_height = [pipe_height, 6].max
+      pipes_space = (rand * 10) % 5 + 5
+      x += (rand * 100 % 6 + 9).to_i
+    end
+  end
+
   def self.load_tiles
     ChunkyPNG::Image.from_file('assets/levels/level2.png')
   end

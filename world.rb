@@ -133,7 +133,7 @@ class World
   end
 
   def score
-    @bird.score
+    (@bird.position.x.to_i / 10).to_i * 10
   end
 
   def restart
@@ -146,7 +146,7 @@ class World
 
   def draw_ui
     @font.draw_text("FPS: #{Gosu.fps}", 10, 10, ZLayers::UI, 1.0, 1.0, Gosu::Color::GREEN)
-    @font.draw_text("Score: #{@bird.score}", GameWindow::SCREEN_WIDTH - 100, 10,
+    @font.draw_text("Score: #{score}", GameWindow::SCREEN_WIDTH - 100, 10,
                     ZLayers::UI, 1.0, 1.0, Gosu::Color::RED)
   end
 

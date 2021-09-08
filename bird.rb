@@ -6,8 +6,9 @@ require './rect'
 
 class Bird < GameObject
   IDLE = 5.freeze
-  GRAVITY = 5.freeze
-  IDLE_SPEED = Vector2d[IDLE, GRAVITY].freeze
+  GRAVITY = Vector2d[0, 30].freeze
+  JUMP = Vector2d[0, -200].freeze
+  IDLE_SPEED = Vector2d[IDLE, 0].freeze
   SPEED = 10.freeze # units per second
   SCALE = 3.freeze
   FRAMES = 4.freeze
@@ -24,6 +25,8 @@ class Bird < GameObject
     super(position: Vector2d[1, 14], z: ZLayers::PLAYER, scale_x: SCALE, scale_y: SCALE,
           speed: IDLE_SPEED.dup, score: 0, tiles: bird_tiles, current: 0, debug: Gosu::Color::RED)
     self.angle = 30
+
+    self.speed = IDLE_SPEED.dup
   end
 
   def update
@@ -33,8 +36,11 @@ class Bird < GameObject
   end
 
   def update_speed
-    self.speed =  IDLE_SPEED.dup
-    self.speed += Vector2d[0,  -SPEED] if Gosu.button_down? Gosu::KB_SPACE
+    self.acceleration = GRAVITY
+    self.speed += self.acceleration * GameWindow.delta
+    self.speed += JUMP * GameWindow.delta if Gosu.button_down? Gosu::KB_SPACE
+    self.speed = Vector2d[IDLE, 10]   if self.speed.y > 10
+    self.speed = Vector2d[IDLE, -10] if self.speed.y < -10 and Gosu.button_down? Gosu::KB_SPACE
     #self.speed =  Vector2d[-SPEED, 0] if Gosu.button_down? Gosu::KB_LEFT
     #self.speed += Vector2d[SPEED,  0] if Gosu.button_down? Gosu::KB_RIGHT
     #self.speed += Vector2d[0, -SPEED] if Gosu.button_down? Gosu::KB_UP
@@ -83,6 +89,7 @@ class Bird < GameObject
   end
 
   def restart
+    self.speed = IDLE_SPEED.dup
     self.position =Vector2d[1, 14]
     self.score = 0
   end

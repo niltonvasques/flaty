@@ -21,7 +21,7 @@ class GameWindow < Gosu::Window
 
     @world = World.new
     @game_over = GameOverScreen.new
-    LevelLoader.create_tiles(@world)
+    LevelLoader.generate(@world)
   end
 
   def self.delta
@@ -60,7 +60,7 @@ class GameWindow < Gosu::Window
       @@debug = !@@debug
     elsif id == Gosu::KB_R
       @world.restart
-      LevelLoader.create_tiles(@world)
+      LevelLoader.generate(@world)
     else
       super
     end
