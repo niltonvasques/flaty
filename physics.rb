@@ -35,7 +35,7 @@ module Collision
   def self.update_collisions(body, level)
     new_position = body.position.dup
 
-    candidates = level.around(body)
+    candidates = level.around(body.collision_rect)
     collision = Collision::NONE
 
     candidates.each do |obj|

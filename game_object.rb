@@ -9,7 +9,8 @@ class GameObject < OpenStruct
   def initialize(opts = {})
     default = {
       position: Vector2d[0,0], z: 0, previous_position: Vector2d[0,0],
-      speed: Vector2d[0,0], scale_x: 1, scale_y: 1, current: 0, camera: true, debug: false
+      speed: Vector2d[0,0], scale_x: 1, scale_y: 1, current: 0, camera: true, debug: false,
+      rect: Rect[0, 0, 0, 0]
     }
     super(default.merge(opts))
     self.previous_position = self.position.dup
@@ -22,6 +23,14 @@ class GameObject < OpenStruct
 
   def x; self.position.x; end
   def y; self.position.y; end
+
+  def collision_rect
+    self.rect.x = self.x
+    self.rect.y = self.y
+    self.rect.width = self.width
+    self.rect.height = self.height
+    self.rect
+  end
 
   def update
     self.previous_position = self.position.dup
@@ -61,6 +70,6 @@ class GameObject < OpenStruct
   end
 
   def colliding?(obj)
-    Collision.detect(obj, self)
+    Collision.detect(obj, self.collision_rect)
   end
 end

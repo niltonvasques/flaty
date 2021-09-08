@@ -2,6 +2,7 @@ require 'gosu'
 require 'ostruct'
 require './game_object'
 require './vector_2d'
+require './rect'
 
 class Bird < GameObject
   IDLE = 2.freeze
@@ -41,9 +42,18 @@ class Bird < GameObject
     self.current += LEFT_FRAMES_INDEX if turn_left?
   end
 
+  def collision_rect
+    self.rect.x = self.x
+    self.rect.y = self.y + 1
+    self.rect.width = self.width
+    self.rect.height = self.height - 2
+    self.rect
+  end
+
   def collect_stars(stars)
     stars.reject! do |star|
-      if Gosu.distance(self.x + self.width / 2, self.y + self.height / 2, star.x, star.y) < 1
+      #if Gosu.distance(self.x + self.width / 2, self.y + self.height / 2, star.x, star.y) < 1
+      if Collision.detect(collision_rect, star) != Collision::NONE
         self.score += 10
         @beep.play
         true
