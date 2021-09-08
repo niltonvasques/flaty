@@ -146,8 +146,8 @@ class World
 
   def draw_ui
     @font.draw_text("FPS: #{Gosu.fps}", 10, 10, ZLayers::UI, 1.0, 1.0, Gosu::Color::GREEN)
-    @font.draw_text("Score: #{score}", GameWindow::SCREEN_WIDTH - 100, 10,
-                    ZLayers::UI, 1.0, 1.0, Gosu::Color::RED)
+    @font.draw_text("Score: #{score}", GameWindow::SCREEN_WIDTH - 200, 10,
+                    ZLayers::UI, 2.0, 2.0, Gosu::Color::BLACK)
   end
 
   def draw_grid
