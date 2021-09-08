@@ -32,7 +32,18 @@ module Collision
     Collision::NONE
   end
 
-  def self.update_collisions(body, level)
+  def self.to_s(collision)
+    result = ""
+    result += "top " if self.top? collision
+    result += "bottom " if self.bottom? collision
+    result += "left " if self.left? collision
+    result += "right " if self.right? collision
+    result
+  end
+end
+
+module Physics
+  def self.solve_collisions(body, level)
     new_position = body.position.dup
 
     candidates = level.around(body.collision_rect)
@@ -76,14 +87,5 @@ module Collision
     end
 
     body.reset if collision != Collision::NONE
-  end
-
-  def self.to_s(collision)
-    result = ""
-    result += "top " if self.top? collision
-    result += "bottom " if self.bottom? collision
-    result += "left " if self.left? collision
-    result += "right " if self.right? collision
-    result
   end
 end

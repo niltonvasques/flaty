@@ -96,7 +96,7 @@ class World
 
     @bird.update
 
-    Collision.update_collisions(@bird, @level)
+    Physics.solve_collisions(@bird, @level)
 
     self.stars.each(&:update)
     @bird.collect_stars(stars)
