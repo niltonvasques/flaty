@@ -51,7 +51,7 @@ class Bird < GameObject
     self.angle = -15 if self.speed.y < 0
     self.angle *= -1 if turn_left?
 
-    frame_duration = self.speed.x.abs <= IDLE ? FRAME_DURATION : FRAME_FAST_DURATION
+    frame_duration = self.speed.y > 0 ? FRAME_DURATION : FRAME_FAST_DURATION
     self.current = (Gosu.milliseconds / frame_duration) % FRAMES
     self.current += LEFT_FRAMES_INDEX if turn_left?
   end
