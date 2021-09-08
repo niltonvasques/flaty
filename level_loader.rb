@@ -101,34 +101,11 @@ class Level
 end
 
 class LevelLoader
-  def self.create_tiles(world)
-    tilemap = Gosu::Image.load_tiles("assets/tiles.png", Tile::SIZE, Tile::SIZE, tileable: true)
-    star_anim = Gosu::Image.load_tiles("assets/star.png", 25, 25)
-    level_tiles = self.load_tiles
-    World.camera.bounds.width = level_tiles.width
-    level = Level.new(level_tiles.width, level_tiles.height)
-    world.level = level
-
-    scale_x = (World::UNIT_X) / Tile::SIZE.to_f
-    scale_y = (World::UNIT_Y) / Tile::SIZE.to_f
-    level_tiles.width.times do |x|
-      level_tiles.height.times do |y|
-        tile = level_tiles[x,y]
-        if tile != Tile::EMPTY and tile != Tile::STAR
-          tile_pos = Tile::TILES[tile]
-          level.add_tile(Tile.new(position: Vector2d[x, y], z: ZLayers::TILE,
-                                  image: tilemap[tile_pos],
-                                  scale_x: scale_x, scale_y: scale_y))
-        end
-        if tile == Tile::STAR
-          world.stars.push(Star.new(star_anim, position: Vector2d[x, y]))
-        end
-      end
-    end
-  end
-
   def self.generate(world)
-    tilemap = Gosu::Image.load_tiles("assets/tiles.png", Tile::SIZE, Tile::SIZE, tileable: true)
+    unless defined?(@@tilemap)
+      @@tilemap = Gosu::Image.load_tiles("assets/tiles.png", Tile::SIZE, Tile::SIZE, tileable: true)
+    end
+
     width = 200
     height = 28
     World.camera.bounds.width = width
@@ -145,11 +122,11 @@ class LevelLoader
       height.times do |y|
         if y > pipe_height or y < pipe_height - pipes_space
           level.add_tile(Tile.new(position: Vector2d[x, y], z: ZLayers::TILE,
-                                  image: tilemap[18 + 1 * 20],
+                                  image: @@tilemap[18 + 1 * 20],
                                   scale_x: scale_x, scale_y: scale_y))
         end
       end
-      pipe_height = [pipe_height + (rand * (10) * (rand > 0.5 ? 1 : -1)).to_i, 22].min
+      pipe_height = [pipe_height + (rand * (10) * (rand > 0.5 ? 1 : -1)).to_i, 25].min
       pipe_height = [pipe_height, 6].max
       pipes_space = (rand * 10) % 5 + 5
       x += (rand * 100 % 6 + 9).to_i

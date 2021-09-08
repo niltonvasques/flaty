@@ -23,7 +23,7 @@ class Bird < GameObject
     play
 
     super(position: Vector2d[1, 14], z: ZLayers::PLAYER, scale_x: SCALE, scale_y: SCALE,
-          speed: IDLE_SPEED.dup, score: 0, tiles: bird_tiles, current: 0, debug: Gosu::Color::RED)
+          speed: IDLE_SPEED.dup, tiles: bird_tiles, current: 0, debug: Gosu::Color::RED)
     self.angle = 30
 
     self.speed = IDLE_SPEED.dup
@@ -64,19 +64,6 @@ class Bird < GameObject
     self.rect
   end
 
-  def collect_stars(stars)
-    stars.reject! do |star|
-      #if Gosu.distance(self.x + self.width / 2, self.y + self.height / 2, star.x, star.y) < 1
-      if Collision.detect(collision_rect, star) != Collision::NONE
-        self.score += 10
-        @beep.play
-        true
-      else
-        false
-      end
-    end
-  end
-
   def pause
     @wings_playing.pause
   end
@@ -91,7 +78,6 @@ class Bird < GameObject
   def restart
     self.speed = IDLE_SPEED.dup
     self.position =Vector2d[1, 14]
-    self.score = 0
   end
 
   def turn_left?
