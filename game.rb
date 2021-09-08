@@ -2,6 +2,7 @@ require 'gosu'
 require 'pry-byebug'
 require './world'
 require './level_loader'
+require './game_over_screen'
 
 class GameWindow < Gosu::Window
   SCREEN_WIDTH   = 1280
@@ -19,6 +20,7 @@ class GameWindow < Gosu::Window
     @@debug = false
 
     @world = World.new
+    @game_over = GameOverScreen.new
     LevelLoader.create_tiles(@world)
   end
 
@@ -37,11 +39,18 @@ class GameWindow < Gosu::Window
     @@updated_at = Gosu.milliseconds
     return if paused?
 
-    @world.update
+    unless @world.game_over
+      @world.update
+      @game_over.score = @world.score
+    end
   end
 
   def draw
-    @world.draw
+    unless @world.game_over
+      @world.draw
+    else
+      @game_over.draw
+    end
   end
 
   def button_down(id)
@@ -49,6 +58,9 @@ class GameWindow < Gosu::Window
       close
     elsif id == Gosu::KB_D
       @@debug = !@@debug
+    elsif id == Gosu::KB_R
+      @world.restart
+      LevelLoader.create_tiles(@world)
     else
       super
     end

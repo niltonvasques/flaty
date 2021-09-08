@@ -70,7 +70,7 @@ class World
   UNIT_X = SCREEN_WIDTH / CAMERA_WIDTH_UNITS.to_f
   UNIT_Y = SCREEN_HEIGHT / CAMERA_HEIGHT_UNITS.to_f
 
-  attr_accessor :level, :stars
+  attr_accessor :level, :stars, :game_over, :score
 
   def initialize
     @@camera = Camera.new(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
@@ -85,6 +85,7 @@ class World
     @background = Background.new
     @bird = Bird.new
     self.stars = Array.new
+    self.game_over = false
   end
 
   def self.camera
@@ -96,13 +97,16 @@ class World
 
     @bird.update
 
-    Collision.update_collisions(@bird, @level)
+    collided = Collision.update_collisions(@bird, @level)
 
     self.stars.each(&:update)
     @bird.collect_stars(stars)
     @background.update(@bird.speed)
 
-    @@camera.look(@bird.x, @bird.y)
+    self.game_over = true if collided
+
+    #@@camera.look(@bird.x, @bird.y)
+    @@camera.look(@bird.x, @@camera.position.y)
   end
 
   def draw
@@ -126,6 +130,16 @@ class World
   def play
     @song.play
     @bird.play
+  end
+
+  def score
+    @bird.score
+  end
+
+  def restart
+    @bird.restart
+    self.game_over = false
+    self.stars = Array.new
   end
 
   private

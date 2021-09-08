@@ -35,6 +35,8 @@ module Collision
   def self.update_collisions(body, level)
     new_position = body.position.dup
 
+    collided = false
+
     candidates = level.around(body.collision_rect)
     collision = Collision::NONE
 
@@ -42,6 +44,8 @@ module Collision
       obj.debug = Gosu::Color::CYAN
       collision |= body.colliding?(obj)
     end
+
+    collided = true if collision != Collision::NONE
 
     if Collision.bottom?(collision)
       body.position.y = body.previous_position.y
@@ -76,6 +80,8 @@ module Collision
     end
 
     body.reset if collision != Collision::NONE
+
+    collided
   end
 
   def self.to_s(collision)

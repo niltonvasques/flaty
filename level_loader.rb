@@ -128,6 +128,6 @@ class LevelLoader
   end
 
   def self.load_tiles
-    ChunkyPNG::Image.from_file('assets/levels/level1.png')
+    ChunkyPNG::Image.from_file('assets/levels/level2.png')
   end
 end

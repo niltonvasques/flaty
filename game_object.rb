@@ -10,7 +10,7 @@ class GameObject < OpenStruct
     default = {
       position: Vector2d[0,0], z: 0, previous_position: Vector2d[0,0],
       speed: Vector2d[0,0], scale_x: 1, scale_y: 1, current: 0, camera: true, debug: false,
-      rect: Rect[0, 0, 0, 0]
+      rect: Rect[0, 0, 0, 0], angle: 0
     }
     super(default.merge(opts))
     self.previous_position = self.position.dup
@@ -53,7 +53,16 @@ class GameObject < OpenStruct
       new_y = World.camera.translate_y(self.y)
     end
 
-    current_image.draw(new_x, new_y, z, scale_x = self.scale_x, scale_y = self.scale_y)
+    if angle != 0
+      center = -0.4
+      center = 0.2 if angle < 0
+      current_image.draw_rot(new_x, new_y, z, angle = self.angle,
+                             center_x = center, center_y = 0,
+                             scale_x = self.scale_x, scale_y = self.scale_y)
+    else
+      current_image.draw(new_x, new_y, z, scale_x = self.scale_x, scale_y = self.scale_y)
+    end
+
     if self.debug and GameWindow.debug
       Gosu.draw_rect(new_x, new_y, width * World::UNIT_X, height * World::UNIT_Y,
                      self.debug, z = 100, mode = :add)
