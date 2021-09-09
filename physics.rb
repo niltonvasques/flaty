@@ -87,6 +87,17 @@ module Physics
       end
     end
 
+    if Collision.top?(collision)
+      body.position.y = body.previous_position.y
+
+      collision = Collision::NONE
+      candidates.each do |obj|
+        obj.debug = Gosu::Color::CYAN
+        collision |= body.colliding?(obj)
+      end
+      body.ceil_hit if collision == Collision::NONE
+    end
+
     body.reset if collision != Collision::NONE
   end
 end

@@ -73,6 +73,10 @@ class GameObject < OpenStruct
     self.speed.y = 0
   end
 
+  def ceil_hit
+    self.speed.y = 0
+  end
+
   def outside_window?
     return false unless self.camera
     not World.camera.visible?(self)
