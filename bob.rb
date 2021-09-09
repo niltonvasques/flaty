@@ -56,12 +56,12 @@ class Bob < GameObject
       @jump_at = Gosu.milliseconds
       @jumping = true
       self.state = :jumping
-      self.acceleration += Vector2d[0, -100]
+      self.acceleration += Vector2d[0, -110]
     end
     if (Gosu.milliseconds - @jump_at) > JUMP_DURATION
       @jumping = false
     else
-      self.acceleration += Vector2d[0, -100]
+      self.acceleration += Vector2d[0, -110]
     end
 
 
