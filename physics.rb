@@ -62,6 +62,7 @@ module Physics
         obj.debug = Gosu::Color::CYAN
         collision |= body.colliding?(obj)
       end
+      body.grounded if collision == Collision::NONE
     end
 
     if Collision.right?(collision)

@@ -42,6 +42,7 @@ class GameObject < OpenStruct
     self.speed.y = -self.max_speed.y if self.speed.y < 0 and self.speed.y.abs > self.max_speed.y
     self.speed.y *= self.damp if self.acceleration.y == 0
     self.speed.x *= self.damp if self.acceleration.x == 0
+    self.speed.x = 0 if self.speed.x.abs < 0.01
 
     self.position += self.speed * GameWindow.delta
   end
@@ -66,6 +67,10 @@ class GameObject < OpenStruct
       Gosu.draw_rect(new_x, new_y, width * World::UNIT_X, height * World::UNIT_Y,
                      self.debug, z = 100, mode = :add)
     end
+  end
+
+  def grounded
+    self.speed.y = 0
   end
 
   def outside_window?

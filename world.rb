@@ -2,6 +2,7 @@ require 'gosu'
 require 'pry-byebug'
 require './background'
 require './bird'
+require './bob'
 require './star'
 require './level_loader'
 require './vector_2d'
@@ -89,7 +90,7 @@ class World
 
     # objects
     @background = Background.new
-    @bird = Bird.new
+    @bird = Bob.new
     self.stars = Array.new
   end
 
