@@ -5,22 +5,27 @@ require 'engine/math/vector_2d'
 require 'engine/math/rect'
 
 class Bob < GameObject
-  IDLE_SPEED = Vector2d[0, 0].freeze
-  ACCELERATION = 50.freeze # units per second
-  GRAVITY = Vector2d[0, -20].freeze
+  SIZE              = 1.85 # 1.85 meters tall
+
+  # velocity
+  IDLE_SPEED        = Vector2d[0, 0].freeze
+  ACCELERATION      = 50.freeze # 50 m/s
+  GRAVITY           = Vector2d[0, -20].freeze # -20 m/s = 72 km/h
+  TERMINAL_SPEED    = 55.freeze # 50 m/s = 200 km/h
   JUMP_ACCELERATION = Vector2d[0, 170].freeze # 110 m/s
-  FPS_DURATION = (1.0/60).freeze # 110 m/s
-  SPEED = 10.freeze
-  FRAMES = 10.freeze
+  SPEED             = 7.freeze # 7 m/s = 25 km/h
+
   JUMP_DURATION = 60.freeze # 50 ms
-  RIGHT_FRAMES_INDEX   = 12.freeze
-  JUMP_FRAMES_INDEX   = 28.freeze
-  STEPS_PER_SECOND    = 1.5.freeze
-  FRAME_DURATION      = (1000 / (STEPS_PER_SECOND * FRAMES)).freeze
-  FRAME_FAST_DURATION = 80.freeze
-  TERMINAL_SPEED = 55.freeze # 50 m/s
-  IDLE_FRAME = 10.freeze
-  SIZE = 1.85
+  FPS_DURATION  = (1.0/60).freeze # 110 m/s
+
+  # animation frames
+  FRAMES                 = 10.freeze
+  RIGHT_FRAMES_INDEX     = 12.freeze
+  JUMP_FRAMES_INDEX      = 28.freeze
+  STEPS_PER_SECOND       = 1.5.freeze
+  RUNNING_FRAME_DURATION = (1000 / (STEPS_PER_SECOND * FRAMES)).freeze
+  FRAME_FAST_DURATION    = 80.freeze
+  IDLE_FRAME_INDEX       = 10.freeze
 
   def initialize
     bob_tiles = Gosu::Image.load_tiles('assets/bob2.png', 130, 150, tileable: true)
@@ -75,14 +80,14 @@ class Bob < GameObject
 
     case self.state
     when :idle
-      self.current = IDLE_FRAME
+      self.current = IDLE_FRAME_INDEX
       pause
     when :jumping
       pause
       self.current = (Gosu.milliseconds / (1000 / (1 * 7))) % 7
       self.current += JUMP_FRAMES_INDEX
     else
-      self.current = (Gosu.milliseconds / FRAME_DURATION) % FRAMES
+      self.current = (Gosu.milliseconds / RUNNING_FRAME_DURATION) % FRAMES
     end
 
     play if self.state == :walking
