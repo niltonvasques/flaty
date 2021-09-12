@@ -12,8 +12,8 @@ class Background
     trees_img = Gosu::Image.new('assets/mountain/distant-trees.png', tileable: true)
     mountains_img = Gosu::Image.new('assets/mountain/mountains.png', tileable: true)
     big_mountain_img = Gosu::Image.new('assets/mountain/big-mountain.png', tileable: true)
-    @bg_scale_x = GameWindow::SCREEN_WIDTH / bg_img.width.to_f
-    @bg_scale_y = GameWindow::SCREEN_HEIGHT / bg_img.height.to_f
+    @bg_scale_x = GameWindow.width / bg_img.width.to_f
+    @bg_scale_y = GameWindow.height / bg_img.height.to_f
 
     @bg = GameObject.new(image: bg_img, x: 0, y: 0, z: ZLayers::BG, camera: false,
                          scale_x: @bg_scale_x, scale_y: @bg_scale_y)
@@ -71,7 +71,7 @@ class Background
       scaled_width: image.width * @bg_scale_x,
       x1: 0,
       x2: (image.width * @bg_scale_x),
-      y: GameWindow::SCREEN_HEIGHT - (image.height * @bg_scale_y),
+      y: GameWindow.height - (image.height * @bg_scale_y),
       z: ZLayers::BG,
       scale_x: @bg_scale_x,
       scale_y: @bg_scale_y,

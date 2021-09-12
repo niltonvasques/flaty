@@ -40,7 +40,7 @@ class Bob < GameObject
 
     super
 
-    puts "a: #{self.acceleration}, v: #{self.speed}, #{self.state}"
+    #puts "a: #{self.acceleration}, v: #{self.speed}, #{self.state}"
   end
 
   def update_speed
@@ -77,7 +77,6 @@ class Bob < GameObject
       pause
       self.current = (Gosu.milliseconds / (1000 / (1 * 7))) % 7
       self.current += JUMP_FRAMES_INDEX
-      puts self.current
     else
       self.current = (Gosu.milliseconds / FRAME_DURATION) % FRAMES
     end

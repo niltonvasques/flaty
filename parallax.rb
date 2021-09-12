@@ -20,7 +20,7 @@ class Parallax < GameObject
       return
     end
 
-    if self.x1 < GameWindow::SCREEN_WIDTH and (self.x2 < self.x1 or self.x2 > GameWindow::SCREEN_WIDTH)
+    if self.x1 < GameWindow.width and (self.x2 < self.x1 or self.x2 > GameWindow.width)
       self.x1 += local_speed
       self.x2 = self.x1 - self.scaled_width
     else

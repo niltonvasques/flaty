@@ -10,7 +10,7 @@ class HUD
 
   def draw
     @font.draw_text("FPS: #{Gosu.fps}", 10, 10, ZLayers::UI, 1.0, 1.0, Gosu::Color::GREEN)
-    @font.draw_text("Score: #{@score}", GameWindow::SCREEN_WIDTH - 100, 10,
+    @font.draw_text("Score: #{@score}", GameWindow.width - 100, 10,
                     ZLayers::UI, 1.0, 1.0, Gosu::Color::RED)
   end
 end
