@@ -43,62 +43,65 @@ module Collision
 end
 
 module Physics
-  def self.solve_collisions(body, level)
-    new_position = body.position.dup
+  def self.solve_collision(body1, body2)
+    self.solve_collisions(body1, [body2])
+  end
 
-    candidates = level.around(body.collision_rect)
+  def self.solve_collisions(body1, candidates)
+    new_position = body1.position.dup
+
     collision = Collision::NONE
 
     candidates.each do |obj|
       #binding.pry
       obj.debug = Gosu::Color::CYAN
-      collision |= body.colliding?(obj)
+      collision |= body1.colliding?(obj)
     end
 
     if Collision.bottom?(collision)
-      body.position.y = body.previous_position.y
+      body1.position.y = body1.previous_position.y
 
       collision = Collision::NONE
       candidates.each do |obj|
         obj.debug = Gosu::Color::CYAN
-        collision |= body.colliding?(obj)
+        collision |= body1.colliding?(obj)
       end
-      body.grounded if collision == Collision::NONE
+      body1.grounded if collision == Collision::NONE
     end
 
     if Collision.right?(collision)
-      body.position.y = new_position.y
-      body.position.x = body.previous_position.x
+      body1.position.y = new_position.y
+      body1.position.x = body1.previous_position.x
 
       collision = Collision::NONE
       candidates.each do |obj|
         obj.debug = Gosu::Color::CYAN
-        collision |= body.colliding?(obj)
+        collision |= body1.colliding?(obj)
       end
     end
 
     if Collision.left?(collision)
-      body.position.y = new_position.y
-      body.position.x = body.previous_position.x
+      body1.position.y = new_position.y
+      body1.position.x = body1.previous_position.x
 
       collision = Collision::NONE
       candidates.each do |obj|
         obj.debug = Gosu::Color::CYAN
-        collision |= body.colliding?(obj)
+        collision |= body1.colliding?(obj)
       end
     end
 
     if Collision.top?(collision)
-      body.position.y = body.previous_position.y
+      body1.position.y = body1.previous_position.y
 
       collision = Collision::NONE
       candidates.each do |obj|
         obj.debug = Gosu::Color::CYAN
-        collision |= body.colliding?(obj)
+        collision |= body1.colliding?(obj)
       end
-      body.ceil_hit if collision == Collision::NONE
+      body1.ceil_hit if collision == Collision::NONE
     end
 
-    body.reset if collision != Collision::NONE
+    body1.reset if collision != Collision::NONE
   end
 end

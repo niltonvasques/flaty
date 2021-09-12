@@ -43,8 +43,12 @@ class World
     @bob.update
     @bird.update
 
-    Physics.solve_collisions(@bob, @level)
-    Physics.solve_collisions(@bird, @level)
+    Physics.solve_collisions(@bob, @level.around(@bob.collision_rect))
+    Physics.solve_collisions(@bird, @level.around(@bird.collision_rect))
+    if @bob.colliding?(@bird) != Collision::NONE
+      Physics.solve_collision(@bird, @bob)
+      Physics.solve_collision(@bob, @bird)
+    end
 
     self.stars.each(&:update)
     @bob.collect_stars(stars)

@@ -44,6 +44,7 @@ class Bob < GameObject
   end
 
   def update
+    self.debug = Gosu::Color::RED
     update_speed
 
     super

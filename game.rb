@@ -12,7 +12,7 @@ class Game < GameWindow
   SCREEN_WIDTH   = 2160
   SCREEN_HEIGHT  = 1214
   def initialize
-    super(SCREEN_WIDTH, SCREEN_HEIGHT, fullscreen: true)
+    super(SCREEN_WIDTH, SCREEN_HEIGHT, fullscreen: false)
     self.caption = "Ruby Falcon in the Dusk"
 
     # assets

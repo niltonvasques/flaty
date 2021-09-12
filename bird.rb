@@ -5,12 +5,12 @@ require 'engine/math/vector_2d'
 require 'engine/math/rect'
 
 class Bird < GameObject
-  IDLE = 2.freeze
-  IDLE_SPEED = Vector2d[IDLE, 0].freeze
-  ACCELERATION = 20.freeze # units per second
-  SPEED = 10.freeze
-  SCALE = 3.freeze
-  FRAMES = 4.freeze
+  IDLE                = 2.freeze
+  IDLE_SPEED          = Vector2d[IDLE, 0].freeze
+  ACCELERATION        = 20.freeze # units per second
+  SPEED               = 10.freeze
+  SCALE               = 3.freeze
+  FRAMES              = 4.freeze
   LEFT_FRAMES_INDEX   = 6.freeze
   FRAME_DURATION      = 220.freeze
   FRAME_FAST_DURATION = 80.freeze
@@ -27,6 +27,7 @@ class Bird < GameObject
   end
 
   def update
+    self.debug = Gosu::Color::RED
     update_speed
 
     super
@@ -38,11 +39,6 @@ class Bird < GameObject
     self.acceleration += Vector2d[ACCELERATION,  0] if Gosu.button_down? Gosu::KB_D
     self.acceleration += Vector2d[0, ACCELERATION] if Gosu.button_down? Gosu::KB_W
     self.acceleration += Vector2d[0, -ACCELERATION] if Gosu.button_down? Gosu::KB_S
-    #self.speed =  IDLE_SPEED.dup
-    #self.speed =  Vector2d[-SPEED, 0] if Gosu.button_down? Gosu::KB_LEFT
-    #self.speed += Vector2d[SPEED,  0] if Gosu.button_down? Gosu::KB_RIGHT
-    #self.speed += Vector2d[0, -SPEED] if Gosu.button_down? Gosu::KB_UP
-    #self.speed += Vector2d[0,  SPEED] if Gosu.button_down? Gosu::KB_DOWN
 
     frame_duration = self.speed.x.abs <= IDLE ? FRAME_DURATION : FRAME_FAST_DURATION
     self.current = (Gosu.milliseconds / frame_duration) % FRAMES
@@ -59,7 +55,6 @@ class Bird < GameObject
 
   def collect_stars(stars)
     stars.reject! do |star|
-      #if Gosu.distance(self.x + self.width / 2, self.y + self.height / 2, star.x, star.y) < 1
       if Collision.detect(collision_rect, star) != Collision::NONE
         self.score += 10
         @beep.play
