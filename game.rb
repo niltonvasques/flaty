@@ -9,8 +9,10 @@ require 'world'
 require 'level_loader'
 
 class Game < GameWindow
+  SCREEN_WIDTH   = 2160
+  SCREEN_HEIGHT  = 1214
   def initialize
-    super()
+    super(SCREEN_WIDTH, SCREEN_HEIGHT)
     self.caption = "Ruby Falcon in the Dusk"
 
     # assets

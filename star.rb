@@ -2,19 +2,15 @@ require 'gosu'
 
 class Star < GameObject
   def initialize(animation, opts = {})
-    super(opts.merge({ tiles: animation }))
+    @scale = GameWindow.camera.scale(animation[0].width, 1)
+    super(opts.merge({ tiles: animation, scale_x: @scale, scale_y: @scale }))
   end
 
   def update
     self.current = Gosu.milliseconds / 100 % self.tiles.size
   end
 
-  def draw
-    return if outside_window?
-
-    new_x = GameWindow.camera.translate_x(self.x)
-    new_y = GameWindow.camera.translate_y(self.y)
-
-    self.tiles[self.current].draw(new_x, new_y, ZLayers::STARS, 1, 1, Gosu::Color::YELLOW, :add)
+  def draw_obj(x, y, z)
+    current_image.draw(x, y, ZLayers::STARS, @scale, @scale, Gosu::Color::YELLOW, :add)
   end
 end

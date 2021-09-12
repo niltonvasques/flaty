@@ -62,19 +62,19 @@ class GameObject < OpenStruct
     end
     return if outside_window?
 
-    new_x = self.x
-    new_y = self.y
+    new_pos = self.position
 
-    if self.camera
-      new_x = GameWindow.camera.translate_x(self.x)
-      new_y = GameWindow.camera.translate_y(self.y + self.height)
-    end
+    new_pos = GameWindow.camera.translate(self) if self.camera
 
-    current_image.draw(new_x, new_y, z, scale_x = self.scale_x, scale_y = self.scale_y)
+    draw_obj(new_pos.x, new_pos.y, z)
     if self.debug and GameWindow.debug
-      Gosu.draw_rect(new_x, new_y, width * GameWindow.camera.unit_x, height * GameWindow.camera.unit_y,
-                     self.debug, z = 100, mode = :add)
+      Gosu.draw_rect(new_pos.x, new_pos.y, width * GameWindow.camera.unit_x,
+                     height * GameWindow.camera.unit_y, self.debug, z = 100, mode = :add)
     end
+  end
+
+  def draw_obj(x, y, z)
+    current_image.draw(x, y, z, scale_x = self.scale_x, scale_y = self.scale_y)
   end
 
   def grounded

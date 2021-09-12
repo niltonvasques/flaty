@@ -24,6 +24,7 @@ class Camera
   def size(width, height)
     self.width = width
     self.height = height
+
     @unit_x = GameWindow.width / width.to_f
     @unit_y = GameWindow.height / height.to_f
   end
@@ -58,11 +59,21 @@ class Camera
     h / self.unit_y.to_f
   end
 
+  def scale(size_in_pixels, size_in_units)
+    (self.unit_y * size_in_units) / size_in_pixels.to_f
+  end
+
   def translate_x(x)
     (x - shift_x) * self.unit_x
   end
 
   def translate_y(y)
+    # Since gosu draw (0,0) at left top, we need to invert the y coordinate
     GameWindow.height - ((y - shift_y) * self.unit_y)
+  end
+
+  def translate(obj)
+    # Since gosu draw (0,0) at left top, we need to invert the y coordinate
+    Vector2d[translate_x(obj.x), translate_y(obj.y + obj.height)]
   end
 end

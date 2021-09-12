@@ -24,18 +24,18 @@ class World
   attr_accessor :level, :stars
 
   def initialize
+    @camera = GameWindow.camera
+    @camera.size(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
+    #GameWindow.camera.bounds.x = CAMERA_WIDTH_UNITS / 2.0
+    @camera.bounds.y = CAMERA_HEIGHT_UNITS / 2.0
+    @camera.look(CAMERA_WIDTH_UNITS / 2.0, CAMERA_HEIGHT_UNITS / 2.0)
+
     # objects
     @background = Background.new
     @bird = Bob.new
     @hud = HUD.new
     self.stars = Array.new
 
-    puts GameWindow.camera.unit_x
-
-    GameWindow.camera.size(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
-    #GameWindow.camera.bounds.x = CAMERA_WIDTH_UNITS / 2.0
-    GameWindow.camera.bounds.y = CAMERA_HEIGHT_UNITS / 2.0
-    GameWindow.camera.look(CAMERA_WIDTH_UNITS / 2.0, CAMERA_HEIGHT_UNITS / 2.0)
   end
 
   def update
@@ -48,7 +48,7 @@ class World
     self.stars.each(&:update)
     @bird.collect_stars(stars)
     GameWindow.camera.look(@bird.x, @bird.y)
-    puts "#{GameWindow.camera.position} - #{GameWindow.camera.width}, #{GameWindow.camera.height}"
+    #puts "#{GameWindow.camera.position} - #{GameWindow.camera.width}, #{GameWindow.camera.height}"
 
     @background.update(@bird.speed) if GameWindow.camera.position.x == @bird.x
 
@@ -79,25 +79,19 @@ class World
   private
 
   def draw_grid
-    first = Gosu::Color::RED
-    color = Gosu::Color::YELLOW
-    (GameWindow.camera.width * -1).upto(0) do |x|
-      new_x = GameWindow.camera.translate_x(x)
+    origin_color = Gosu::Color::RED
+    yellow = Gosu::Color::YELLOW
+    center_x = @camera.position.x.to_i
+    center_y = @camera.position.y.to_i
+    (center_x - @camera.width).upto(center_x + @camera.width) do |x|
+      color = x == 0 ? origin_color : yellow
+      new_x = @camera.translate_x(x)
       Gosu.draw_line(new_x, 0, color, new_x, GameWindow.height, color, z = 100, mode = :default)
     end
-    GameWindow.camera.width.times do |x|
-      c = x < 1 ? first : color
-      new_x = GameWindow.camera.translate_x(x)
-      Gosu.draw_line(new_x, 0, c, new_x, GameWindow.height, c, z = 100, mode = :default)
-    end
-    (GameWindow.camera.height * -1).upto(0) do |y|
-      new_y = GameWindow.camera.translate_y(y)
+    (center_y - @camera.height).upto(center_y + @camera.height) do |y|
+      color = y == 0 ? origin_color : yellow
+      new_y = @camera.translate_y(y)
       Gosu.draw_line(0, new_y, color, GameWindow.width, new_y, color, z = 100, mode = :default)
-    end
-    GameWindow.camera.height.times do |y|
-      c = y < 1 ? first : color
-      new_y = GameWindow.camera.translate_y(y)
-      Gosu.draw_line(0, new_y, c, GameWindow.width, new_y, c, z = 100, mode = :default)
     end
   end
 end

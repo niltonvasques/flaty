@@ -10,7 +10,6 @@ class Bob < GameObject
   GRAVITY = Vector2d[0, -20].freeze
   JUMP_ACCELERATION = Vector2d[0, 170].freeze # 110 m/s
   SPEED = 10.freeze
-  SCALE = 0.5.freeze
   FRAMES = 5.freeze
   JUMP_DURATION = 50.freeze # 50 ms
   RIGHT_FRAMES_INDEX   = 12.freeze
@@ -20,6 +19,7 @@ class Bob < GameObject
   FRAME_FAST_DURATION = 80.freeze
   TERMINAL_SPEED = 55.freeze # 50 m/s
   IDLE_FRAME = 10.freeze
+  SIZE = 1.85
 
   def initialize
     bob_tiles = Gosu::Image.load_tiles('assets/bob2.png', 130, 150, tileable: true)
@@ -29,7 +29,9 @@ class Bob < GameObject
     @jumping = false
     play
 
-    super(position: Vector2d[0, 4], z: ZLayers::PLAYER, scale_x: SCALE, scale_y: SCALE,
+    scale = GameWindow.camera.scale(bob_tiles[0].height, SIZE)
+
+    super(position: Vector2d[0, 4], z: ZLayers::PLAYER, scale_x: scale, scale_y: scale,
           speed: IDLE_SPEED.dup, max_speed: Vector2d[SPEED, TERMINAL_SPEED], damp: 0.8,
           score: 0, tiles: bob_tiles, current: 0, debug: Gosu::Color::RED,
           state: :idle, face: :right)
@@ -40,7 +42,7 @@ class Bob < GameObject
 
     super
 
-    puts "a: #{self.acceleration}, v: #{self.speed}, #{self.state}, #{self.position}"
+    #puts "a: #{self.acceleration}, v: #{self.speed}, #{self.state}, #{self.position}"
   end
 
   def update_speed
