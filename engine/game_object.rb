@@ -33,6 +33,10 @@ class GameObject < OpenStruct
   end
 
   def update
+    unless current_image.nil?
+      self.width = GameWindow.camera.pixel_to_unit_x(current_image.width * self.scale_x)
+      self.height = GameWindow.camera.pixel_to_unit_y(current_image.height * self.scale_y)
+    end
     self.previous_position = self.position.dup
 
     self.speed += self.acceleration * GameWindow.delta
@@ -52,6 +56,10 @@ class GameObject < OpenStruct
   end
 
   def draw
+    unless current_image.nil?
+      self.width = GameWindow.camera.pixel_to_unit_x(current_image.width * self.scale_x)
+      self.height = GameWindow.camera.pixel_to_unit_y(current_image.height * self.scale_y)
+    end
     return if outside_window?
 
     new_x = self.x
@@ -59,7 +67,7 @@ class GameObject < OpenStruct
 
     if self.camera
       new_x = GameWindow.camera.translate_x(self.x)
-      new_y = GameWindow.camera.translate_y(self.y)
+      new_y = GameWindow.camera.translate_y(self.y + self.height)
     end
 
     current_image.draw(new_x, new_y, z, scale_x = self.scale_x, scale_y = self.scale_y)

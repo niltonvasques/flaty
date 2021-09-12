@@ -92,6 +92,7 @@ class Level
     start_y.upto((object.y + object.height).to_i) do |y|
       tiles << at(start_x, y) unless at(start_x, y).nil?
     end
+    #binding.pry
     tiles
   end
 
@@ -114,14 +115,16 @@ class LevelLoader
     level_tiles.width.times do |x|
       level_tiles.height.times do |y|
         tile = level_tiles[x,y]
+
+        new_y = (level_tiles.height - y - 1)
         if tile != Tile::EMPTY and tile != Tile::STAR
           tile_pos = Tile::TILES[tile]
-          level.add_tile(Tile.new(position: Vector2d[x, y], z: ZLayers::TILE,
+          level.add_tile(Tile.new(position: Vector2d[x, new_y], z: ZLayers::TILE,
                                   image: tilemap[tile_pos],
                                   scale_x: scale_x, scale_y: scale_y))
         end
         if tile == Tile::STAR
-          world.stars.push(Star.new(star_anim, position: Vector2d[x, y]))
+          world.stars.push(Star.new(star_anim, position: Vector2d[x, new_y]))
         end
       end
     end

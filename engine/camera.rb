@@ -9,11 +9,8 @@ class Camera
   attr_reader :unit_x, :unit_y
 
   def initialize(width, height)
-    self.width = width
-    self.height = height
-    @unit_x = GameWindow.width / width.to_f
-    @unit_y = GameWindow.height / height.to_f
-    self.bounds = Rect[(width / 2), (height / 2), NOT_BOUNDED, NOT_BOUNDED]
+    self.bounds = Rect[NOT_BOUNDED, NOT_BOUNDED, NOT_BOUNDED, NOT_BOUNDED]
+    size(width, height)
     look(width / 2, height / 2)
   end
 
@@ -22,6 +19,13 @@ class Camera
     x = self.bounds.x if self.bounds.x != NOT_BOUNDED and x < self.bounds.x
     x = self.bounds.width if self.bounds.width != NOT_BOUNDED and x > self.bounds.width
     self.position = Vector2d[x.to_f, y.to_f]
+  end
+
+  def size(width, height)
+    self.width = width
+    self.height = height
+    @unit_x = GameWindow.width / width.to_f
+    @unit_y = GameWindow.height / height.to_f
   end
 
   def visible?(obj)
@@ -59,6 +63,6 @@ class Camera
   end
 
   def translate_y(y)
-    (y - shift_y) * self.unit_y
+    GameWindow.height - ((y - shift_y) * self.unit_y)
   end
 end

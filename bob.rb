@@ -7,9 +7,9 @@ require 'engine/math/rect'
 class Bob < GameObject
   IDLE_SPEED = Vector2d[0, 0].freeze
   ACCELERATION = 50.freeze # units per second
-  GRAVITY = Vector2d[0, 9.8].freeze
-  JUMP_ACCELERATION = Vector2d[0,-110].freeze # 110 m/s
-  SPEED = 5.freeze
+  GRAVITY = Vector2d[0, -20].freeze
+  JUMP_ACCELERATION = Vector2d[0, 170].freeze # 110 m/s
+  SPEED = 10.freeze
   SCALE = 0.5.freeze
   FRAMES = 5.freeze
   JUMP_DURATION = 50.freeze # 50 ms
@@ -29,7 +29,7 @@ class Bob < GameObject
     @jumping = false
     play
 
-    super(position: Vector2d[1, 14], z: ZLayers::PLAYER, scale_x: SCALE, scale_y: SCALE,
+    super(position: Vector2d[0, 4], z: ZLayers::PLAYER, scale_x: SCALE, scale_y: SCALE,
           speed: IDLE_SPEED.dup, max_speed: Vector2d[SPEED, TERMINAL_SPEED], damp: 0.8,
           score: 0, tiles: bob_tiles, current: 0, debug: Gosu::Color::RED,
           state: :idle, face: :right)
@@ -40,7 +40,7 @@ class Bob < GameObject
 
     super
 
-    #puts "a: #{self.acceleration}, v: #{self.speed}, #{self.state}"
+    puts "a: #{self.acceleration}, v: #{self.speed}, #{self.state}, #{self.position}"
   end
 
   def update_speed
@@ -54,6 +54,7 @@ class Bob < GameObject
       self.acceleration += Vector2d[ACCELERATION,  0]
       self.state = :walking if self.state != :jumping
     end
+    self.state = :idle if self.state == :walking and self.speed.y <= -0.5
 
     if Gosu.button_down? Gosu::KB_SPACE and self.state != :jumping
       @jump_at = Gosu.milliseconds

@@ -23,8 +23,8 @@ module Collision
       collision = Collision::NONE
       collision |= Collision::RIGHT if obj2.x < obj1.x
       collision |= Collision::LEFT if obj2.x > obj1.x
-      collision |= Collision::BOTTOM if obj2.y < obj1.y
-      collision |= Collision::TOP if obj2.y > obj1.y
+      collision |= Collision::BOTTOM if obj2.y > obj1.y
+      collision |= Collision::TOP if obj2.y < obj1.y
 
       return collision
     end
@@ -50,6 +50,7 @@ module Physics
     collision = Collision::NONE
 
     candidates.each do |obj|
+      #binding.pry
       obj.debug = Gosu::Color::CYAN
       collision |= body.colliding?(obj)
     end
