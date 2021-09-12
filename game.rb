@@ -11,6 +11,11 @@ class GameWindow < Gosu::Window
     super(SCREEN_WIDTH, SCREEN_HEIGHT, fullscreen: false)
     self.caption = "Ruby Falcon in the Dusk"
 
+    # assets
+    @song = Gosu::Song.new('assets/sounds/dusk_theme.mp3')
+    @song.volume = 0.2
+    @song.play
+
     # state
     @paused = false
     @paused_at = 0
@@ -60,8 +65,10 @@ class GameWindow < Gosu::Window
         @paused = !@paused
         @paused_at = Gosu.milliseconds
         if @paused
+          @song.pause
           @world.pause
         else
+          @song.play
           @world.play
         end
       end
