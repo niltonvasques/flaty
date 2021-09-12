@@ -1,5 +1,5 @@
 require 'gosu'
-require './game_object'
+require 'game_object'
 
 class Parallax < GameObject
   #attr_accessor :image, :width, :height, :x1, :x2, :y, :z, :speed

@@ -1,8 +1,8 @@
 require 'gosu'
 require 'ostruct'
-require './game_object'
-require './engine/math/vector_2d'
-require './rect'
+require 'game_object'
+require 'engine/math/vector_2d'
+require 'engine/math/rect'
 
 class Bird < GameObject
   IDLE = 2.freeze

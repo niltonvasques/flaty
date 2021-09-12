@@ -8,7 +8,7 @@ require './bob'
 require './star'
 require './level_loader'
 require './engine/math/vector_2d'
-require './rect'
+require 'engine/math/rect'
 
 module ZLayers
   BG, TILE, STARS, PLAYER, UI = *0..4
