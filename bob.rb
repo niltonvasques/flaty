@@ -6,22 +6,23 @@ require './rect'
 
 class Bob < GameObject
   IDLE_SPEED = Vector2d[0, 0].freeze
-  ACCELERATION = 100.freeze # units per second
+  ACCELERATION = 50.freeze # units per second
   GRAVITY = Vector2d[0, 9.8].freeze
   JUMP_ACCELERATION = Vector2d[0,-110].freeze # 110 m/s
   SPEED = 5.freeze
-  SCALE = 2.freeze
+  SCALE = 0.5.freeze
   FRAMES = 5.freeze
   JUMP_DURATION = 50.freeze # 50 ms
-  RIGHT_FRAMES_INDEX   = 6.freeze
-  STEPS_PER_SECOND    = 3.freeze
-  FRAME_DURATION      = (1000 / (STEPS_PER_SECOND * 5)).freeze
+  RIGHT_FRAMES_INDEX   = 12.freeze
+  JUMP_FRAMES_INDEX   = 28.freeze
+  STEPS_PER_SECOND    = 1.freeze
+  FRAME_DURATION      = (1000 / (STEPS_PER_SECOND * 10)).freeze
   FRAME_FAST_DURATION = 80.freeze
   TERMINAL_SPEED = 55.freeze # 50 m/s
-  IDLE_FRAME = 5.freeze
+  IDLE_FRAME = 10.freeze
 
   def initialize
-    bob_tiles = Gosu::Image.load_tiles('assets/bob.png', 26, 30, tileable: true)
+    bob_tiles = Gosu::Image.load_tiles('assets/bob2.png', 130, 150, tileable: true)
     @steps = Gosu::Sample.new('assets/sounds/steps.wav')
     @beep = Gosu::Sample.new('assets/sounds/beep.wav')
     @jump_at = -2000
@@ -74,14 +75,16 @@ class Bob < GameObject
       pause
     when :jumping
       pause
-      self.current = 4
+      self.current = (Gosu.milliseconds / (1000 / (1 * 7))) % 7
+      self.current += JUMP_FRAMES_INDEX
+      puts self.current
     else
       self.current = (Gosu.milliseconds / FRAME_DURATION) % FRAMES
     end
 
     play if self.state == :walking
 
-    self.current += RIGHT_FRAMES_INDEX if self.face == :right
+    self.current += RIGHT_FRAMES_INDEX if self.face == :right and (self.state == :walking or self.state == :idle)
   end
 
   def update_direction
@@ -99,7 +102,7 @@ class Bob < GameObject
       #if Gosu.distance(self.x + self.width / 2, self.y + self.height / 2, star.x, star.y) < 1
       if Collision.detect(collision_rect, star) != Collision::NONE
         self.score += 10
-        @beep.play
+        @beep.play(0.2)
         true
       else
         false

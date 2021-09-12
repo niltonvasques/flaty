@@ -86,6 +86,7 @@ class World
     # assets
     @font = Gosu::Font.new(20)
     @song = Gosu::Song.new('assets/sounds/dusk_theme.mp3')
+    @song.volume = 0.2
     @song.play
 
     # objects

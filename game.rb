@@ -1,4 +1,4 @@
-require 'gosu'
+require 'gosu'.freeze
 require 'pry-byebug'
 require './world'
 require './level_loader'
