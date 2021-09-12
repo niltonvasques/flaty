@@ -1,6 +1,6 @@
 require 'gosu'
 require 'ostruct'
-require 'game_object'
+require 'engine/game_object'
 require 'engine/math/vector_2d'
 require 'engine/math/rect'
 
