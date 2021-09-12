@@ -105,7 +105,7 @@ class LevelLoader
     tilemap = Gosu::Image.load_tiles("assets/tiles.png", Tile::SIZE, Tile::SIZE, tileable: true)
     star_anim = Gosu::Image.load_tiles("assets/star.png", 25, 25)
     level_tiles = self.load_tiles
-    World.camera.bounds.width = level_tiles.width
+    GameWindow.camera.bounds.width = level_tiles.width
     level = Level.new(level_tiles.width, level_tiles.height)
     world.level = level
 

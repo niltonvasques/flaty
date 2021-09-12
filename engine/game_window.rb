@@ -4,11 +4,16 @@ require 'pry-byebug'
 class GameWindow < Gosu::Window
   SCREEN_WIDTH   = 1280
   SCREEN_HEIGHT  = 720
+  CAMERA_WIDTH_UNITS  = 50
+  CAMERA_HEIGHT_UNITS = 28
 
   def initialize(width = SCREEN_WIDTH, height = SCREEN_HEIGHT, opts = {})
     @@width = width
     @@height = height
     super(width, height, opts)
+
+    @@camera = Camera.new(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
+    @@camera.look(CAMERA_WIDTH_UNITS / 2.0, CAMERA_HEIGHT_UNITS / 2.0)
 
     # state
     @paused = false
@@ -32,6 +37,10 @@ class GameWindow < Gosu::Window
 
   def self.debug
     @@debug
+  end
+
+  def self.camera
+    @@camera
   end
 
   def needs_cursor?; false; end

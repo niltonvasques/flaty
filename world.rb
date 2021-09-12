@@ -25,18 +25,11 @@ class World
   attr_accessor :level, :stars
 
   def initialize
-    @@camera = Camera.new(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
-    @@camera.look(CAMERA_WIDTH_UNITS / 2.0, CAMERA_HEIGHT_UNITS / 2.0)
-
     # objects
     @background = Background.new
     @bird = Bob.new
     @hud = HUD.new
     self.stars = Array.new
-  end
-
-  def self.camera
-    @@camera
   end
 
   def update
@@ -48,9 +41,9 @@ class World
 
     self.stars.each(&:update)
     @bird.collect_stars(stars)
-    @@camera.look(@bird.x, @bird.y)
+    GameWindow.camera.look(@bird.x, @bird.y)
 
-    @background.update(@bird.speed) if @@camera.position.x == @bird.x
+    @background.update(@bird.speed) if GameWindow.camera.position.x == @bird.x
 
     @hud.update(@bird.score)
   end
@@ -80,11 +73,11 @@ class World
 
   def draw_grid
     color = Gosu::Color::YELLOW
-    CAMERA_WIDTH_UNITS.times do |x|
-      Gosu.draw_line(x * UNIT_X, 0, color, x * UNIT_X, SCREEN_HEIGHT, color, z = 100, mode = :default)
+    GameWindow.camera.width.times do |x|
+      Gosu.draw_line(x * GameWindow.camera.unit_x, 0, color, x * GameWindow.camera.unit_x, GameWindow.height, color, z = 100, mode = :default)
     end
-    CAMERA_HEIGHT_UNITS.times do |y|
-      Gosu.draw_line(0, y * UNIT_Y, color, SCREEN_WIDTH, y * UNIT_Y, color, z = 100, mode = :default)
+    GameWindow.camera.height.times do |y|
+      Gosu.draw_line(0, y * GameWindow.camera.unit_y, color, GameWindow.width, y * GameWindow.camera.unit_y, color, z = 100, mode = :default)
     end
   end
 end

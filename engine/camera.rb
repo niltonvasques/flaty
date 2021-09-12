@@ -6,9 +6,13 @@ class Camera
   NOT_BOUNDED = -1
   attr_accessor :width, :height, :position, :bounds
 
+  attr_reader :unit_x, :unit_y
+
   def initialize(width, height)
     self.width = width
     self.height = height
+    @unit_x = GameWindow.width / width.to_f
+    @unit_y = GameWindow.height / height.to_f
     self.bounds = Rect[(width / 2), (height / 2), NOT_BOUNDED, NOT_BOUNDED]
     look(width / 2, height / 2)
   end

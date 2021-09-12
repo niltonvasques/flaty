@@ -16,8 +16,8 @@ class GameObject < OpenStruct
     self.previous_position = self.position.dup
 
     unless current_image.nil?
-      self.width = World.camera.pixel_to_unit_x(current_image.width * self.scale_x)
-      self.height = World.camera.pixel_to_unit_y(current_image.height * self.scale_y)
+      self.width = GameWindow.camera.pixel_to_unit_x(current_image.width * self.scale_x)
+      self.height = GameWindow.camera.pixel_to_unit_y(current_image.height * self.scale_y)
     end
   end
 
@@ -58,13 +58,13 @@ class GameObject < OpenStruct
     new_y = self.y
 
     if self.camera
-      new_x = World.camera.translate_x(self.x)
-      new_y = World.camera.translate_y(self.y)
+      new_x = GameWindow.camera.translate_x(self.x)
+      new_y = GameWindow.camera.translate_y(self.y)
     end
 
     current_image.draw(new_x, new_y, z, scale_x = self.scale_x, scale_y = self.scale_y)
     if self.debug and GameWindow.debug
-      Gosu.draw_rect(new_x, new_y, width * World::UNIT_X, height * World::UNIT_Y,
+      Gosu.draw_rect(new_x, new_y, width * GameWindow.camera.unit_x, height * GameWindow.camera.unit_y,
                      self.debug, z = 100, mode = :add)
     end
   end
@@ -79,7 +79,7 @@ class GameObject < OpenStruct
 
   def outside_window?
     return false unless self.camera
-    not World.camera.visible?(self)
+    not GameWindow.camera.visible?(self)
   end
 
   def current_image

@@ -12,8 +12,8 @@ class Star < GameObject
   def draw
     return if outside_window?
 
-    new_x = World.camera.translate_x(self.x)
-    new_y = World.camera.translate_y(self.y)
+    new_x = GameWindow.camera.translate_x(self.x)
+    new_y = GameWindow.camera.translate_y(self.y)
 
     self.tiles[self.current].draw(new_x, new_y, ZLayers::STARS, 1, 1, Gosu::Color::YELLOW, :add)
   end
