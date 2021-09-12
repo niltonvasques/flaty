@@ -31,7 +31,8 @@ class World
 
     # objects
     @background = Background.new
-    @bird = Bob.new
+    @bob = Bob.new
+    @bird = Bird.new
     @hud = HUD.new
     self.stars = Array.new
   end
@@ -39,23 +40,26 @@ class World
   def update
     self.level.tiles.each { |tile| tile.debug = Gosu::Color::GREEN } if GameWindow.debug
 
+    @bob.update
     @bird.update
 
+    Physics.solve_collisions(@bob, @level)
     Physics.solve_collisions(@bird, @level)
 
     self.stars.each(&:update)
-    @bird.collect_stars(stars)
-    GameWindow.camera.look(@bird.x, @bird.y)
+    @bob.collect_stars(stars)
+    GameWindow.camera.look(@bob.x, @bob.y)
     #puts "#{GameWindow.camera.position} - #{GameWindow.camera.width}, #{GameWindow.camera.height}"
 
-    @background.update(@bird.speed) if GameWindow.camera.position.x == @bird.x
+    @background.update(@bob.speed) if GameWindow.camera.position.x == @bob.x
 
-    @hud.update(@bird.score)
+    @hud.update(@bob.score)
   end
 
   def draw
     @background.draw
 
+    @bob.draw
     @bird.draw
 
     self.stars.each(&:draw)
@@ -67,10 +71,10 @@ class World
   end
 
   def pause
-    @bird.pause
+    @bob.pause
   end
 
   def play
-    @bird.play
+    @bob.play
   end
 end

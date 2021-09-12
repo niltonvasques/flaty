@@ -55,7 +55,7 @@ class GameWindow < Gosu::Window
   def button_down(id)
     if id == Gosu::KB_ESCAPE
       close
-    elsif id == Gosu::KB_D
+    elsif id == Gosu::KB_O
       @@debug = !@@debug
     else
       super

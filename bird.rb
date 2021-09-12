@@ -34,10 +34,10 @@ class Bird < GameObject
 
   def update_speed
     self.acceleration = Vector2d[0,  0]
-    self.acceleration += Vector2d[-ACCELERATION, 0] if Gosu.button_down? Gosu::KB_LEFT
-    self.acceleration += Vector2d[ACCELERATION,  0] if Gosu.button_down? Gosu::KB_RIGHT
-    self.acceleration += Vector2d[0, -ACCELERATION] if Gosu.button_down? Gosu::KB_UP
-    self.acceleration += Vector2d[0,  ACCELERATION] if Gosu.button_down? Gosu::KB_DOWN
+    self.acceleration += Vector2d[-ACCELERATION, 0] if Gosu.button_down? Gosu::KB_A
+    self.acceleration += Vector2d[ACCELERATION,  0] if Gosu.button_down? Gosu::KB_D
+    self.acceleration += Vector2d[0, ACCELERATION] if Gosu.button_down? Gosu::KB_W
+    self.acceleration += Vector2d[0, -ACCELERATION] if Gosu.button_down? Gosu::KB_S
     #self.speed =  IDLE_SPEED.dup
     #self.speed =  Vector2d[-SPEED, 0] if Gosu.button_down? Gosu::KB_LEFT
     #self.speed += Vector2d[SPEED,  0] if Gosu.button_down? Gosu::KB_RIGHT
