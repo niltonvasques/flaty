@@ -7,7 +7,7 @@ require './bird'
 require './bob'
 require './star'
 require './level_loader'
-require './vector_2d'
+require './engine/math/vector_2d'
 require './rect'
 
 module ZLayers

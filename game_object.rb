@@ -1,6 +1,6 @@
 require 'gosu'
 require 'ostruct'
-require './vector_2d'
+require './engine/math/vector_2d'
 require './physics'
 
 class GameObject < OpenStruct

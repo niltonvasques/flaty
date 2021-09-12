@@ -1,7 +1,7 @@
 require 'gosu'
 require 'ostruct'
 require './game_object'
-require './vector_2d'
+require './engine/math/vector_2d'
 require './rect'
 
 class Bob < GameObject

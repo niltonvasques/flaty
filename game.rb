@@ -1,7 +1,11 @@
+unless $LOAD_PATH.include?(File.expand_path(File.dirname(__FILE__)))
+  $LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__)))
+end
+
 require 'gosu'.freeze
 require 'pry-byebug'
-require './world'
-require './level_loader'
+require 'world'
+require 'level_loader'
 
 class GameWindow < Gosu::Window
   SCREEN_WIDTH   = 1280
