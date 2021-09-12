@@ -15,12 +15,8 @@ module ZLayers
 end
 
 class World
-  SCREEN_WIDTH   = 1280
-  SCREEN_HEIGHT  = 720
   CAMERA_WIDTH_UNITS  = 50
   CAMERA_HEIGHT_UNITS = 28
-  UNIT_X = SCREEN_WIDTH / CAMERA_WIDTH_UNITS.to_f
-  UNIT_Y = SCREEN_HEIGHT / CAMERA_HEIGHT_UNITS.to_f
 
   attr_accessor :level, :stars
 

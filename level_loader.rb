@@ -109,8 +109,8 @@ class LevelLoader
     level = Level.new(level_tiles.width, level_tiles.height)
     world.level = level
 
-    scale_x = (World::UNIT_X) / Tile::SIZE.to_f
-    scale_y = (World::UNIT_Y) / Tile::SIZE.to_f
+    scale_x = (GameWindow.camera.unit_x) / Tile::SIZE.to_f
+    scale_y = (GameWindow.camera.unit_y) / Tile::SIZE.to_f
     level_tiles.width.times do |x|
       level_tiles.height.times do |y|
         tile = level_tiles[x,y]

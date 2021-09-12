@@ -31,11 +31,11 @@ class Camera
   end
 
   def width_pixels
-    self.width * World::UNIT_X
+    self.width * self.unit_x
   end
 
   def height_pixels
-    self.height * World::UNIT_Y
+    self.height * self.unit_y
   end
 
   def shift_x
@@ -47,18 +47,18 @@ class Camera
   end
 
   def pixel_to_unit_x(w)
-    w / World::UNIT_X.to_f
+    w / self.unit_x.to_f
   end
 
   def pixel_to_unit_y(h)
-    h / World::UNIT_Y.to_f
+    h / self.unit_y.to_f
   end
 
   def translate_x(x)
-    (x - shift_x) * World::UNIT_X
+    (x - shift_x) * self.unit_x
   end
 
   def translate_y(y)
-    (y - shift_y) * World::UNIT_X
+    (y - shift_y) * self.unit_y
   end
 end
