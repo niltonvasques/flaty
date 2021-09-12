@@ -9,9 +9,10 @@ class Bob < GameObject
   ACCELERATION = 50.freeze # units per second
   GRAVITY = Vector2d[0, -20].freeze
   JUMP_ACCELERATION = Vector2d[0, 170].freeze # 110 m/s
+  FPS_DURATION = (1.0/60).freeze # 110 m/s
   SPEED = 10.freeze
   FRAMES = 5.freeze
-  JUMP_DURATION = 50.freeze # 50 ms
+  JUMP_DURATION = 60.freeze # 50 ms
   RIGHT_FRAMES_INDEX   = 12.freeze
   JUMP_FRAMES_INDEX   = 28.freeze
   STEPS_PER_SECOND    = 1.freeze
@@ -62,12 +63,12 @@ class Bob < GameObject
       @jump_at = Gosu.milliseconds
       @jumping = true
       self.state = :jumping
-      self.acceleration += JUMP_ACCELERATION
+      self.acceleration += JUMP_ACCELERATION * (FPS_DURATION / GameWindow.delta)
     end
     if (Gosu.milliseconds - @jump_at) > JUMP_DURATION
       @jumping = false
     else
-      self.acceleration += JUMP_ACCELERATION
+      self.acceleration += JUMP_ACCELERATION * (FPS_DURATION / GameWindow.delta)
     end
 
     update_direction

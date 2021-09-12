@@ -32,6 +32,8 @@ class Camera
   def visible?(obj)
     return false if obj.x > (self.position.x + self.width / 2.0)
     return false if obj.x + obj.width < (self.position.x - self.width / 2.0)
+    return false if obj.y > (self.position.y + self.height / 2.0)
+    return false if obj.y + obj.height < (self.position.y - self.height / 2.0)
     true
   end
 
