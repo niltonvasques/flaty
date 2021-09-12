@@ -15,7 +15,7 @@ class Camera
   end
 
   def look(x, y)
-    y = self.bounds.y if self.bounds.y != NOT_BOUNDED and y > self.bounds.y
+    y = self.bounds.y if self.bounds.y != NOT_BOUNDED and y < self.bounds.y
     x = self.bounds.x if self.bounds.x != NOT_BOUNDED and x < self.bounds.x
     x = self.bounds.width if self.bounds.width != NOT_BOUNDED and x > self.bounds.width
     self.position = Vector2d[x.to_f, y.to_f]

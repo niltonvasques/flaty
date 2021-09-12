@@ -24,7 +24,7 @@ class World
   def initialize
     @camera = GameWindow.camera
     @camera.size(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
-    #GameWindow.camera.bounds.x = CAMERA_WIDTH_UNITS / 2.0
+    @camera.bounds.x = CAMERA_WIDTH_UNITS / 2.0
     @camera.bounds.y = CAMERA_HEIGHT_UNITS / 2.0
     @camera.look(CAMERA_WIDTH_UNITS / 2.0, CAMERA_HEIGHT_UNITS / 2.0)
     @camera_debug = CameraDebug.new(@camera)

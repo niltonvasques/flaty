@@ -14,13 +14,13 @@ class CameraDebug
       color = x == 0 ? origin_color : yellow
       new_x = @camera.translate_x(x)
       Gosu.draw_line(new_x, 0, color, new_x, GameWindow.height, color, z = Z, mode = :default)
-      @font.draw_text("#{x}", new_x + 10, 10, Z, 1.0, 1.0, Gosu::Color::WHITE)
+      @font.draw_text("#{x}", new_x + 5, 5, Z, 1.0, 1.0, Gosu::Color::WHITE)
     end
     (center_y - @camera.height).upto(center_y + @camera.height) do |y|
       color = y == 0 ? origin_color : yellow
       new_y = @camera.translate_y(y)
       Gosu.draw_line(0, new_y, color, GameWindow.width, new_y, color, z = Z, mode = :default)
-      @font.draw_text("#{y}", 10, new_y, Z, 1.0, 1.0, Gosu::Color::WHITE)
+      @font.draw_text("#{y}", 5, new_y - 15, Z, 1.0, 1.0, Gosu::Color::WHITE, :add)
     end
   end
 end
