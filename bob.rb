@@ -11,12 +11,12 @@ class Bob < GameObject
   JUMP_ACCELERATION = Vector2d[0, 170].freeze # 110 m/s
   FPS_DURATION = (1.0/60).freeze # 110 m/s
   SPEED = 10.freeze
-  FRAMES = 5.freeze
+  FRAMES = 10.freeze
   JUMP_DURATION = 60.freeze # 50 ms
   RIGHT_FRAMES_INDEX   = 12.freeze
   JUMP_FRAMES_INDEX   = 28.freeze
-  STEPS_PER_SECOND    = 1.freeze
-  FRAME_DURATION      = (1000 / (STEPS_PER_SECOND * 10)).freeze
+  STEPS_PER_SECOND    = 1.5.freeze
+  FRAME_DURATION      = (1000 / (STEPS_PER_SECOND * FRAMES)).freeze
   FRAME_FAST_DURATION = 80.freeze
   TERMINAL_SPEED = 55.freeze # 50 m/s
   IDLE_FRAME = 10.freeze
