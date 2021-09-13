@@ -55,7 +55,7 @@ module Physics
     candidates.each do |obj|
       #binding.pry
       obj.debug = Gosu::Color::CYAN
-      collision |= body1.colliding?(obj)
+      collision |= body1.colliding?(obj.collision_rect)
     end
 
     if Collision.bottom?(collision)
@@ -64,7 +64,7 @@ module Physics
       collision = Collision::NONE
       candidates.each do |obj|
         obj.debug = Gosu::Color::CYAN
-        collision |= body1.colliding?(obj)
+        collision |= body1.colliding?(obj.collision_rect)
       end
       body1.grounded if collision == Collision::NONE
     end
@@ -76,7 +76,7 @@ module Physics
       collision = Collision::NONE
       candidates.each do |obj|
         obj.debug = Gosu::Color::CYAN
-        collision |= body1.colliding?(obj)
+        collision |= body1.colliding?(obj.collision_rect)
       end
     end
 
@@ -87,7 +87,7 @@ module Physics
       collision = Collision::NONE
       candidates.each do |obj|
         obj.debug = Gosu::Color::CYAN
-        collision |= body1.colliding?(obj)
+        collision |= body1.colliding?(obj.collision_rect)
       end
     end
 
@@ -97,7 +97,7 @@ module Physics
       collision = Collision::NONE
       candidates.each do |obj|
         obj.debug = Gosu::Color::CYAN
-        collision |= body1.colliding?(obj)
+        collision |= body1.colliding?(obj.collision_rect)
       end
       body1.ceil_hit if collision == Collision::NONE
     end
