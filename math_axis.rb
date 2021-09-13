@@ -75,7 +75,7 @@ class MathAxis < GameWindow
   LINE_THICKNESS = 3
   def draw_function(y, color, &block)
     precision = @camera.width / 1000.0
-    source_str = block.source.scan(/\{ \|x\| (.*) \}/).flatten.first
+    source_str = block.source.scan(/\{ \|x\| (.*) \}/).flatten.first.gsub('Math.', '')
     @font.draw_text("#{source_str}", 20, y, 100, 1.0, 1.0, color)
     x2 = @camera.shift_x
     x1 = x2
