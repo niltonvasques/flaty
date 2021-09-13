@@ -27,6 +27,8 @@ class MathAxis < GameWindow
     axis_colors = { lines: Gosu::Color::BLACK, text: Gosu::Color::BLACK }
     @camera_debug = CameraDebug.new(@camera, axis_colors)
 
+    @bold = true
+
     # assets
     @font = Gosu::Font.new(25)
 
@@ -50,6 +52,8 @@ class MathAxis < GameWindow
   def draw
     @axis_image.draw(0, 0, 0)
   end
+
+  private
 
   MAX_CAMERA_SIZE = 10000000
   MIN_CAMERA_SIZE = 0.01
@@ -78,9 +82,8 @@ class MathAxis < GameWindow
       draw_function(40, Gosu::Color::GREEN)    { |x| Math.sin(x)          }
       draw_function(80, Gosu::Color::CYAN)     { |x| Math.cos(x)          }
       draw_function(120, Gosu::Color::FUCHSIA) { |x| 1.0/(1+Math.exp(-x)) }
-      draw_function(160, Gosu::Color::BLUE)    { |x| Math.exp(-x)         }
-      draw_function(200, Gosu::Color::RED)     { |x| Poly.f(x, pts)       }
-      #draw_function(240, Gosu::Color::RED) { |x| (25.0/6)*x + (3/2.0)*(x**2) + (-5/3.0)*(x**3) }
+      draw_function(160, Gosu::Color::YELLOW)  { |x| Math.exp(-x)         }
+      draw_function(200, Gosu::Color::BLUE)    { |x| Poly.f(x, pts)       }
     }
   end
 
@@ -102,7 +105,7 @@ class MathAxis < GameWindow
       w = (px2 - px1 + LINE_THICKNESS)
       h = (py2 - py1 + LINE_THICKNESS)
       Gosu.draw_line(px1, py1, color, px2, py2, color, z = 100, mode = :default)
-      Gosu.draw_rect(px1, py1, w, h, color, z = 100, mode = :default)
+      Gosu.draw_rect(px1, py1, w, h, color, z = 100, mode = :default) if @bold
       x1 = x2
       y1 = block.call(x1)
       x2 += precision
