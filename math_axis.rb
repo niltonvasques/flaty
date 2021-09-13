@@ -37,12 +37,12 @@ class MathAxis < GameWindow
     super
     return if paused?
 
-    move(Vector2d[0, 0.5])  if Gosu.button_down? Gosu::KB_UP
-    move(Vector2d[0, -0.5]) if Gosu.button_down? Gosu::KB_DOWN
-    move(Vector2d[-0.5, 0]) if Gosu.button_down? Gosu::KB_LEFT
-    move(Vector2d[0.5, 0])  if Gosu.button_down? Gosu::KB_RIGHT
-    zoom(-0.5) if Gosu.button_down? Gosu::KB_NUMPAD_PLUS
-    zoom(0.5) if Gosu.button_down? Gosu::KB_NUMPAD_MINUS
+    move(Vector2d[0, 1])  if Gosu.button_down? Gosu::KB_UP
+    move(Vector2d[0, -1]) if Gosu.button_down? Gosu::KB_DOWN
+    move(Vector2d[-1, 0]) if Gosu.button_down? Gosu::KB_LEFT
+    move(Vector2d[1, 0])  if Gosu.button_down? Gosu::KB_RIGHT
+    zoom(-1) if Gosu.button_down? Gosu::KB_NUMPAD_PLUS
+    zoom(1) if Gosu.button_down? Gosu::KB_NUMPAD_MINUS
   end
 
   def draw
@@ -50,12 +50,14 @@ class MathAxis < GameWindow
   end
 
   def zoom(units)
+    units *= @camera.width / 10.0
     @camera.size(@camera.width + units, @camera.height + units)
     @axis_image = Gosu.render(SCREEN_WIDTH, SCREEN_HEIGHT) { draw_axis }
   end
 
   def move(direction)
-    @camera.position += direction
+    unit = @camera.width / 20.0
+    @camera.position += (direction * unit)
     @axis_image = Gosu.render(SCREEN_WIDTH, SCREEN_HEIGHT) { draw_axis }
   end
 
@@ -69,13 +71,15 @@ class MathAxis < GameWindow
       draw_function(80, Gosu::Color::CYAN)     { |x| Math.cos(x)          }
       draw_function(120, Gosu::Color::FUCHSIA) { |x| 1.0/(1+Math.exp(-x)) }
       draw_function(160, Gosu::Color::BLUE)    { |x| Math.exp(-x)         }
+      draw_function(200, Gosu::Color::RED) { |x| (25.0/6)*x + (3/2.0)*(x**2) + (-5/3.0)*(x**3) }
     }
   end
 
   LINE_THICKNESS = 3
+  MIN_PRECISION = 0.001
   def draw_function(y, color, &block)
-    precision = @camera.width / 1000.0
-    source_str = block.source.scan(/\{ \|x\| (.*) \}/).flatten.first.gsub('Math.', '')
+    precision = [(@camera.width / 1000.0).abs, MIN_PRECISION].max
+    source_str = format_equation(block.source.scan(/\{ \|x\| (.*) \}/).flatten.first)
     @font.draw_text("#{source_str}", 20, y, 100, 1.0, 1.0, color)
     x2 = @camera.shift_x
     x1 = x2
@@ -94,6 +98,11 @@ class MathAxis < GameWindow
       y1 = block.call(x1)
       x2 += precision
     end
+  end
+
+  def format_equation(eq)
+    eq = eq.gsub('**2', '²').gsub('**3', '³').gsub('**', '^').gsub('Math.log', 'ln')
+    eq.gsub('Math.', '')
   end
 end
 

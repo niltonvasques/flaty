@@ -22,8 +22,8 @@ class Camera
   end
 
   def size(width, height)
-    self.width = width
-    self.height = height
+    self.width = [width, 0].max
+    self.height = [height, 0].max
 
     @unit_x = GameWindow.width / width.to_f
     @unit_y = GameWindow.height / height.to_f
