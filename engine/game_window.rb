@@ -1,13 +1,12 @@
 require 'gosu'.freeze
 require 'pry-byebug'
+require 'engine/camera'
 
 class GameWindow < Gosu::Window
   SCREEN_WIDTH   = 1280
   SCREEN_HEIGHT  = 720
   CAMERA_WIDTH_UNITS  = 100
   CAMERA_HEIGHT_UNITS = 56
-  #CAMERA_WIDTH_UNITS  = 50
-  #CAMERA_HEIGHT_UNITS = 28
 
   def initialize(width = SCREEN_WIDTH, height = SCREEN_HEIGHT, opts = {})
     @@width = width
