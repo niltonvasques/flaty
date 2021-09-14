@@ -1,6 +1,6 @@
 require 'gosu'
 require 'ostruct'
-require 'parallax'
+require 'games/shooter/parallax'
 
 class Background
   FRAME_DURATION = 1000 / 60

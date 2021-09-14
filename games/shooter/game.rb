@@ -1,12 +1,12 @@
-unless $LOAD_PATH.include?(File.expand_path(File.dirname(__FILE__)))
-  $LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__)))
+unless $LOAD_PATH.include?(File.expand_path(File.dirname(__FILE__) + '/../..'))
+  $LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__) + '/../..'))
 end
 
 require 'gosu'.freeze
 require 'pry-byebug'
 require 'flaty/flaty'
-require 'world'
-require 'level_loader'
+require 'games/shooter/world'
+require 'games/shooter/level_loader'
 
 class Game < GameWindow
   SCREEN_WIDTH   = 2160

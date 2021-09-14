@@ -1,12 +1,12 @@
 require 'gosu'
 require 'pry-byebug'
 require 'flaty/flaty'
-require './hud'
-require './background'
-require './bird'
-require './bob'
-require './star'
-require './level_loader'
+require 'games/shooter/hud'
+require 'games/shooter/background'
+require 'games/shooter/bird'
+require 'games/shooter/bob'
+require 'games/shooter/star'
+require 'games/shooter/level_loader'
 
 module ZLayers
   BG, TILE, STARS, PLAYER, UI = *0..4

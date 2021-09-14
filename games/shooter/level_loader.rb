@@ -1,5 +1,5 @@
 require 'chunky_png'
-require 'world'
+require 'games/shooter/world'
 require 'flaty/flaty'
 
 class Tile < GameObject
