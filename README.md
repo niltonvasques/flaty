@@ -6,6 +6,7 @@ Flaty is simple 2D ruby game development engine implemented on top of Gosu game 
 
 ```sh
 rvm install ruby-3.0.2
+rvm use ruby-3.0.2
 bundle install -j 5
 ```
 
