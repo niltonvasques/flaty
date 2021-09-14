@@ -22,6 +22,8 @@ ruby games/math_axis.rb
 ![image](https://user-images.githubusercontent.com/2291529/132454674-e3d9ff3b-5883-42ad-a2d5-b55361b318f8.png)
 ![image](https://user-images.githubusercontent.com/2291529/132454752-9fa7db1f-4696-4da9-a51f-efbc193c9948.png)
 ![image](https://user-images.githubusercontent.com/2291529/133026223-f64be37e-9634-4e94-bf8d-3139113beb7d.png)
+![image](https://user-images.githubusercontent.com/2291529/133202688-81114e98-568d-42b5-ad84-50396ce02b6f.png)
+
 
 # References
 
