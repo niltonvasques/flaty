@@ -1,15 +1,12 @@
 require 'gosu'
 require 'pry-byebug'
-require './engine/camera'
+require 'engine/flaty'
 require './hud'
 require './background'
 require './bird'
 require './bob'
 require './star'
 require './level_loader'
-require './engine/math/vector_2d'
-require 'engine/math/rect'
-require 'engine/camera_debug'
 
 module ZLayers
   BG, TILE, STARS, PLAYER, UI = *0..4

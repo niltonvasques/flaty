@@ -1,6 +1,9 @@
 require 'gosu'
 require 'engine/game_window'
 require 'engine/camera_debug'
+require 'engine/game_object'
+require 'engine/math/vector_2d'
+require 'engine/math/rect'
 require 'engine/benchmark'
 require 'engine/time'
 

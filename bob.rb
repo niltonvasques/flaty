@@ -1,8 +1,6 @@
 require 'gosu'
 require 'ostruct'
-require 'engine/game_object'
-require 'engine/math/vector_2d'
-require 'engine/math/rect'
+require 'engine/flaty'
 
 class Bob < GameObject
   SIZE              = 1.85 # 1.85 meters tall
@@ -20,6 +18,7 @@ class Bob < GameObject
 
   # animation frames
   FRAMES                 = 10.freeze
+  JUMP_FRAMES            = 7.freeze
   RIGHT_FRAMES_INDEX     = 12.freeze
   JUMP_FRAMES_INDEX      = 28.freeze
   STEPS_PER_SECOND       = 1.5.freeze
@@ -103,7 +102,7 @@ class Bob < GameObject
       pause
     when :jumping
       pause
-      self.current = (Gosu.milliseconds / (1000 / (1 * 7))) % 7
+      self.current = (Gosu.milliseconds / (Second.in_millis / JUMP_FRAMES)) % JUMP_FRAMES
       self.current += JUMP_FRAMES_INDEX
     else
       self.current = (Gosu.milliseconds / RUNNING_FRAME_DURATION) % FRAMES
