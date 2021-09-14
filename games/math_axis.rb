@@ -25,6 +25,7 @@ class MathAxis < GameWindow
     @camera_debug = CameraDebug.new(@camera, axis_colors)
 
     @bold = true
+    @points = [[-2,2],[1,1],[2,2],[3,0],[4,3]]
 
     # assets
     @font = Gosu::Font.new(25)
@@ -43,7 +44,9 @@ class MathAxis < GameWindow
     move(Vector2d[-1, 0]) if Gosu.button_down? Gosu::KB_LEFT
     move(Vector2d[1, 0])  if Gosu.button_down? Gosu::KB_RIGHT
     zoom(-1) if Gosu.button_down? Gosu::KB_NUMPAD_PLUS
-    zoom(1) if Gosu.button_down? Gosu::KB_NUMPAD_MINUS
+    zoom(1)  if Gosu.button_down? Gosu::KB_NUMPAD_MINUS
+
+    animate_polynomial
   end
 
   def draw
@@ -68,25 +71,39 @@ class MathAxis < GameWindow
     @axis_image = Gosu.render(SCREEN_WIDTH, SCREEN_HEIGHT) { draw_axis }
   end
 
+  def animate_polynomial
+    negative = 1
+    negative = -1 if Flaty.seconds % 2 == 0
+    @points[0][1] += ((Flaty.seconds % 3) * negative) * 0.1
+    @points[1][1] += ((Flaty.seconds % 3) * negative) * 0.1
+    @points[2][1] += ((Flaty.seconds % 3) * negative) * 0.5
+    @points[3][1] += ((Flaty.seconds % 3) * negative) * 0.1
+    @points[0][0] += ((Flaty.seconds % 3) * negative) * 0.5
+    @points[0][0] = @points[1][0] - 10 if @points[0][0] <= @points[1][0]
+    @axis_image = Gosu.render(SCREEN_WIDTH, SCREEN_HEIGHT) { draw_axis }
+  end
+
   def draw_axis
-    puts Benchmark.elapsed {
+    t = Benchmark.elapsed do
       @camera_debug.draw
 
       Flaty.paint(Gosu::Color::GRAY)
 
-      pts = [[0,0],[1,1],[2,5],[3,0],[4,3],[5,4],[6,-1],[7,2],[10,2]]
+      f = Poly.interpolate(@points)
+      fx = f.equation(2)
 
-      draw_function(40, Gosu::Color::GREEN)    { |x| Math.sin(x)          }
-      draw_function(80, Gosu::Color::CYAN)     { |x| Math.cos(x)          }
-      draw_function(120, Gosu::Color::FUCHSIA) { |x| 1.0/(1+Math.exp(-x)) }
-      draw_function(160, Gosu::Color::YELLOW)  { |x| Math.exp(-x)         }
-      draw_function(200, Gosu::Color::BLUE)    { |x| Poly.f(x, pts)       }
-    }
+      draw_function(40, Gosu::Color::GREEN)     { |x| Math.sin(x)          }
+      draw_function(80, Gosu::Color::CYAN)      { |x| Math.cos(x)          }
+      draw_function(120, Gosu::Color::FUCHSIA)  { |x| 1.0/(1+Math.exp(-x)) }
+      draw_function(160, Gosu::Color::YELLOW)   { |x| Math.exp(-x)         }
+      draw_function(200, Gosu::Color::BLUE, fx) { |x| f.x(x)               }
+    end
+    puts t
   end
 
   LINE_THICKNESS = 3
   MIN_PRECISION = 0.000000000001
-  def draw_function(y, color, &block)
+  def draw_function(y, color, label = nil, &block)
     precision = [(@camera.width / 1000.0).abs, MIN_PRECISION].max
 
     x2 = @camera.shift_x
@@ -106,12 +123,12 @@ class MathAxis < GameWindow
       x2 += precision
     end
 
-    draw_equation_label(block, y, color)
+    draw_equation_label(block, y, color, label)
   end
 
-  def draw_equation_label(block, y, color)
-    source_str = format_equation(block.source.scan(/\{ \|x\| (.*) \}/).flatten.first)
-    @font.draw_text("#{source_str}", 20, y, 100, 1.0, 1.0, color)
+  def draw_equation_label(block, y, color, label)
+    label = format_equation(block.source.scan(/\{ \|x\| (.*) \}/).flatten.first) unless label
+    @font.draw_text("#{label}", 20, y, 100, 1.0, 1.0, color)
   end
 
   def format_equation(eq)

@@ -30,4 +30,8 @@ class Flaty
   def self.paint(color)
     Gosu.draw_rect(0, 0, GameWindow.width, GameWindow.height, color, 0)
   end
+
+  def self.seconds
+    Gosu.milliseconds / Second.in_millis
+  end
 end
