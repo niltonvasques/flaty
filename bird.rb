@@ -1,6 +1,6 @@
 require 'gosu'
 require 'ostruct'
-require 'engine/flaty'
+require 'flaty/flaty'
 
 class Bird < GameObject
   IDLE                = 2.freeze

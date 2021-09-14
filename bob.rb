@@ -1,6 +1,6 @@
 require 'gosu'
 require 'ostruct'
-require 'engine/flaty'
+require 'flaty/flaty'
 
 class Bob < GameObject
   SIZE              = 1.85 # 1.85 meters tall

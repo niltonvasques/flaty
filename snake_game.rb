@@ -5,7 +5,7 @@ end
 require 'pry-byebug'
 require 'method_source'
 require 'gosu'
-require 'engine/flaty'
+require 'flaty/flaty'
 require 'math/poly'
 
 class SnakeGame < GameWindow

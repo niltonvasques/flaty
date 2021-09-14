@@ -4,7 +4,7 @@ end
 
 require 'gosu'.freeze
 require 'pry-byebug'
-require 'engine/flaty'
+require 'flaty/flaty'
 require 'world'
 require 'level_loader'
 

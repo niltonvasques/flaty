@@ -1,6 +1,6 @@
 require 'gosu'.freeze
 require 'pry-byebug'
-require 'engine/camera'
+require 'flaty/camera'
 
 class GameWindow < Gosu::Window
   SCREEN_WIDTH   = 1280

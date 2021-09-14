@@ -1,6 +1,6 @@
 require 'gosu'
 require 'pry-byebug'
-require 'engine/flaty'
+require 'flaty/flaty'
 require './hud'
 require './background'
 require './bird'

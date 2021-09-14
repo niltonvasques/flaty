@@ -1,6 +1,6 @@
 require 'gosu'
-require 'engine/math/vector_2d'
-require 'engine/math/rect'
+require 'flaty/math/vector_2d'
+require 'flaty/math/rect'
 
 class Camera
   NOT_BOUNDED = -1

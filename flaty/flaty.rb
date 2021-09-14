@@ -1,11 +1,11 @@
 require 'gosu'
-require 'engine/game_window'
-require 'engine/camera_debug'
-require 'engine/game_object'
-require 'engine/math/vector_2d'
-require 'engine/math/rect'
-require 'engine/benchmark'
-require 'engine/time'
+require 'flaty/game_window'
+require 'flaty/camera_debug'
+require 'flaty/game_object'
+require 'flaty/math/vector_2d'
+require 'flaty/math/rect'
+require 'flaty/benchmark'
+require 'flaty/time'
 
 class Flaty
   def self.draw_rect(x, y, width = 1, height = 1, c = Gosu::Color::BLACK, z = 0, mode = :default,

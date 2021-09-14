@@ -1,5 +1,5 @@
 require 'gosu'
-require 'engine/flaty'
+require 'flaty/flaty'
 
 class Parallax < GameObject
   #attr_accessor :image, :width, :height, :x1, :x2, :y, :z, :speed

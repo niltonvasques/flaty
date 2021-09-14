@@ -1,7 +1,7 @@
 require 'gosu'
 require 'ostruct'
-require 'engine/math/vector_2d'
-require 'engine/physics'
+require 'flaty/math/vector_2d'
+require 'flaty/physics'
 
 class GameObject < OpenStruct
   #attr_accessor :image, :width, :height, :x, :y, :z, :speed

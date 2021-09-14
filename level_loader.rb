@@ -1,6 +1,6 @@
 require 'chunky_png'
 require 'world'
-require 'engine/flaty'
+require 'flaty/flaty'
 
 class Tile < GameObject
   SCREEN_WIDTH   = 1280
