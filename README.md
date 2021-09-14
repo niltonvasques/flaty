@@ -10,7 +10,9 @@ bundle install -j 5
 ### Running
 
 ```sh
-ruby game.rb
+ruby games/shooter/game.rb
+ruby games/snake_game.rb
+ruby games/math_axis.rb
 ```
 
 ## Screenshots
