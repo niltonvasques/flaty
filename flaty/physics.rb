@@ -51,12 +51,13 @@ module Physics
     new_position = body1.position.dup
 
     collision = Collision::NONE
-
     candidates.each do |obj|
       #binding.pry
       obj.debug = Gosu::Color::CYAN
       collision |= body1.colliding?(obj.collision_rect)
     end
+
+    collided = collision != Collision::NONE
 
     if Collision.bottom?(collision)
       body1.position.y = body1.previous_position.y
@@ -103,5 +104,7 @@ module Physics
     end
 
     body1.reset if collision != Collision::NONE
+
+    collided
   end
 end
