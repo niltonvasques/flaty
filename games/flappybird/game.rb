@@ -7,7 +7,6 @@ require 'pry-byebug'
 require 'flaty/flaty'
 require 'games/flappybird/world'
 require 'games/flappybird/level_loader'
-require 'games/flappybird/game_over_screen'
 
 class FlappyBird < GameWindow
   SCREEN_WIDTH   = 1280
