@@ -23,4 +23,8 @@ class Flaty
     y2 = camera.translate_y(y2)
     Gosu.draw_line(x1, y1, c1, x2, y2, c2, z, mode)
   end
+
+  def self.paint(color)
+    Gosu.draw_rect(0, 0, GameWindow.width, GameWindow.height, color, 0)
+  end
 end

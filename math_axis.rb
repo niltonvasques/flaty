@@ -72,7 +72,7 @@ class MathAxis < GameWindow
     puts Benchmark.elapsed {
       @camera_debug.draw
 
-      Gosu.draw_rect(0, 0, GameWindow.width, GameWindow.height, Gosu::Color::GRAY, 0)
+      Flaty.paint(Gosu::Color::GRAY)
 
       pts = [[0,0],[1,1],[2,5],[3,0],[4,3],[5,4],[6,-1],[7,2],[10,2]]
 
@@ -88,11 +88,11 @@ class MathAxis < GameWindow
   MIN_PRECISION = 0.000000000001
   def draw_function(y, color, &block)
     precision = [(@camera.width / 1000.0).abs, MIN_PRECISION].max
-    source_str = format_equation(block.source.scan(/\{ \|x\| (.*) \}/).flatten.first)
-    @font.draw_text("#{source_str}", 20, y, 100, 1.0, 1.0, color)
+
     x2 = @camera.shift_x
     x1 = x2
     y1 = block.call(x1)
+
     while x2 <= (@camera.shift_x + @camera.width)
       y2 = block.call(x2)
       w = (x2 - x1)
@@ -102,9 +102,16 @@ class MathAxis < GameWindow
         Flaty.draw_rect(x1, y1, w, h, color, z = 100, mode = :default, thickness = LINE_THICKNESS)
       end
       x1 = x2
-      y1 = block.call(x1)
+      y1 = y2
       x2 += precision
     end
+
+    draw_equation_label(block, y, color)
+  end
+
+  def draw_equation_label(block, y, color)
+    source_str = format_equation(block.source.scan(/\{ \|x\| (.*) \}/).flatten.first)
+    @font.draw_text("#{source_str}", 20, y, 100, 1.0, 1.0, color)
   end
 
   def format_equation(eq)

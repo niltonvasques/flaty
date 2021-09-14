@@ -53,7 +53,6 @@ class World
     self.stars.each(&:update)
     @bob.collect_stars(stars)
     GameWindow.camera.look(@bob.x, @bob.y)
-    #puts "#{GameWindow.camera.position} - #{GameWindow.camera.width}, #{GameWindow.camera.height}"
 
     @background.update(@bob.speed) if GameWindow.camera.position.x == @bob.x
 

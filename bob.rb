@@ -55,14 +55,26 @@ class Bob < GameObject
   def update_speed
     self.acceleration = GRAVITY.dup
 
+    update_movement
+
+    update_direction
+
+    update_animation
+
+    play if self.state == :walking
+  end
+
+  def update_movement
     if Gosu.button_down? Gosu::KB_LEFT
       self.acceleration += Vector2d[-ACCELERATION, 0]
       self.state = :walking if self.state != :jumping
     end
+
     if Gosu.button_down? Gosu::KB_RIGHT
       self.acceleration += Vector2d[ACCELERATION,  0]
       self.state = :walking if self.state != :jumping
     end
+
     self.state = :idle if self.state == :walking and self.speed.y <= -0.5
 
     if Gosu.button_down? Gosu::KB_SPACE and self.state != :jumping
@@ -71,14 +83,20 @@ class Bob < GameObject
       self.state = :jumping
       self.acceleration += JUMP_ACCELERATION * (FPS_DURATION / GameWindow.delta)
     end
+
     if (Gosu.milliseconds - @jump_at) > JUMP_DURATION
       @jumping = false
     else
       self.acceleration += JUMP_ACCELERATION * (FPS_DURATION / GameWindow.delta)
     end
+  end
 
-    update_direction
+  def update_direction
+    self.face = :right if self.acceleration.x > 0
+    self.face = :left if self.acceleration.x < 0
+  end
 
+  def update_animation
     case self.state
     when :idle
       self.current = IDLE_FRAME_INDEX
@@ -91,14 +109,9 @@ class Bob < GameObject
       self.current = (Gosu.milliseconds / RUNNING_FRAME_DURATION) % FRAMES
     end
 
-    play if self.state == :walking
-
-    self.current += RIGHT_FRAMES_INDEX if self.face == :right and (self.state == :walking or self.state == :idle)
-  end
-
-  def update_direction
-    self.face = :right if self.acceleration.x > 0
-    self.face = :left if self.acceleration.x < 0
+    if self.face == :right
+      self.current += RIGHT_FRAMES_INDEX
+    end
   end
 
   def grounded
