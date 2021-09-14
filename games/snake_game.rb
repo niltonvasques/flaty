@@ -40,7 +40,7 @@ class SnakeGame < GameWindow
     @snake << Vector2d[2,0]
     @food = Vector2d[3, 3]
     @loose = false
-    @direction = Vector2d[-1, 0]
+    @last_direction = @direction = Vector2d[-1, 0]
   end
 
   def update
@@ -72,10 +72,11 @@ class SnakeGame < GameWindow
   private
 
   def update_snake_direction
-    @direction = Vector2d[0, 1]  if Gosu.button_down? Gosu::KB_UP and @direction.y == 0
-    @direction = Vector2d[0, -1] if Gosu.button_down? Gosu::KB_DOWN and @direction.y == 0
-    @direction = Vector2d[-1, 0] if Gosu.button_down? Gosu::KB_LEFT and @direction.x == 0
-    @direction = Vector2d[1, 0]  if Gosu.button_down? Gosu::KB_RIGHT and @direction.x == 0
+    # last direction avoids walking backward and bite in the opposite direction
+    @direction = Vector2d[0, 1]  if Gosu.button_down? Gosu::KB_UP and @last_direction.y == 0
+    @direction = Vector2d[0, -1] if Gosu.button_down? Gosu::KB_DOWN and @last_direction.y == 0
+    @direction = Vector2d[-1, 0] if Gosu.button_down? Gosu::KB_LEFT and @last_direction.x == 0
+    @direction = Vector2d[1, 0]  if Gosu.button_down? Gosu::KB_RIGHT and @last_direction.x == 0
   end
 
   def update_snake_position
@@ -85,6 +86,7 @@ class SnakeGame < GameWindow
     if seconds - @updated_at > 0
       @updated_at = seconds
       @snake[0] += @direction
+      @last_direction = @direction
       @snake.each_index do |index|
         next if index == 0
         aux = @snake[index]
@@ -120,8 +122,9 @@ class SnakeGame < GameWindow
     @food = Vector2d[x, y]
   end
 
+  FOOD_ANIMATION_SPEED = 100.freeze # 10 blinks per second
   def draw_food
-    seconds = (Gosu.milliseconds / 100).to_i % 2
+    seconds = (Gosu.milliseconds / FOOD_ANIMATION_SPEED).to_i % 2
     color = seconds == 0 ? Gosu::Color::BLUE : Gosu::Color::GREEN
     Flaty.draw_rect(@food.x, @food.y, 1, 1, color, 0)
   end
