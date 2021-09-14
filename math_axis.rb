@@ -5,10 +5,7 @@ end
 require 'pry-byebug'
 require 'method_source'
 require 'gosu'
-require 'engine/game_window'
-require 'engine/camera_debug'
-require 'engine/benchmark'
-require 'engine/benchmark'
+require 'engine/flaty'
 require 'math/poly'
 
 class MathAxis < GameWindow
@@ -98,14 +95,12 @@ class MathAxis < GameWindow
     y1 = block.call(x1)
     while x2 <= (@camera.shift_x + @camera.width)
       y2 = block.call(x2)
-      px1 = @camera.translate_x(x1)
-      py1 = @camera.translate_y(y1)
-      px2 = @camera.translate_x(x2)
-      py2 = @camera.translate_y(y2)
-      w = (px2 - px1 + LINE_THICKNESS)
-      h = (py2 - py1 + LINE_THICKNESS)
-      Gosu.draw_line(px1, py1, color, px2, py2, color, z = 100, mode = :default)
-      Gosu.draw_rect(px1, py1, w, h, color, z = 100, mode = :default) if @bold
+      w = (x2 - x1)
+      h = (y2 - y1)
+      Flaty.draw_line(x1, y1, color, x2, y2, color, z = 100, mode = :default)
+      if @bold
+        Flaty.draw_rect(x1, y1, w, h, color, z = 100, mode = :default, thickness = LINE_THICKNESS)
+      end
       x1 = x2
       y1 = block.call(x1)
       x2 += precision
