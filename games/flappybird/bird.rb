@@ -63,7 +63,7 @@ class Bird < GameObject
     self.rect.x = self.x
     self.rect.y = self.y + 1
     self.rect.width = self.width
-    self.rect.height = self.height - 2
+    self.rect.height = self.height - 3
     self.rect
   end
 

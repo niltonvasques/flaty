@@ -8,21 +8,11 @@ class Tile < GameObject
   WIDTH  = (SCREEN_WIDTH / 50)
   HEIGHT  = (SCREEN_WIDTH / 28)
 
-  EMPTY  = 0xFFFFFFFF
-  GRASS_FLOOR = 0x002F00FF
-  WOOD   = 0xCB815EFF
-  HORIZONTAL_WOOD = 0x995D4FFF
-  LEAF   = 0x71AA34FF
-  WOOD_INTERSECTION = 0xEBA364FF
-  STAR = 0xFFFF00FF
-
-  TILES = {
-    GRASS_FLOOR => 2 + 0 * 20,
-    WOOD => 16 + 5 * 20,
-    LEAF => 18 + 1 * 20,
-    HORIZONTAL_WOOD => 19 + 5 * 20,
-    WOOD_INTERSECTION => 17 + 5 * 20,
-  }
+  GRASS_FLOOR       = 2 + 0 * 20
+  WOOD              = 16 + 5 * 20
+  LEAF              = 18 + 1 * 20
+  HORIZONTAL_WOOD   = 19 + 5 * 20
+  WOOD_INTERSECTION = 17 + 5 * 20
 
   def initialize(opts = {})
     default = { debug: Gosu::Color::GREEN }
@@ -100,15 +90,19 @@ class Level
 end
 
 class LevelLoader
-  def self.generate(world)
+  MIN_VERTICAL_SPACE   = 5
+  MIN_HORIZONTAL_SPACE = 9
+  MIN_PIPE_HEIGHT      = 6
+  MAX_PIPE_HEIGHT      = 25
+
+  def self.generate(world, width = 200, height = 28)
     unless defined?(@@tilemap)
       @@tilemap = Gosu::Image.load_tiles("assets/tiles.png", Tile::SIZE, Tile::SIZE, tileable: true)
     end
 
-    width = 200
-    height = 28
     GameWindow.camera.bounds.width = width
-    level = Level.new(200, 28)
+
+    level = Level.new(width, height)
     world.level = level
 
     scale_x = (World::UNIT_X) / Tile::SIZE.to_f
@@ -121,18 +115,14 @@ class LevelLoader
       height.times do |y|
         if y > pipe_height or y < pipe_height - pipes_space
           level.add_tile(Tile.new(position: Vector2d[x, y], z: ZLayers::TILE,
-                                  image: @@tilemap[18 + 1 * 20],
+                                  image: @@tilemap[Tile::LEAF],
                                   scale_x: scale_x, scale_y: scale_y))
         end
       end
-      pipe_height = [pipe_height + (rand * (10) * (rand > 0.5 ? 1 : -1)).to_i, 25].min
-      pipe_height = [pipe_height, 6].max
-      pipes_space = (rand * 10) % 5 + 5
-      x += (rand * 100 % 6 + 9).to_i
+      pipe_height = [pipe_height + (rand * (10) * (rand > 0.5 ? 1 : -1)).to_i, MAX_PIPE_HEIGHT].min
+      pipe_height = [pipe_height, MIN_PIPE_HEIGHT].max
+      pipes_space = (rand * 10) % 5 + MIN_VERTICAL_SPACE
+      x += (rand * 100 % 6 + MIN_HORIZONTAL_SPACE).to_i
     end
-  end
-
-  def self.load_tiles
-    ChunkyPNG::Image.from_file('assets/levels/level2.png')
   end
 end

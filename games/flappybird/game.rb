@@ -20,7 +20,7 @@ class FlappyBird < GameWindow
     @font = Gosu::Font.new(25)
 
     @world = World.new
-    LevelLoader.generate(@world)
+    LevelLoader.generate(@world, 300, 28)
   end
 
   def update
