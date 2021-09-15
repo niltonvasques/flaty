@@ -25,7 +25,7 @@ class MathAxis < GameWindow
     @camera_debug = CameraDebug.new(@camera, axis_colors)
 
     @bold = true
-    @points = [[-2,2],[1,1],[2,2],[3,0],[4,3]]
+    @points = [[0,2],[1,1],[2,2],[3,0],[4,3],[5,0],[6,3],[7,1]]
 
     # assets
     @font = Gosu::Font.new(25)

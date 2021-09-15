@@ -66,6 +66,7 @@ class Poly
     Poly.new([0])
   end
 
+  # the interpolating polynomial of the given points
   def self.interpolate(points)
     raise 'Must provide at least one point.' if points.size == 0
     x = points.map(&:first)
