@@ -1,3 +1,30 @@
+# Shamir's secret scheme
+#
+# in order to the encode be more safe we need to use modular arithmethic
+class PolySecret
+  PRIME = 2**40 # 128 bits prime
+
+  def self.encode(secret, shares = 1)
+    k = shares
+    degree = k - 1
+
+    coefficients = [secret]
+    1.upto(degree) { |a| coefficients[a] = (rand * PRIME).to_i }
+
+    f = Poly.new(coefficients)
+
+    puts f.equation
+
+    shares_keys = {}
+    1.upto(shares) { |a| shares_keys[a] = f.x(a) }
+    shares_keys
+  end
+
+  def self.decode(shares)
+    Poly.interpolate(shares) #.x(0)
+  end
+end
+
 class Poly
   attr_accessor :coefficients
 
