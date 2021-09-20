@@ -70,7 +70,6 @@ class MathAxis < GameWindow
 
   def move(direction)
     unit = @camera.width / 20.0
-    @px += direction.x
     @camera.position += (direction * unit)
     @axis_image = Gosu.render(SCREEN_WIDTH, SCREEN_HEIGHT) { draw_axis }
   end
@@ -104,8 +103,10 @@ class MathAxis < GameWindow
       @label_y = 0
       #draw_function(Gosu::Color::GREEN)    { |x| Math.sin(x)                            }
       #draw_function(Gosu::Color::WHITE)    { |x| derivative_line(x) { |x| Math.sin(x) } }
-      draw_function(Gosu::Color::BLACK)    { |x| x**3                                   }
-      draw_function(Gosu::Color::WHITE)    { |x| derivative_line(x) { |x| x**3 }        }
+      #draw_function(Gosu::Color::BLACK)    { |x| x**3                                   }
+      #draw_function(Gosu::Color::WHITE)    { |x| derivative_line(x) { |x| x**3 }        }
+      draw_function(Gosu::Color::BLACK)    { |x| Math.sin(x**2)                      }
+      draw_function(Gosu::Color::WHITE)    { |x| derivative_line(x) { |x| Math.sin(x**2) } }
       #draw_function(Gosu::Color::FUCHSIA)  { |x| 1.0/(1+Math.exp(-x))                   }
       #draw_function(Gosu::Color::YELLOW)   { |x| Math.exp(-x)                           }
       #draw_function(Gosu::Color::BLUE, fx) { |x| f.x(x)                                 }
@@ -117,7 +118,7 @@ class MathAxis < GameWindow
   # general derivative implementation for any f(x) function
   # calculating the derivate of the block function when approach around the point @px
   def derivative(&block)
-    slice = 0.0001
+    slice = 0.00001
     dy = block.call(@px + slice) - block.call(@px)
     dx = slice
     dy / dx
