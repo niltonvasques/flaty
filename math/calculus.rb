@@ -1,10 +1,11 @@
 module Calculus
+  MIN_VALUE = 0.000000001
+
   # general derivative implementation for any f(x) function
   # calculating the derivate of the block function when approach around the point px
   def self.derivative(px, block)
-    slice = 0.00001
-    dy = block.call(px + slice) - block.call(px)
-    dx = slice
+    dy = block.call(px + MIN_VALUE) - block.call(px)
+    dx = MIN_VALUE
     dy / dx
   end
 

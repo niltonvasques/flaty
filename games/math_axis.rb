@@ -102,7 +102,7 @@ class MathAxis < GameWindow
       fx = f.equation(2)
 
       @label_y = 0
-      #draw_fx_and_dydx { |x| Math.sin(x**2) }
+      draw_fx_and_dydx { |x| Math.sin(x**2) }
       #draw_fx_and_dydx { |x| Math.sin(x) }
       draw_fx_and_dydx { |x| Math.sin(x) }
 
@@ -111,7 +111,6 @@ class MathAxis < GameWindow
       #draw_fx(Gosu::Color::FUCHSIA)         { |x| 1.0/(1+Math.exp(-x))                   }
       #draw_fx(Gosu::Color::YELLOW)          { |x| Math.exp(-x)                           }
       #draw_fx(Gosu::Color::BLUE, label: fx) { |x| f.x(x)                                 }
-      #draw_fx(Gosu::Color::WHITE)           { |x| derivative_line(x) { |x| f.x(x) }      }
     end
     puts t
   end
