@@ -26,6 +26,7 @@ class MathAxis < GameWindow
 
     @bold = true
     @points = [[0,2],[1,1],[2,2],[3,0],[4,3],[5,0],[6,3],[7,1]]
+    @px = 0
 
     # assets
     @font = Gosu::Font.new(25)
@@ -43,10 +44,12 @@ class MathAxis < GameWindow
     move(Vector2d[0, -1]) if Gosu.button_down? Gosu::KB_DOWN
     move(Vector2d[-1, 0]) if Gosu.button_down? Gosu::KB_LEFT
     move(Vector2d[1, 0])  if Gosu.button_down? Gosu::KB_RIGHT
+    move_derivative(-1) if Gosu.button_down? Gosu::KB_A
+    move_derivative(1)  if Gosu.button_down? Gosu::KB_D
     zoom(-1) if Gosu.button_down? Gosu::KB_NUMPAD_PLUS
     zoom(1)  if Gosu.button_down? Gosu::KB_NUMPAD_MINUS
 
-    animate_polynomial
+    #animate_polynomial
   end
 
   def draw
@@ -67,7 +70,13 @@ class MathAxis < GameWindow
 
   def move(direction)
     unit = @camera.width / 20.0
+    @px += direction.x
     @camera.position += (direction * unit)
+    @axis_image = Gosu.render(SCREEN_WIDTH, SCREEN_HEIGHT) { draw_axis }
+  end
+
+  def move_derivative(direction)
+    @px += direction * 0.02
     @axis_image = Gosu.render(SCREEN_WIDTH, SCREEN_HEIGHT) { draw_axis }
   end
 
@@ -92,18 +101,60 @@ class MathAxis < GameWindow
       f = Poly.interpolate(@points)
       fx = f.equation(2)
 
-      draw_function(40, Gosu::Color::GREEN)     { |x| Math.sin(x)          }
-      draw_function(80, Gosu::Color::CYAN)      { |x| Math.cos(x)          }
-      draw_function(120, Gosu::Color::FUCHSIA)  { |x| 1.0/(1+Math.exp(-x)) }
-      draw_function(160, Gosu::Color::YELLOW)   { |x| Math.exp(-x)         }
-      draw_function(200, Gosu::Color::BLUE, fx) { |x| f.x(x)               }
+      @label_y = 0
+      #draw_function(Gosu::Color::GREEN)    { |x| Math.sin(x)                            }
+      #draw_function(Gosu::Color::WHITE)    { |x| derivative_line(x) { |x| Math.sin(x) } }
+      draw_function(Gosu::Color::BLACK)    { |x| x**3                                   }
+      draw_function(Gosu::Color::WHITE)    { |x| derivative_line(x) { |x| x**3 }        }
+      #draw_function(Gosu::Color::FUCHSIA)  { |x| 1.0/(1+Math.exp(-x))                   }
+      #draw_function(Gosu::Color::YELLOW)   { |x| Math.exp(-x)                           }
+      #draw_function(Gosu::Color::BLUE, fx) { |x| f.x(x)                                 }
+      #draw_function(Gosu::Color::WHITE)    { |x| derivative_line(x) { |x| f.x(x) }      }
     end
     puts t
   end
 
+  # general derivative implementation for any f(x) function
+  # calculating the derivate of the block function when approach around the point @px
+  def derivative(&block)
+    slice = 0.0001
+    dy = block.call(@px + slice) - block.call(@px)
+    dx = slice
+    dy / dx
+  end
+
+  # reduced line equation
+  # y = mx + n
+  # m = line angular coefficient
+  # n = line linear coefficient
+  def derivative_line(x, &block)
+    m = derivative{ |x| block.call(x) }
+    n = block.call(@px) - (m*@px)
+    m*x + n
+  end
+
+  # specific derivative implementation for sin(x), x² and x³
+  # dx/dx (sin(x)) = cos(x)
+  def sin_x_slope_line(x)
+    slope = Math.cos(@px)
+    slope*x + (Math.sin(@px) - (slope*@px))
+  end
+
+  # dx/dx (x²) = 2x
+  def x2_slope_line(x)
+    slope = 2*@px
+    slope*x + ((@px**2) - (slope*@px))
+  end
+
+  # dx/dx (x³) = 3x²
+  def x3_slope_line(x)
+    slope = 3*@px*@px
+    slope*x + ((@px**3) - (slope*@px))
+  end
+
   LINE_THICKNESS = 3
   MIN_PRECISION = 0.000000000001
-  def draw_function(y, color, label = nil, &block)
+  def draw_function(color, label = nil, &block)
     precision = [(@camera.width / 1000.0).abs, MIN_PRECISION].max
 
     x2 = @camera.shift_x
@@ -123,12 +174,13 @@ class MathAxis < GameWindow
       x2 += precision
     end
 
-    draw_equation_label(block, y, color, label)
+    draw_equation_label(block, color, label)
   end
 
-  def draw_equation_label(block, y, color, label)
+  def draw_equation_label(block, color, label)
+    @label_y += 40
     label = format_equation(block.source.scan(/\{ \|x\| (.*) \}/).flatten.first) unless label
-    @font.draw_text("#{label}", 20, y, 100, 1.0, 1.0, color)
+    @font.draw_text("#{label}", 20, @label_y, 100, 1.0, 1.0, color)
   end
 
   def format_equation(eq)
