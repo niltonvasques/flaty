@@ -24,7 +24,6 @@ class MathAxis < GameWindow
     axis_colors = { lines: Gosu::Color::BLACK, text: Gosu::Color::BLACK }
     @camera_debug = CameraDebug.new(@camera, axis_colors)
 
-    @bold = true
     @points = [[0,2],[1,1],[2,2],[3,0],[4,3],[5,0],[6,3],[7,1]]
     @px = 0
 
@@ -75,7 +74,8 @@ class MathAxis < GameWindow
   end
 
   def move_derivative(direction)
-    @px += direction * 0.02
+    precision = (@camera.width / 1000.0).abs
+    @px += direction * precision
     @axis_image = Gosu.render(SCREEN_WIDTH, SCREEN_HEIGHT) { draw_axis }
   end
 
@@ -106,10 +106,10 @@ class MathAxis < GameWindow
       #draw_function(Gosu::Color::BLACK)    { |x| x**3                                   }
       #draw_function(Gosu::Color::WHITE)    { |x| derivative_line(x) { |x| x**3 }        }
       draw_function(Gosu::Color::BLACK)    { |x| Math.sin(x**2)                      }
-      draw_function(Gosu::Color::WHITE)    { |x| derivative_line(x) { |x| Math.sin(x**2) } }
+      draw_function(Gosu::Color::WHITE, bold: false)    { |x| derivative_line(x) { |x| Math.sin(x**2) } }
       #draw_function(Gosu::Color::FUCHSIA)  { |x| 1.0/(1+Math.exp(-x))                   }
       #draw_function(Gosu::Color::YELLOW)   { |x| Math.exp(-x)                           }
-      #draw_function(Gosu::Color::BLUE, fx) { |x| f.x(x)                                 }
+      #draw_function(Gosu::Color::BLUE, label: fx) { |x| f.x(x)                                 }
       #draw_function(Gosu::Color::WHITE)    { |x| derivative_line(x) { |x| f.x(x) }      }
     end
     puts t
@@ -155,7 +155,8 @@ class MathAxis < GameWindow
 
   LINE_THICKNESS = 3
   MIN_PRECISION = 0.000000000001
-  def draw_function(color, label = nil, &block)
+  def draw_function(color, opts = {}, &block)
+    opts = { bold: true }.merge(opts)
     precision = [(@camera.width / 1000.0).abs, MIN_PRECISION].max
 
     x2 = @camera.shift_x
@@ -167,7 +168,7 @@ class MathAxis < GameWindow
       w = (x2 - x1)
       h = (y2 - y1)
       Flaty.draw_line(x1, y1, color, x2, y2, color, z = 100, mode = :default)
-      if @bold
+      if opts[:bold]
         Flaty.draw_rect(x1, y1, w, h, color, z = 100, mode = :default, thickness = LINE_THICKNESS)
       end
       x1 = x2
@@ -175,7 +176,7 @@ class MathAxis < GameWindow
       x2 += precision
     end
 
-    draw_equation_label(block, color, label)
+    draw_equation_label(block, color, opts[:label])
   end
 
   def draw_equation_label(block, color, label)
