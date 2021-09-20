@@ -7,6 +7,7 @@ require 'method_source'
 require 'gosu'
 require 'flaty/flaty'
 require 'math/poly'
+require 'math/calculus'
 
 class MathAxis < GameWindow
   SCREEN_WIDTH   = 1500
@@ -101,61 +102,32 @@ class MathAxis < GameWindow
       fx = f.equation(2)
 
       @label_y = 0
-      #draw_function(Gosu::Color::GREEN)    { |x| Math.sin(x)                            }
-      #draw_function(Gosu::Color::WHITE)    { |x| derivative_line(x) { |x| Math.sin(x) } }
-      #draw_function(Gosu::Color::BLACK)    { |x| x**3                                   }
-      #draw_function(Gosu::Color::WHITE)    { |x| derivative_line(x) { |x| x**3 }        }
-      draw_function(Gosu::Color::BLACK)    { |x| Math.sin(x**2)                      }
-      draw_function(Gosu::Color::WHITE, bold: false)    { |x| derivative_line(x) { |x| Math.sin(x**2) } }
-      #draw_function(Gosu::Color::FUCHSIA)  { |x| 1.0/(1+Math.exp(-x))                   }
-      #draw_function(Gosu::Color::YELLOW)   { |x| Math.exp(-x)                           }
-      #draw_function(Gosu::Color::BLUE, label: fx) { |x| f.x(x)                                 }
-      #draw_function(Gosu::Color::WHITE)    { |x| derivative_line(x) { |x| f.x(x) }      }
+      #draw_fx_and_dydx { |x| Math.sin(x**2) }
+      #draw_fx_and_dydx { |x| Math.sin(x) }
+      draw_fx_and_dydx { |x| Math.sin(x) }
+
+      #draw_fx(Gosu::Color::GREEN)           { |x| Math.sin(x)                            }
+      #draw_fx(Gosu::Color::WHITE)           { |x| derivative_line(x) { |x| x**3 }        }
+      #draw_fx(Gosu::Color::FUCHSIA)         { |x| 1.0/(1+Math.exp(-x))                   }
+      #draw_fx(Gosu::Color::YELLOW)          { |x| Math.exp(-x)                           }
+      #draw_fx(Gosu::Color::BLUE, label: fx) { |x| f.x(x)                                 }
+      #draw_fx(Gosu::Color::WHITE)           { |x| derivative_line(x) { |x| f.x(x) }      }
     end
     puts t
   end
 
-  # general derivative implementation for any f(x) function
-  # calculating the derivate of the block function when approach around the point @px
-  def derivative(&block)
-    slice = 0.00001
-    dy = block.call(@px + slice) - block.call(@px)
-    dx = slice
-    dy / dx
-  end
-
-  # reduced line equation
-  # y = mx + n
-  # m = line angular coefficient
-  # n = line linear coefficient
-  def derivative_line(x, &block)
-    m = derivative{ |x| block.call(x) }
-    n = block.call(@px) - (m*@px)
-    m*x + n
-  end
-
-  # specific derivative implementation for sin(x), x² and x³
-  # dx/dx (sin(x)) = cos(x)
-  def sin_x_slope_line(x)
-    slope = Math.cos(@px)
-    slope*x + (Math.sin(@px) - (slope*@px))
-  end
-
-  # dx/dx (x²) = 2x
-  def x2_slope_line(x)
-    slope = 2*@px
-    slope*x + ((@px**2) - (slope*@px))
-  end
-
-  # dx/dx (x³) = 3x²
-  def x3_slope_line(x)
-    slope = 3*@px*@px
-    slope*x + ((@px**3) - (slope*@px))
+  def draw_fx_and_dydx(&block)
+    label = format_equation(block.source.scan(/\{ \|x\| (.*) \}/).flatten.first)
+    draw_fx(Gosu::Color::BLACK, label: label) { |x| block.call(x) }
+    dxdy_label = "dy/dx #{label}"
+    draw_fx(Gosu::Color::WHITE, bold: false, label: dxdy_label) do |x|
+      Calculus.derivative_line(x, @px, block)
+    end
   end
 
   LINE_THICKNESS = 3
   MIN_PRECISION = 0.000000000001
-  def draw_function(color, opts = {}, &block)
+  def draw_fx(color, opts = {}, &block)
     opts = { bold: true }.merge(opts)
     precision = [(@camera.width / 1000.0).abs, MIN_PRECISION].max
 
