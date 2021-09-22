@@ -27,6 +27,13 @@ class Flaty
     Gosu.draw_line(x1, y1, c1, x2, y2, c2, z, mode)
   end
 
+  def self.draw_text(font, text, x, y, z = 0, color = Gosu::Color::BLACK)
+    camera = GameWindow.camera
+    x = camera.translate_x(x)
+    y = camera.translate_y(y)
+    font.draw_text(text, x, y, z, 1.0, 1.0, color)
+  end
+
   def self.paint(color)
     Gosu.draw_rect(0, 0, GameWindow.width, GameWindow.height, color, 0)
   end

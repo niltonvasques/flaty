@@ -10,7 +10,7 @@ class GameObject < OpenStruct
     default = {
       position: Vector2d[0,0], z: 0, previous_position: Vector2d[0,0], acceleration: Vector2d[0,0],
       speed: Vector2d[0,0], scale_x: 1, scale_y: 1, current: 0, camera: true, debug: false,
-      rect: Rect[0, 0, 0, 0], max_speed: Vector2d[0, 0], damp: 0.8, angle: 0
+      rect: Rect[0, 0, 0, 0], max_speed: Vector2d[1000, 1000], damp: 1, angle: 0, mass: 1
     }
     super(default.merge(opts))
     self.previous_position = self.position.dup
@@ -92,7 +92,7 @@ class GameObject < OpenStruct
 
   def current_image
     return image if image
-    tiles[current]
+    tiles[current] if tiles
   end
 
   def colliding?(obj)

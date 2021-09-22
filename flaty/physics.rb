@@ -43,6 +43,31 @@ module Collision
 end
 
 module Physics
+  def self.elastic_collisions(bodies)
+    bodies.each_index do |i|
+      (i+1).upto(bodies.size - 1) do |j|
+        Physics.elastic_collision(bodies[i], bodies[j])
+      end
+    end
+  end
+
+  def self.elastic_collision(body1, body2)
+    if body1.colliding?(body2) != Collision::NONE
+      Physics.solve_collision(body1, body2)
+      Physics.solve_collision(body2, body1)
+      m1 = body1.mass
+      m2 = body2.mass
+      u1 = body1.speed
+      u2 = body2.speed
+
+      v1 = ( ((m1-m2)/(m1+m2))*u1 ) + ( ((2*m2)/(m1+m2))*u2 )
+      v2 = ( ((m2-m1)/(m1+m2))*u2 ) + ( ((2*m1)/(m1+m2))*u1 )
+
+      body1.speed = v1
+      body2.speed = v2
+    end
+  end
+
   def self.solve_collision(body1, body2)
     self.solve_collisions(body1, [body2])
   end
@@ -52,7 +77,6 @@ module Physics
 
     collision = Collision::NONE
     candidates.each do |obj|
-      #binding.pry
       obj.debug = Gosu::Color::CYAN
       collision |= body1.colliding?(obj.collision_rect)
     end
