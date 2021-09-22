@@ -58,19 +58,13 @@ class MathAxis < GameWindow
 
   private
 
-  MAX_CAMERA_SIZE = 10000000
-  MIN_CAMERA_SIZE = 0.01
-  def zoom(units)
-    units *= @camera.width / 10.0
-    return if units < 0 and @camera.width <= MIN_CAMERA_SIZE
-    return if units > 0 and @camera.width >= MAX_CAMERA_SIZE
-    @camera.size(@camera.width + units, @camera.height + units)
+  def zoom(direction)
+    @camera.zoom(direction)
     @axis_image = Gosu.render(SCREEN_WIDTH, SCREEN_HEIGHT) { draw_axis }
   end
 
   def move(direction)
-    unit = @camera.width / 20.0
-    @camera.position += (direction * unit)
+    @camera.move(direction)
     @axis_image = Gosu.render(SCREEN_WIDTH, SCREEN_HEIGHT) { draw_axis }
   end
 

@@ -29,6 +29,20 @@ class Camera
     @unit_y = GameWindow.height / height.to_f
   end
 
+  MAX_CAMERA_SIZE = 10000000
+  MIN_CAMERA_SIZE = 0.01
+  def zoom(units)
+    units *= self.width / 10.0
+    return if units < 0 and self.width <= MIN_CAMERA_SIZE
+    return if units > 0 and self.width >= MAX_CAMERA_SIZE
+    self.size(self.width + units, self.height + units)
+  end
+
+  def move(direction)
+    unit = self.width / 20.0
+    self.position += (direction * unit)
+  end
+
   def visible?(obj)
     return false if obj.x > (self.position.x + self.width / 2.0)
     return false if obj.x + obj.width < (self.position.x - self.width / 2.0)

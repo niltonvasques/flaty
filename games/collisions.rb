@@ -59,6 +59,8 @@ class Collisions < GameWindow
     restart if Gosu.button_down? Gosu::KB_R
     @body1.mass += 1  if Gosu.button_down? Gosu::KB_UP
     @body1.mass -= 1 if Gosu.button_down? Gosu::KB_DOWN
+    @camera.zoom(-1) if Gosu.button_down? Gosu::KB_NUMPAD_PLUS
+    @camera.zoom(1)  if Gosu.button_down? Gosu::KB_NUMPAD_MINUS
 
     # collision after gravity are locking bodies X axis
     # @bodies.select(&:rigidbody).each { |body| body.acceleration = GRAVITY.dup }
