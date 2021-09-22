@@ -55,6 +55,8 @@ module Physics
     if body1.colliding?(body2) != Collision::NONE
       Physics.solve_collision(body1, body2)
       Physics.solve_collision(body2, body1)
+
+      # https://en.wikipedia.org/wiki/Elastic_collision#One-dimensional_Newtonian
       m1 = body1.mass
       m2 = body2.mass
       u1 = body1.speed

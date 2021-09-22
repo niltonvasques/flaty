@@ -73,6 +73,8 @@ class Collisions < GameWindow
     Flaty.paint(Gosu::Color::GRAY)
 
     draw_bodies
+
+    @font.draw_text("FPS: #{Gosu.fps}", 10, 10, 100, 1.0, 1.0, Gosu::Color::GREEN)
   end
 
   def draw_bodies
