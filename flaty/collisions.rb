@@ -57,23 +57,42 @@ module Collision
     squared_radius = (obj1.radius + obj2.radius) * (obj1.radius + obj2.radius)
 
     if (squared_hypot < squared_radius)
-      collision = Collision::NONE
-      collision |= Collision::RIGHT if obj1.x > obj2.x
-      collision |= Collision::LEFT if obj1.x < obj2.x
-      collision |= Collision::BOTTOM if obj1.y > obj2.y
-      collision |= Collision::TOP if obj1.y < obj2.y
-
-      return collision
+      return circle_direction(obj1.x, obj1.y, obj2.x, obj2.y)
     end
 
     Collision::NONE
   end
 
-  # naive circle rect collision
+  # https://stackoverflow.com/questions/401847/circle-rectangle-collision-detection-intersection
   def self.detect_circle_rect(circle, rect)
-    circle_rect = Rect[circle.x - circle.radius, circle.y - circle.radius,
-                       circle.radius * 2, circle.radius * 2]
-    self.detect_rect(circle_rect, rect)
+    rect_half_width = rect.width / 2.0
+    rect_half_height = rect.height / 2.0
+
+    rx = rect.x + rect_half_width
+    ry = rect.y + rect_half_height
+
+    a = (circle.x - rx).abs
+    b = (circle.y - ry).abs
+
+    return Collision::NONE if a > rect_half_width + circle.radius
+    return Collision::NONE if b > rect_half_height + circle.radius
+
+    return circle_direction(circle.x, circle.y, rx, ry) if a <= rect_half_width
+    return circle_direction(circle.x, circle.y, rx, ry) if b <= rect_half_height
+
+    distance = (a - rect_half_width) ** 2 + (b - rect_half_height) ** 2
+    return circle_direction(circle.x, circle.y, rx, ry) if distance <= circle.radius ** 2
+
+    Collision::NONE
+  end
+
+  def self.circle_direction(x1, y1, x2, y2)
+    collision = Collision::NONE
+    collision |= Collision::LEFT if x1 - x2 < 0
+    collision |= Collision::RIGHT if x1 - x2 > 0
+    collision |= Collision::TOP if y1 - y2 < 0
+    collision |= Collision::BOTTOM if y1 - y2 > 0
+    collision
   end
 
   def self.detect_circle_point(circle, point)
