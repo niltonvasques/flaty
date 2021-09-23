@@ -28,6 +28,12 @@ class Flaty
       y1 = y2
       x2 += precision
     end
+    x2 = radius
+    y2 = Math.sqrt(radius*radius - x2*x2)
+    w = (x2 - x1)
+    h = (y2 - y1)
+    Flaty.draw_line(x1 + center.x, y1 + center.y, c, x2 + center.x, y2 + center.y, c, z)
+    Flaty.draw_line(x1 + center.x, -y1 + center.y, c, x2 + center.x, -y2 + center.y, c, z)
   end
 
   def self.draw_rect(x, y, width = 1, height = 1, c = Gosu::Color::BLACK, z = 0, mode = :default,

@@ -91,7 +91,7 @@ class MathAxis < GameWindow
       @camera_debug.draw
 
       Flaty.paint(Gosu::Color::GRAY)
-      Flaty.draw_circle(Vector2d[3, 3], 3)
+      Flaty.draw_circle(Vector2d[3.5, 3.5], 3)
 
       f = Poly.interpolate(@points)
       fx = f.equation(2)
