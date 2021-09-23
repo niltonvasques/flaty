@@ -46,6 +46,10 @@ class Collisions < GameWindow
                             color: Gosu::Color::RED, mass: 40.0, rigidbody: true)
     @body2 = RectGameObject.new(position: Vector2d[-4,0], speed: Vector2d[1, 0], width: 1, height: 1,
                             color: Gosu::Color::BLUE, mass: 10.0, rigidbody: true)
+    @circle1 = CircleGameObject.new(position: Vector2d[1.0,4.0], speed: Vector2d[-1, 0], radius: 0.5,
+                            color: Gosu::Color::GREEN, mass: 10.0, rigidbody: true)
+    @circle2 = CircleGameObject.new(position: Vector2d[-2.0,4.0], speed: Vector2d[1, 0], radius: 0.5,
+                            color: Gosu::Color::GREEN, mass: 10.0, rigidbody: true)
     #@body3 = GameObject.new(position: Vector2d[0,6], speed: Vector2d[0, -2], width: 1, height: 1,
     #                        color: Gosu::Color::YELLOW, mass: 10.0, rigidbody: true)
     @world.bodies << @floor
@@ -53,6 +57,8 @@ class Collisions < GameWindow
     @world.bodies << @right_wall
     @world.bodies << @body1
     @world.bodies << @body2
+    @world.bodies << @circle1
+    @world.bodies << @circle2
     #@bodies << @body3
   end
 
@@ -80,12 +86,16 @@ class Collisions < GameWindow
 
   def draw_bodies
     @world.bodies.each do |body|
+      next if body.is_a? CircleGameObject
+
       Flaty.draw_rect(body.x, body.y, body.width, body.height, body.color, 0)
       x = body.x + (body.width / 2.0)
       y = body.y + (body.height / 2.0)
       mass = "#{body.mass.to_i.to_s} kg"
       Flaty.draw_text(@font, mass, x, y) if body.rigidbody
     end
+
+    @world.bodies.select { |b| b.is_a? CircleGameObject }.each(&:draw)
   end
 end
 

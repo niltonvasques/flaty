@@ -90,12 +90,9 @@ end
 class RectGameObject < GameObject
   include Collider
 
-  def detect(shape)
-    Collision.detect(self.collision_rect, shape)
-  end
-
-  def colliding?(obj)
-    Collision.detect(self.collision_rect, obj)
+  def collisions(obj)
+    return Collision::NONE unless obj.is_a? RectGameObject
+    Collision.detect_rect(self.collision_rect, obj)
   end
 
   def collision_rect
@@ -104,5 +101,27 @@ class RectGameObject < GameObject
     self.rect.width = self.width
     self.rect.height = self.height
     self.rect
+  end
+end
+
+class CircleGameObject < GameObject
+  include Collider
+
+  def initialize(opts = {})
+    super({ radius: 1 }.merge(opts))
+  end
+
+  def center
+    self.position
+  end
+
+  def collisions(obj)
+    return Collision::NONE unless obj.is_a? CircleGameObject
+
+    Collision.detect_circle(self, obj)
+  end
+
+  def draw
+    Flaty.draw_circle(self.center, self.radius, self.color)
   end
 end

@@ -8,6 +8,28 @@ require 'flaty/benchmark'
 require 'flaty/time'
 
 class Flaty
+
+  MIN_PRECISION = 0.000000000001
+  def self.draw_circle(center, radius, c = Gosu::Color::BLACK, z = 0)
+    color = Gosu::Color::BLACK
+    precision = [(GameWindow.camera.width / 1000.0).abs, MIN_PRECISION].max
+
+    x2 = -radius
+    x1 = x2
+    y1 = Math.sqrt(radius*radius - x1*x1)
+
+    while x2 <= radius
+      y2 = Math.sqrt(radius*radius - x2*x2)
+      w = (x2 - x1)
+      h = (y2 - y1)
+      Flaty.draw_line(x1 + center.x, y1 + center.y, c, x2 + center.x, y2 + center.y, c, z)
+      Flaty.draw_line(x1 + center.x, -y1 + center.y, c, x2 + center.x, -y2 + center.y, c, z)
+      x1 = x2
+      y1 = y2
+      x2 += precision
+    end
+  end
+
   def self.draw_rect(x, y, width = 1, height = 1, c = Gosu::Color::BLACK, z = 0, mode = :default,
                      thickness = 0)
     camera = GameWindow.camera

@@ -42,7 +42,7 @@ class World
 
     Physics.solve_collisions(@bob, @level.around(@bob.collision_rect))
     Physics.solve_collisions(@bird, @level.around(@bird.collision_rect))
-    if @bob.colliding?(@bird) != Collision::NONE
+    if @bob.collisions(@bird) != Collision::NONE
       Physics.solve_collision(@bird, @bob)
       Physics.solve_collision(@bob, @bird)
     end

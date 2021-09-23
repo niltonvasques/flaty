@@ -1,5 +1,9 @@
 module Collider
-  def detect(shape2)
+  def detect(shape)
+    collisions(shape)
+  end
+
+  def collisions(shape)
     false
   end
 end
@@ -31,12 +35,31 @@ module Collision
     self.bottom?(collision) or self.top?(collision)
   end
 
-  def self.detect(obj1, obj2)
+  def self.detect_rect(obj1, obj2)
     if (obj1.x + obj1.width >= obj2.x and obj1.x <= obj2.x + obj2.width and
         obj1.y + obj1.height >= obj2.y and obj1.y <= obj2.y + obj2.height)
       collision = Collision::NONE
       collision |= Collision::RIGHT if obj1.x < obj2.x and (obj1.x + obj1.width) > obj2.x and (obj1.x + obj1.width) < (obj2.x + obj2.width)
       collision |= Collision::LEFT if obj1.x > obj2.x and (obj1.x + obj1.width) > (obj2.x + obj2.width) and obj1.x < (obj2.x + obj2.width)
+      collision |= Collision::BOTTOM if obj1.y > obj2.y
+      collision |= Collision::TOP if obj1.y < obj2.y
+
+      return collision
+    end
+
+    Collision::NONE
+  end
+
+  def self.detect_circle(obj1, obj2)
+    a = obj1.x - obj2.x
+    b = obj1.y - obj2.y
+    squared_hypot = a*a + b*b
+    squared_radius = (obj1.radius + obj2.radius) * (obj1.radius + obj2.radius)
+
+    if (squared_hypot < squared_radius)
+      collision = Collision::NONE
+      collision |= Collision::RIGHT if obj1.x > obj2.x
+      collision |= Collision::LEFT if obj1.x < obj2.x
       collision |= Collision::BOTTOM if obj1.y > obj2.y
       collision |= Collision::TOP if obj1.y < obj2.y
 

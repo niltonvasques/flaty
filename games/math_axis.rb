@@ -91,6 +91,7 @@ class MathAxis < GameWindow
       @camera_debug.draw
 
       Flaty.paint(Gosu::Color::GRAY)
+      Flaty.draw_circle(Vector2d[3, 3], 3)
 
       f = Poly.interpolate(@points)
       fx = f.equation(2)
@@ -98,6 +99,7 @@ class MathAxis < GameWindow
       @label_y = 0
       #draw_fx_and_dydx { |x| Math.sin(x**2) }
       draw_fx_and_dydx { |x| Math.sin(x) }
+
 
       #draw_fx(Gosu::Color::GREEN)           { |x| Math.sin(x)                            }
       #draw_fx(Gosu::Color::WHITE)           { |x| derivative_line(x) { |x| x**3 }        }
