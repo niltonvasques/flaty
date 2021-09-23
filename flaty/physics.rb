@@ -60,21 +60,26 @@ module Physics
   end
 
   def self.elastic_collision(body1, body2)
-    if body1.colliding?(body2) != Collision::NONE
-      Physics.solve_collision(body1, body2)
-      Physics.solve_collision(body2, body1)
+    collision = body1.colliding?(body2)
+    if collision != Collision::NONE and (body1.rigidbody or body2.rigidbody)
+      Physics.solve_collision(body1, body2) if body1.rigidbody
+      Physics.solve_collision(body2, body1) if body2.rigidbody
+      if Collision.horizontal?(collision)
+        #puts "horizontal #{body2.tag} #{body1.tag} - #{Collision.to_s(collision2)} #{body2.acceleration} #{body2.speed}"
+        # https://en.wikipedia.org/wiki/Elastic_collision#One-dimensional_Newtonian
+        m1 = body1.mass
+        m2 = body2.mass
+        u1 = body1.speed
+        u2 = body2.speed
 
-      # https://en.wikipedia.org/wiki/Elastic_collision#One-dimensional_Newtonian
-      m1 = body1.mass
-      m2 = body2.mass
-      u1 = body1.speed
-      u2 = body2.speed
+        v1 = ( ((m1-m2)/(m1+m2))*u1 ) + ( ((2*m2)/(m1+m2))*u2 )
+        v2 = ( ((m2-m1)/(m1+m2))*u2 ) + ( ((2*m1)/(m1+m2))*u1 )
 
-      v1 = ( ((m1-m2)/(m1+m2))*u1 ) + ( ((2*m2)/(m1+m2))*u2 )
-      v2 = ( ((m2-m1)/(m1+m2))*u2 ) + ( ((2*m1)/(m1+m2))*u1 )
-
-      body1.speed = v1
-      body2.speed = v2
+        body1.speed = v1
+        body2.speed = v2
+        #body1.speed *= 0 if [:floor, :wall, :ceil].include? body1.tag
+        #body2.speed *= 0 if [:floor, :wall, :ceil].include? body2.tag
+      end
     end
   end
 
@@ -139,20 +144,28 @@ module Physics
 
     body1.reset if collision != Collision::NONE
 
-    collided
+    collision
   end
 
   class World
-    attr_accessor :bodies
+    GRAVITY             = Vector2d[0, -9.8].freeze # -9.8 m/s
+
+    attr_accessor :bodies, :gravity
 
     def initialize
       @bodies = []
+      @gravity = GRAVITY
     end
 
     def update
       # collision after gravity are locking bodies X axis
       # @bodies.select(&:rigidbody).each { |body| body.acceleration = GRAVITY.dup }
+      #body3 = @bodies.last
+      #puts "#{body3.speed.round(2)} speed #{body3.acceleration.round(2)}"
       @bodies.each(&:update)
+      #@bodies.select { |body| body.rigidbody }.each do |body|
+      #  body.acceleration = GRAVITY * body.mass
+      #end
       Physics.elastic_collisions(@bodies)
     end
   end

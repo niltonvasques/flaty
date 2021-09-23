@@ -37,23 +37,26 @@ class Collisions < GameWindow
     @world.bodies.clear
 
     @left_wall = GameObject.new(position: Vector2d[-5,0], speed: Vector2d[0, 0], width: 1, height: 10,
-                                mass: 1000000000, color: Gosu::Color::BLACK)
+                                mass: 1000000000, color: Gosu::Color::BLACK, tag: :wall)
     @right_wall = GameObject.new(position: Vector2d[4,0], speed: Vector2d[0, 0], width: 1,
-                                 height: 10, mass: 1000000000, color: Gosu::Color::BLACK)
+                                 height: 10, mass: 1000000000, color: Gosu::Color::BLACK, tag: :wall)
     @floor = GameObject.new(position: Vector2d[-5,-1.01], speed: Vector2d[0, 0], width: 10,
-                            height: 1, mass: 1000000000, color: Gosu::Color::BLACK)
+                            height: 1, mass: 1000000000, color: Gosu::Color::BLACK, tag: :floor)
+    @ceil = GameObject.new(position: Vector2d[-5, 10], speed: Vector2d[0, 0], width: 10,
+                            height: 1, mass: 1000000000, color: Gosu::Color::BLACK, tag: :ceil)
     @body1 = GameObject.new(position: Vector2d[0,0], speed: Vector2d[-4, 0], width: 2, height: 2,
-                            color: Gosu::Color::RED, mass: 40.0, rigidbody: true)
+                            color: Gosu::Color::RED, mass: 40.0, rigidbody: true, tag: :body)
     @body2 = GameObject.new(position: Vector2d[-4,0], speed: Vector2d[1, 0], width: 1, height: 1,
-                            color: Gosu::Color::BLUE, mass: 10.0, rigidbody: true)
-    #@body3 = GameObject.new(position: Vector2d[0,6], speed: Vector2d[0, -2], width: 1, height: 1,
-    #                        color: Gosu::Color::YELLOW, mass: 10.0, rigidbody: true)
+                            color: Gosu::Color::BLUE, mass: 10.0, rigidbody: true, tag: :body)
+    @body3 = GameObject.new(position: Vector2d[0,6], speed: Vector2d[0, -10], width: 1, height: 1,
+                            color: Gosu::Color::YELLOW, mass: 10.0, rigidbody: true, tag: :sky)
     @world.bodies << @floor
+    @world.bodies << @ceil
     @world.bodies << @left_wall
     @world.bodies << @right_wall
     @world.bodies << @body1
     @world.bodies << @body2
-    #@bodies << @body3
+    @world.bodies << @body3
   end
 
   def update
