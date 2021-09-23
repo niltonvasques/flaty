@@ -48,10 +48,12 @@ class Collisions < GameWindow
                             color: Gosu::Color::RED, mass: 40.0, rigidbody: true)
     @body2 = RectGameObject.new(position: Vector2d[-4,0], speed: Vector2d[1, 0], width: 1, height: 1,
                             color: Gosu::Color::BLUE, mass: 10.0, rigidbody: true)
-    @circle1 = CircleGameObject.new(position: Vector2d[1.0,4.0], speed: Vector2d[-3, -1], radius: 0.5,
+    @circle1 = CircleGameObject.new(position: Vector2d[1.0,4.0], speed: Vector2d[-4, -1], radius: 0.5,
                             color: Gosu::Color::GREEN, mass: 10.0, rigidbody: true)
-    @circle2 = CircleGameObject.new(position: Vector2d[-1.0,4.0], speed: Vector2d[1, -3], radius: 0.5,
+    @circle2 = CircleGameObject.new(position: Vector2d[-1.0,4.0], speed: Vector2d[3, -3], radius: 0.5,
                             color: Gosu::Color::RED, mass: 10.0, rigidbody: true)
+    @circle3 = CircleGameObject.new(position: Vector2d[-3.0,2.0], speed: Vector2d[2, -4], radius: 0.5,
+                            color: Gosu::Color::BLUE, mass: 10.0, rigidbody: true)
     #@body3 = GameObject.new(position: Vector2d[0,6], speed: Vector2d[0, -2], width: 1, height: 1,
     #                        color: Gosu::Color::YELLOW, mass: 10.0, rigidbody: true)
     @world.bodies << @floor
@@ -62,6 +64,7 @@ class Collisions < GameWindow
     #@world.bodies << @body2
     @world.bodies << @circle1
     @world.bodies << @circle2
+    @world.bodies << @circle3
     #@bodies << @body3
   end
 

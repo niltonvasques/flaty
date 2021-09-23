@@ -81,17 +81,23 @@ module Collision
     return circle_direction(circle.x, circle.y, rx, ry) if b <= rect_half_height
 
     distance = (a - rect_half_width) ** 2 + (b - rect_half_height) ** 2
-    return circle_direction(circle.x, circle.y, rx, ry) if distance <= circle.radius ** 2
+    return circle_direction(circle.x, circle.y, rx, ry) if distance <= (circle.radius ** 2)
 
     Collision::NONE
   end
 
   def self.circle_direction(x1, y1, x2, y2)
     collision = Collision::NONE
-    collision |= Collision::LEFT if x1 - x2 < 0
-    collision |= Collision::RIGHT if x1 - x2 > 0
-    collision |= Collision::TOP if y1 - y2 < 0
-    collision |= Collision::BOTTOM if y1 - y2 > 0
+    if x1 - x2 < 0
+      collision |= Collision::LEFT
+    else
+      collision |= Collision::RIGHT
+    end
+    if y1 - y2 < 0
+      collision |= Collision::TOP
+    else
+      collision |= Collision::BOTTOM
+    end
     collision
   end
 
