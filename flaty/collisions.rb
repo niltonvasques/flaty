@@ -69,6 +69,32 @@ module Collision
     Collision::NONE
   end
 
+  # naive circle rect collision
+  def self.detect_circle_rect(circle, rect)
+    circle_rect = Rect[circle.x - circle.radius, circle.y - circle.radius,
+                       circle.radius * 2, circle.radius * 2]
+    self.detect_rect(circle_rect, rect)
+  end
+
+  def self.detect_circle_point(circle, point)
+    a = circle.x - point.x
+    b = circle.y - point.y
+    squared_hypot = a*a + b*b
+    squared_radius = circle.radius * circle.radius
+
+    if (squared_hypot < squared_radius)
+      collision = Collision::NONE
+      collision |= Collision::RIGHT if circle.x > point.x
+      collision |= Collision::LEFT if circle.x < point.x
+      collision |= Collision::BOTTOM if circle.y > point.y
+      collision |= Collision::TOP if circle.y < point.y
+
+      return collision
+    end
+
+    Collision::NONE
+  end
+
   def self.to_s(collision)
     result = ""
     result += "top " if self.top? collision

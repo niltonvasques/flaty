@@ -91,8 +91,9 @@ class RectGameObject < GameObject
   include Collider
 
   def collisions(obj)
-    return Collision::NONE unless obj.is_a? RectGameObject
-    Collision.detect_rect(self.collision_rect, obj)
+    return Collision.detect_rect(self, obj) if obj.is_a? RectGameObject
+    return Collision.detect_circle_rect(obj, self) if obj.is_a? CircleGameObject
+    return Collision::NONE
   end
 
   def collision_rect
@@ -116,9 +117,9 @@ class CircleGameObject < GameObject
   end
 
   def collisions(obj)
-    return Collision::NONE unless obj.is_a? CircleGameObject
-
-    Collision.detect_circle(self, obj)
+    return Collision.detect_circle(self, obj) if obj.is_a? CircleGameObject
+    return Collision.detect_circle_rect(self, obj) if obj.is_a? RectGameObject
+    return Collision::NONE
   end
 
   def draw
