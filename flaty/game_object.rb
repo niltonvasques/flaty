@@ -3,6 +3,12 @@ require 'ostruct'
 require 'flaty/math/vector_2d'
 require 'flaty/physics'
 
+module Collider
+  def detect(shape2)
+    false
+  end
+end
+
 class GameObject < OpenStruct
   #attr_accessor :image, :width, :height, :x, :y, :z, :speed
 
@@ -91,6 +97,14 @@ class GameObject < OpenStruct
   def current_image
     return image if image
     tiles[current] if tiles
+  end
+end
+
+class RectGameObject < GameObject
+  include Collider
+
+  def detect(shape)
+    Collision.detect(self.collision_rect, shape)
   end
 
   def colliding?(obj)

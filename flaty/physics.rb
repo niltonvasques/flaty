@@ -152,8 +152,9 @@ module Physics
     def update
       # collision after gravity are locking bodies X axis
       # @bodies.select(&:rigidbody).each { |body| body.acceleration = GRAVITY.dup }
+      collidables = @bodies.select { |body| body.is_a? Collider }
       @bodies.each(&:update)
-      Physics.elastic_collisions(@bodies)
+      Physics.elastic_collisions(collidables)
     end
   end
 end

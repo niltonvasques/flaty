@@ -2,7 +2,7 @@ require 'gosu'
 require 'ostruct'
 require 'flaty/flaty'
 
-class Bob < GameObject
+class Bob < RectGameObject
   SIZE              = 1.85 # 1.85 meters tall
 
   # velocity

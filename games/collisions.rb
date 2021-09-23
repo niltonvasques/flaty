@@ -36,15 +36,15 @@ class Collisions < GameWindow
   def restart
     @world.bodies.clear
 
-    @left_wall = GameObject.new(position: Vector2d[-5,0], speed: Vector2d[0, 0], width: 1, height: 10,
+    @left_wall = RectGameObject.new(position: Vector2d[-5,0], speed: Vector2d[0, 0], width: 1, height: 10,
                                 mass: 1000000000, color: Gosu::Color::BLACK)
-    @right_wall = GameObject.new(position: Vector2d[4,0], speed: Vector2d[0, 0], width: 1,
+    @right_wall = RectGameObject.new(position: Vector2d[4,0], speed: Vector2d[0, 0], width: 1,
                                  height: 10, mass: 1000000000, color: Gosu::Color::BLACK)
-    @floor = GameObject.new(position: Vector2d[-5,-1.01], speed: Vector2d[0, 0], width: 10,
+    @floor = RectGameObject.new(position: Vector2d[-5,-1.01], speed: Vector2d[0, 0], width: 10,
                             height: 1, mass: 1000000000, color: Gosu::Color::BLACK)
-    @body1 = GameObject.new(position: Vector2d[0,0], speed: Vector2d[-4, 0], width: 2, height: 2,
+    @body1 = RectGameObject.new(position: Vector2d[0,0], speed: Vector2d[-4, 0], width: 2, height: 2,
                             color: Gosu::Color::RED, mass: 40.0, rigidbody: true)
-    @body2 = GameObject.new(position: Vector2d[-4,0], speed: Vector2d[1, 0], width: 1, height: 1,
+    @body2 = RectGameObject.new(position: Vector2d[-4,0], speed: Vector2d[1, 0], width: 1, height: 1,
                             color: Gosu::Color::BLUE, mass: 10.0, rigidbody: true)
     #@body3 = GameObject.new(position: Vector2d[0,6], speed: Vector2d[0, -2], width: 1, height: 1,
     #                        color: Gosu::Color::YELLOW, mass: 10.0, rigidbody: true)

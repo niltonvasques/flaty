@@ -2,7 +2,7 @@ require 'gosu'
 require 'ostruct'
 require 'flaty/flaty'
 
-class Bird < GameObject
+class Bird < RectGameObject
   IDLE                = 2.freeze
   IDLE_SPEED          = Vector2d[IDLE, 0].freeze
   ACCELERATION        = 20.freeze # units per second
