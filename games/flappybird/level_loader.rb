@@ -1,7 +1,7 @@
 require 'chunky_png'
 require 'flaty/flaty'
 
-class Tile < GameObject
+class Tile < RectGameObject
   SCREEN_WIDTH   = 1280
   SCREEN_HEIGHT  = 720
   SIZE   = 18

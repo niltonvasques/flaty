@@ -2,7 +2,7 @@ require 'gosu'
 require 'ostruct'
 require 'flaty/math/rect'
 
-class Bird < GameObject
+class Bird < RectGameObject
   IDLE                = 5.freeze
   GRAVITY             = Vector2d[0, -30].freeze
   JUMP                = Vector2d[0, 200].freeze

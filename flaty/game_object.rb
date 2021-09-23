@@ -25,14 +25,6 @@ class GameObject < OpenStruct
   def x; self.position.x; end
   def y; self.position.y; end
 
-  def collision_rect
-    self.rect.x = self.x
-    self.rect.y = self.y
-    self.rect.width = self.width
-    self.rect.height = self.height
-    self.rect
-  end
-
   def update
     unless current_image.nil?
       self.width = GameWindow.camera.pixel_to_unit_x(current_image.width * self.scale_x)
@@ -104,5 +96,13 @@ class RectGameObject < GameObject
 
   def colliding?(obj)
     Collision.detect(self.collision_rect, obj)
+  end
+
+  def collision_rect
+    self.rect.x = self.x
+    self.rect.y = self.y
+    self.rect.width = self.width
+    self.rect.height = self.height
+    self.rect
   end
 end
