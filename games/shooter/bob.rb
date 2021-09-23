@@ -150,4 +150,12 @@ class Bob < GameObject
   def turn_left?
     self.speed.x < 0
   end
+
+  def grounded
+    self.speed.y = 0
+  end
+
+  def ceil_hit
+    self.speed.y = 0
+  end
 end

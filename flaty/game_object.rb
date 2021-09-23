@@ -78,11 +78,9 @@ class GameObject < OpenStruct
   end
 
   def grounded
-    self.speed.y = 0
   end
 
   def ceil_hit
-    self.speed.y = 0
   end
 
   def outside_window?
@@ -96,6 +94,6 @@ class GameObject < OpenStruct
   end
 
   def colliding?(obj)
-    Collision.detect(obj, self.collision_rect)
+    Collision.detect(self.collision_rect, obj)
   end
 end

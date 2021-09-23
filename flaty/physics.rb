@@ -17,14 +17,22 @@ module Collision
     collision & RIGHT == RIGHT
   end
 
+  def self.horizontal?(collision)
+    self.left?(collision) or self.right?(collision)
+  end
+
+  def self.vertical?(collision)
+    self.bottom?(collision) or self.top?(collision)
+  end
+
   def self.detect(obj1, obj2)
     if (obj1.x + obj1.width >= obj2.x and obj1.x <= obj2.x + obj2.width and
         obj1.y + obj1.height >= obj2.y and obj1.y <= obj2.y + obj2.height)
       collision = Collision::NONE
-      collision |= Collision::RIGHT if obj2.x < obj1.x
-      collision |= Collision::LEFT if obj2.x > obj1.x
-      collision |= Collision::BOTTOM if obj2.y > obj1.y
-      collision |= Collision::TOP if obj2.y < obj1.y
+      collision |= Collision::RIGHT if obj1.x < obj2.x and (obj1.x + obj1.width) > obj2.x and (obj1.x + obj1.width) < (obj2.x + obj2.width)
+      collision |= Collision::LEFT if obj1.x > obj2.x and (obj1.x + obj1.width) > (obj2.x + obj2.width) and obj1.x < (obj2.x + obj2.width)
+      collision |= Collision::BOTTOM if obj1.y > obj2.y
+      collision |= Collision::TOP if obj1.y < obj2.y
 
       return collision
     end
