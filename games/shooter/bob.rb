@@ -114,8 +114,12 @@ class Bob < GameObject
   end
 
   def grounded
-    super
+    self.speed.y = 0
     self.state = :idle
+  end
+
+  def ceil_hit
+    self.speed.y = 0
   end
 
   def collect_stars(stars)
@@ -149,13 +153,5 @@ class Bob < GameObject
 
   def turn_left?
     self.speed.x < 0
-  end
-
-  def grounded
-    self.speed.y = 0
-  end
-
-  def ceil_hit
-    self.speed.y = 0
   end
 end
