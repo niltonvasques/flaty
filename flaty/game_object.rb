@@ -2,12 +2,7 @@ require 'gosu'
 require 'ostruct'
 require 'flaty/math/vector_2d'
 require 'flaty/physics'
-
-module Collider
-  def detect(shape2)
-    false
-  end
-end
+require 'flaty/collisions'
 
 class GameObject < OpenStruct
   #attr_accessor :image, :width, :height, :x, :y, :z, :speed
