@@ -125,7 +125,7 @@ class Bob < RectGameObject
   def collect_stars(stars)
     stars.reject! do |star|
       #if Gosu.distance(self.x + self.width / 2, self.y + self.height / 2, star.x, star.y) < 1
-      if Collision.detect(collision_rect, star) != Collision::NONE
+      if Collision.detect_rect(collision_rect, star) != Collision::NONE
         self.score += 10
         @beep.play(0.2)
         true
