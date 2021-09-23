@@ -133,4 +133,19 @@ module Physics
 
     collided
   end
+
+  class World
+    attr_accessor :bodies
+
+    def initialize
+      @bodies = []
+    end
+
+    def update
+      # collision after gravity are locking bodies X axis
+      # @bodies.select(&:rigidbody).each { |body| body.acceleration = GRAVITY.dup }
+      @bodies.each(&:update)
+      Physics.elastic_collisions(@bodies)
+    end
+  end
 end

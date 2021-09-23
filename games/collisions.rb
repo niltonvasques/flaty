@@ -28,11 +28,14 @@ class Collisions < GameWindow
     # assets
     @font = Gosu::Font.new(25)
 
+    @world = Physics::World.new
+
     restart
   end
 
   def restart
-    @bodies = []
+    @world.bodies.clear
+
     @left_wall = GameObject.new(position: Vector2d[-5,0], speed: Vector2d[0, 0], width: 1, height: 10,
                                 mass: 1000000000, color: Gosu::Color::BLACK)
     @right_wall = GameObject.new(position: Vector2d[4,0], speed: Vector2d[0, 0], width: 1,
@@ -45,11 +48,11 @@ class Collisions < GameWindow
                             color: Gosu::Color::BLUE, mass: 10.0, rigidbody: true)
     #@body3 = GameObject.new(position: Vector2d[0,6], speed: Vector2d[0, -2], width: 1, height: 1,
     #                        color: Gosu::Color::YELLOW, mass: 10.0, rigidbody: true)
-    @bodies << @floor
-    @bodies << @left_wall
-    @bodies << @right_wall
-    @bodies << @body1
-    @bodies << @body2
+    @world.bodies << @floor
+    @world.bodies << @left_wall
+    @world.bodies << @right_wall
+    @world.bodies << @body1
+    @world.bodies << @body2
     #@bodies << @body3
   end
 
@@ -62,15 +65,11 @@ class Collisions < GameWindow
     @camera.zoom(-1) if Gosu.button_down? Gosu::KB_NUMPAD_PLUS
     @camera.zoom(1)  if Gosu.button_down? Gosu::KB_NUMPAD_MINUS
 
-    # collision after gravity are locking bodies X axis
-    # @bodies.select(&:rigidbody).each { |body| body.acceleration = GRAVITY.dup }
-    @bodies.each(&:update)
-
-    Physics.elastic_collisions(@bodies)
+    @world.update
   end
 
   def draw
-    #@camera_debug.draw
+    @camera_debug.draw if GameWindow.debug
 
     Flaty.paint(Gosu::Color::GRAY)
 
@@ -80,7 +79,7 @@ class Collisions < GameWindow
   end
 
   def draw_bodies
-    @bodies.each do |body|
+    @world.bodies.each do |body|
       Flaty.draw_rect(body.x, body.y, body.width, body.height, body.color, 0)
       x = body.x + (body.width / 2.0)
       y = body.y + (body.height / 2.0)
