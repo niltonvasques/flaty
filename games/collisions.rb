@@ -37,20 +37,20 @@ class Collisions < GameWindow
     @world.bodies.clear
 
     @left_wall = RectGameObject.new(position: Vector2d[-5,0], speed: Vector2d[0, 0], width: 1, height: 10,
-                                mass: 1000000000, color: Gosu::Color::BLACK)
+                                mass: 1000000000, color: Gosu::Color::BLACK, tag: :left_wall)
     @right_wall = RectGameObject.new(position: Vector2d[4,0], speed: Vector2d[0, 0], width: 1,
-                                 height: 10, mass: 1000000000, color: Gosu::Color::BLACK)
+                                 height: 10, mass: 1000000000, color: Gosu::Color::BLACK, tag: :right_wall)
     @floor = RectGameObject.new(position: Vector2d[-5,-1.01], speed: Vector2d[0, 0], width: 10,
-                            height: 1, mass: 1000000000, color: Gosu::Color::BLACK)
+                            height: 1, mass: 1000000000, color: Gosu::Color::BLACK, tag: :floor)
     @ceil = RectGameObject.new(position: Vector2d[-5, 9], speed: Vector2d[0, 0], width: 10,
-                            height: 1, mass: 1000000000, color: Gosu::Color::BLACK)
+                            height: 1, mass: 1000000000, color: Gosu::Color::BLACK, tag: :ceil)
     @body1 = RectGameObject.new(position: Vector2d[0,0], speed: Vector2d[-4, 0], width: 2, height: 2,
                             color: Gosu::Color::RED, mass: 40.0, rigidbody: true)
     @body2 = RectGameObject.new(position: Vector2d[-4,0], speed: Vector2d[1, 0], width: 1, height: 1,
                             color: Gosu::Color::BLUE, mass: 10.0, rigidbody: true)
-    @circle1 = CircleGameObject.new(position: Vector2d[1.0,4.0], speed: Vector2d[-1, -1], radius: 0.5,
+    @circle1 = CircleGameObject.new(position: Vector2d[1.0,4.0], speed: Vector2d[-3, -1], radius: 0.5,
                             color: Gosu::Color::GREEN, mass: 10.0, rigidbody: true)
-    @circle2 = CircleGameObject.new(position: Vector2d[-1.0,4.0], speed: Vector2d[1, -1], radius: 0.5,
+    @circle2 = CircleGameObject.new(position: Vector2d[-1.0,4.0], speed: Vector2d[1, -3], radius: 0.5,
                             color: Gosu::Color::RED, mass: 10.0, rigidbody: true)
     #@body3 = GameObject.new(position: Vector2d[0,6], speed: Vector2d[0, -2], width: 1, height: 1,
     #                        color: Gosu::Color::YELLOW, mass: 10.0, rigidbody: true)
