@@ -42,21 +42,24 @@ class Collisions < GameWindow
                                  height: 10, mass: 1000000000, color: Gosu::Color::BLACK)
     @floor = RectGameObject.new(position: Vector2d[-5,-1.01], speed: Vector2d[0, 0], width: 10,
                             height: 1, mass: 1000000000, color: Gosu::Color::BLACK)
+    @ceil = RectGameObject.new(position: Vector2d[-5, 9], speed: Vector2d[0, 0], width: 10,
+                            height: 1, mass: 1000000000, color: Gosu::Color::BLACK)
     @body1 = RectGameObject.new(position: Vector2d[0,0], speed: Vector2d[-4, 0], width: 2, height: 2,
                             color: Gosu::Color::RED, mass: 40.0, rigidbody: true)
     @body2 = RectGameObject.new(position: Vector2d[-4,0], speed: Vector2d[1, 0], width: 1, height: 1,
                             color: Gosu::Color::BLUE, mass: 10.0, rigidbody: true)
-    @circle1 = CircleGameObject.new(position: Vector2d[1.0,4.0], speed: Vector2d[-1, -2], radius: 0.5,
+    @circle1 = CircleGameObject.new(position: Vector2d[1.0,4.0], speed: Vector2d[-1, -1], radius: 0.5,
                             color: Gosu::Color::GREEN, mass: 10.0, rigidbody: true)
-    @circle2 = CircleGameObject.new(position: Vector2d[-2.0,4.0], speed: Vector2d[1, -1], radius: 0.5,
-                            color: Gosu::Color::GREEN, mass: 10.0, rigidbody: true)
+    @circle2 = CircleGameObject.new(position: Vector2d[-1.0,4.0], speed: Vector2d[1, -1], radius: 0.5,
+                            color: Gosu::Color::RED, mass: 10.0, rigidbody: true)
     #@body3 = GameObject.new(position: Vector2d[0,6], speed: Vector2d[0, -2], width: 1, height: 1,
     #                        color: Gosu::Color::YELLOW, mass: 10.0, rigidbody: true)
     @world.bodies << @floor
+    @world.bodies << @ceil
     @world.bodies << @left_wall
     @world.bodies << @right_wall
-    @world.bodies << @body1
-    @world.bodies << @body2
+    #@world.bodies << @body1
+    #@world.bodies << @body2
     @world.bodies << @circle1
     @world.bodies << @circle2
     #@bodies << @body3
