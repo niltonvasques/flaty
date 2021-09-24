@@ -14,6 +14,8 @@ class Flaty
     color = Gosu::Color::BLACK
     precision = [(GameWindow.camera.width / 1000.0).abs, MIN_PRECISION].max
 
+    # circle equation
+    # y² = r² - x²
     x2 = -radius
     x1 = x2
     y1 = Math.sqrt(radius*radius - x1*x1)

@@ -130,5 +130,11 @@ class CircleGameObject < GameObject
 
   def draw
     Flaty.draw_circle(self.center, self.radius, self.color)
+    Flaty.draw_line(self.center.x, self.center.y, self.color, self.center.x + self.speed.x, self.center.y + self.speed.y, self.color)
+    if self.theta
+      msg = "#{self.theta} #{self.speed.round}"
+      msg += " #{self.phi}" if self.phi
+      Flaty.draw_text(Collisions.font, msg, self.x, self.y) if self.theta
+    end
   end
 end

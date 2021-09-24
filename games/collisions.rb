@@ -27,10 +27,15 @@ class Collisions < GameWindow
 
     # assets
     @font = Gosu::Font.new(25)
+    @@font = @font
 
     @world = Physics::World.new
 
     restart
+  end
+
+  def self.font
+    @@font
   end
 
   def restart
