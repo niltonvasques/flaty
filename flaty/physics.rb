@@ -22,6 +22,7 @@ module Physics
       Physics.solve_collision(body1, body2)
       Physics.solve_collision(body2, body1)
 
+      # https://gamedev.stackexchange.com/questions/104042/2d-multiple-circle-collision-response
       if body1.collisions(body2) != Collision::NONE
         puts "# second iteration needed #{Gosu.milliseconds} #"
         Physics.solve_collision(body1, body2)
@@ -42,7 +43,8 @@ module Physics
       #body1.speed = v1
       #body2.speed = v2
 
-      #https://en.wikipedia.org/wiki/Elastic_collision#Two-Dimensional_Collision_With_Two_Moving_Objects
+      # http://www.sciencecalculators.org/mechanics/collisions/
+      # https://en.wikipedia.org/wiki/Elastic_collision#Two-Dimensional_Collision_With_Two_Moving_Objects
       theta1 = Math.atan2(v1.y, v1.x) # radians
       theta2 = Math.atan2(v2.y, v2.x)
       cx = (body1.center.x - body2.center.x)
