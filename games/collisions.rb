@@ -40,37 +40,34 @@ class Collisions < GameWindow
 
   def restart
     @world.bodies.clear
+    create_walls
 
-    @left_wall = RectGameObject.new(position: Vector2d[-5,0], speed: Vector2d[0, 0], width: 1, height: 10,
-                                mass: 1000000000, color: Gosu::Color::BLACK, tag: :left_wall)
-    @right_wall = RectGameObject.new(position: Vector2d[4,0], speed: Vector2d[0, 0], width: 1,
-                                 height: 10, mass: 1000000000, color: Gosu::Color::BLACK, tag: :right_wall)
-    @floor = RectGameObject.new(position: Vector2d[-5,-1.01], speed: Vector2d[0, 0], width: 10,
-                            height: 1, mass: 1000000000, color: Gosu::Color::BLACK, tag: :floor)
-    @ceil = RectGameObject.new(position: Vector2d[-5, 9], speed: Vector2d[0, 0], width: 10,
-                            height: 1, mass: 1000000000, color: Gosu::Color::BLACK, tag: :ceil)
-    @body1 = RectGameObject.new(position: Vector2d[0,0], speed: Vector2d[-4, 0], width: 2, height: 2,
-                            color: Gosu::Color::RED, mass: 40.0, rigidbody: true)
-    @body2 = RectGameObject.new(position: Vector2d[-4,0], speed: Vector2d[1, 0], width: 1, height: 1,
-                            color: Gosu::Color::BLUE, mass: 10.0, rigidbody: true)
-    @circle1 = CircleGameObject.new(position: Vector2d[1.0,4.0], speed: Vector2d[-4, -1], radius: 0.5,
-                            color: Gosu::Color::GREEN, mass: 10.0, rigidbody: true)
-    @circle2 = CircleGameObject.new(position: Vector2d[-1.0,4.0], speed: Vector2d[3, -3], radius: 0.5,
-                            color: Gosu::Color::RED, mass: 10.0, rigidbody: true)
-    @circle3 = CircleGameObject.new(position: Vector2d[-3.0,2.0], speed: Vector2d[2, -4], radius: 0.5,
-                            color: Gosu::Color::BLUE, mass: 10.0, rigidbody: true)
-    #@body3 = GameObject.new(position: Vector2d[0,6], speed: Vector2d[0, -2], width: 1, height: 1,
-    #                        color: Gosu::Color::YELLOW, mass: 10.0, rigidbody: true)
-    @world.bodies << @floor
-    @world.bodies << @ceil
-    @world.bodies << @left_wall
-    @world.bodies << @right_wall
-    #@world.bodies << @body1
-    #@world.bodies << @body2
-    @world.bodies << @circle1
-    @world.bodies << @circle2
-    @world.bodies << @circle3
-    #@bodies << @body3
+    #@world.bodies << create_rect(Vector2d[0,0], Vector2d[-4,0], Gosu::Color::RED)
+    #@world.bodies << create_rect(Vector2d[-4,0], Vector2d[1,0], Gosu::Color::BLUE)
+    @world.bodies << create_circle(Vector2d[1,4.0], Vector2d[-4, -1], Gosu::Color::GREEN)
+    @world.bodies << create_circle(Vector2d[-1,4.0], Vector2d[3, -3], Gosu::Color::RED)
+    @world.bodies << create_circle(Vector2d[-3,2.0], Vector2d[2, -4], Gosu::Color::BLUE)
+    @world.bodies << create_circle(Vector2d[0,4.0], Vector2d[0, 5], Gosu::Color::WHITE)
+    @world.bodies << create_circle(Vector2d[-3.0,6.0], Vector2d[5, 5], Gosu::Color::CYAN)
+  end
+
+  def create_circle(xy, speed, c)
+    opts = { position: xy, speed: speed, radius: 0.5, color: c, mass: 10.0, rigidbody: true }
+    CircleGameObject.new(opts)
+  end
+
+  def create_rect(xy, speed, c)
+    opts = { position: xy, speed: speed, width: 1, height: 1, color: c, mass: 10.0, rigidbody: true }
+    RectGameObject.new(opts)
+  end
+
+  def create_walls
+    m = 1000000000
+    base = { speed: Vector2d[0, 0], mass: m, color: Gosu::Color::BLACK }
+    @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[-5, 0],   width: 1, height: 10, tag: :left_wall }))
+    @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[4, 0],    width: 1, height: 10, tag: :right_wall }))
+    @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[-5,0.01], width: 10, height: 1, tag: :floor }))
+    @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[-5, 9],   width: 10, height: 1, tag: :ceil }))
   end
 
   def update
