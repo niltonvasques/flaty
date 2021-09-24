@@ -5,26 +5,24 @@ require 'flaty/physics'
 require 'flaty/collisions'
 
 class GameObject < OpenStruct
-  #attr_accessor :image, :width, :height, :x, :y, :z, :speed
-
   def initialize(opts = {})
     default = {
-      position: Vector2d[0,0],
       z: 0,
+      position: Vector2d[0,0],
       previous_position: Vector2d[0,0],
+      rect: Rect[0, 0, 0, 0],
+      mass: 1,
       acceleration: Vector2d[0,0],
       speed: Vector2d[0,0],
-      scale_x: 1,
-      scale_y: 1,
-      current: 0,
-      camera: true,
-      debug: false,
-      rect: Rect[0, 0, 0, 0],
       max_speed: Vector2d[1000, 1000],
       damp: 1,
       elasticity: 1,
+      scale_x: 1,
+      scale_y: 1,
       angle: 0,
-      mass: 1
+      current: 0,
+      camera: true,
+      debug: false
     }
     super(default.merge(opts))
     self.previous_position = self.position.dup
