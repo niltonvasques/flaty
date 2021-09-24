@@ -121,7 +121,7 @@ class LevelLoader
           tile_pos = Tile::TILES[tile]
           level.add_tile(Tile.new(position: Vector2d[x, new_y], z: ZLayers::TILE,
                                   image: tilemap[tile_pos],
-                                  scale_x: scale_x, scale_y: scale_y))
+                                  scale_x: scale_x, scale_y: scale_y, tag: :floor))
         end
         if tile == Tile::STAR
           world.stars.push(Star.new(star_anim, position: Vector2d[x, new_y]))

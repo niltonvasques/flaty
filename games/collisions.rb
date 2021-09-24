@@ -60,7 +60,7 @@ class Collisions < GameWindow
   def create_circle(xy, speed, c)
     xy = Vector2d.elements(xy) / 1.0
     speed = Vector2d.elements(speed) / 1.0
-    opts = { position: xy, speed: speed, radius: 0.5, color: c, mass: 10.0, elasticity: 0.99,
+    opts = { position: xy, speed: speed, radius: 0.5, color: c, mass: 10.0, elasticity: 0,
              rigidbody: true }
     CircleGameObject.new(opts)
   end

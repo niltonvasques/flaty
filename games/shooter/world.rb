@@ -29,7 +29,9 @@ class World
     # objects
     @background = Background.new
     @bob = Bob.new
+    @bob.rigidbody = true
     @bird = Bird.new
+    @bird.rigidbody = true
     @hud = HUD.new
     self.stars = Array.new
   end
@@ -39,7 +41,9 @@ class World
 
     @bob.update
     @bird.update
-
+    #Physics.elastic_collisions([@bob, @bird])
+    #Physics.elastic_collisions([@bob] + @level.around(@bob.collision_rect))
+    #Physics.elastic_collisions([@bird] + @level.around(@bird.collision_rect))
     Physics.solve_collisions(@bob, @level.around(@bob.collision_rect))
     Physics.solve_collisions(@bird, @level.around(@bird.collision_rect))
     if @bob.collisions(@bird) != Collision::NONE
