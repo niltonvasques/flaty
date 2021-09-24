@@ -42,22 +42,31 @@ class Collisions < GameWindow
     @world.bodies.clear
     create_walls
 
-    #@world.bodies << create_rect(Vector2d[0,0], Vector2d[-4,0], Gosu::Color::RED)
-    #@world.bodies << create_rect(Vector2d[-4,0], Vector2d[1,0], Gosu::Color::BLUE)
-    @world.bodies << create_circle(Vector2d[1,4.0], Vector2d[-4, -1], Gosu::Color::GREEN)
-    @world.bodies << create_circle(Vector2d[-1,4.0], Vector2d[3, -3], Gosu::Color::RED)
-    @world.bodies << create_circle(Vector2d[-3,2.0], Vector2d[2, -4], Gosu::Color::BLUE)
-    @world.bodies << create_circle(Vector2d[0,4.0], Vector2d[0, 5], Gosu::Color::WHITE)
-    @world.bodies << create_circle(Vector2d[-3.0,6.0], Vector2d[5, 5], Gosu::Color::CYAN)
+    #@world.gravity.y = 0
+    @world.bodies << create_rect(Vector2d[0,  1], Vector2d[-4, 0], 1, 10, Gosu::Color::RED)
+    @world.bodies << create_rect(Vector2d[-4, 1], Vector2d[1,  0], 2, 100, Gosu::Color::BLUE)
+    @world.bodies << create_circle([-3, 6], [5,   5], Gosu::Color::CYAN)
+    #@world.bodies << create_circle([-3, 2], [2,  -4], Gosu::Color::BLUE)
+    #@world.bodies << create_circle([-1, 4], [3,  -3], Gosu::Color::RED)
+    #@world.bodies << create_circle([0,  2], [0,   5], Gosu::Color::WHITE)
+    #@world.bodies << create_circle([0,  4], [0,   5], Gosu::Color::FUCHSIA)
+    #@world.bodies << create_circle([1,  4], [-4, -1], Gosu::Color::GREEN)
+    #@world.bodies << create_circle([2,  4], [-4, -1], Gosu::Color::AQUA)
+    #@world.bodies << create_circle([3,  4], [-1, -1], Gosu::Color::BLACK)
+    #@world.bodies << create_circle([3,  5], [2,  -1], Gosu::Color::RED)
+    #@world.bodies << create_circle([3,  6], [4,  -1], Gosu::Color::YELLOW)
   end
 
   def create_circle(xy, speed, c)
-    opts = { position: xy, speed: speed, radius: 0.5, color: c, mass: 10.0, rigidbody: true }
+    xy = Vector2d.elements(xy) / 1.0
+    speed = Vector2d.elements(speed) / 1.0
+    opts = { position: xy, speed: speed, radius: 0.5, color: c, mass: 10.0, elasticity: 0.99,
+             rigidbody: true }
     CircleGameObject.new(opts)
   end
 
-  def create_rect(xy, speed, c)
-    opts = { position: xy, speed: speed, width: 1, height: 1, color: c, mass: 10.0, rigidbody: true }
+  def create_rect(xy, speed, size, mass,  c)
+    opts = { position: xy, speed: speed, width: size, height: size, color: c, mass: mass, rigidbody: true, elasticity: 0.6, damp: 1 }
     RectGameObject.new(opts)
   end
 
@@ -66,7 +75,7 @@ class Collisions < GameWindow
     base = { speed: Vector2d[0, 0], mass: m, color: Gosu::Color::BLACK }
     @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[-5, 0],   width: 1, height: 10, tag: :left_wall }))
     @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[4, 0],    width: 1, height: 10, tag: :right_wall }))
-    @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[-5,0.01], width: 10, height: 1, tag: :floor }))
+    @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[-5, -0.001], width: 10, height: 1, tag: :floor }))
     @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[-5, 9],   width: 10, height: 1, tag: :ceil }))
   end
 
@@ -74,10 +83,10 @@ class Collisions < GameWindow
     super
     return if paused?
     restart if Gosu.button_down? Gosu::KB_R
-    @body1.mass += 1  if Gosu.button_down? Gosu::KB_UP
-    @body1.mass -= 1 if Gosu.button_down? Gosu::KB_DOWN
     @camera.zoom(-1) if Gosu.button_down? Gosu::KB_NUMPAD_PLUS
     @camera.zoom(1)  if Gosu.button_down? Gosu::KB_NUMPAD_MINUS
+    @world.gravity.y += 0.1 if Gosu.button_down? Gosu::KB_DOWN
+    @world.gravity.y += -0.1 if Gosu.button_down? Gosu::KB_UP
 
     @world.update
   end
@@ -89,7 +98,8 @@ class Collisions < GameWindow
 
     draw_bodies
 
-    @font.draw_text("FPS: #{Gosu.fps}", 10, 10, 100, 1.0, 1.0, Gosu::Color::GREEN)
+    msg = "FPS: #{Gosu.fps} #{@world.gravity.round} gravity"
+    @font.draw_text(msg, 10, 10, 100, 1.0, 1.0, Gosu::Color::GREEN)
   end
 
   def draw_bodies

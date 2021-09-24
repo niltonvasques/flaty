@@ -9,9 +9,22 @@ class GameObject < OpenStruct
 
   def initialize(opts = {})
     default = {
-      position: Vector2d[0,0], z: 0, previous_position: Vector2d[0,0], acceleration: Vector2d[0,0],
-      speed: Vector2d[0,0], scale_x: 1, scale_y: 1, current: 0, camera: true, debug: false,
-      rect: Rect[0, 0, 0, 0], max_speed: Vector2d[1000, 1000], damp: 1, angle: 0, mass: 1
+      position: Vector2d[0,0],
+      z: 0,
+      previous_position: Vector2d[0,0],
+      acceleration: Vector2d[0,0],
+      speed: Vector2d[0,0],
+      scale_x: 1,
+      scale_y: 1,
+      current: 0,
+      camera: true,
+      debug: false,
+      rect: Rect[0, 0, 0, 0],
+      max_speed: Vector2d[1000, 1000],
+      damp: 1,
+      elasticity: 1,
+      angle: 0,
+      mass: 1
     }
     super(default.merge(opts))
     self.previous_position = self.position.dup
@@ -24,6 +37,10 @@ class GameObject < OpenStruct
 
   def x; self.position.x; end
   def y; self.position.y; end
+
+  def center
+    Vector2d[self.position.x + self.width/2.0, self.position.y + self.height/2.0]
+  end
 
   def update
     unless current_image.nil?
@@ -130,11 +147,13 @@ class CircleGameObject < GameObject
 
   def draw
     Flaty.draw_circle(self.center, self.radius, self.color)
-    Flaty.draw_line(self.center.x, self.center.y, self.color, self.center.x + self.speed.x, self.center.y + self.speed.y, self.color)
-    if self.theta
-      msg = "#{self.theta} #{self.speed.round}"
-      msg += " #{self.phi}" if self.phi
-      Flaty.draw_text(Collisions.font, msg, self.x, self.y) if self.theta
+    if GameWindow.debug
+      Flaty.draw_line(self.center.x, self.center.y, self.color, self.center.x + self.speed.x, self.center.y + self.speed.y, self.color)
+      if self.theta
+        msg = "#{self.theta} #{self.speed.round}"
+        msg += " #{self.phi}" if self.phi
+        Flaty.draw_text(Collisions.font, msg, self.x, self.y) if self.theta
+      end
     end
   end
 end

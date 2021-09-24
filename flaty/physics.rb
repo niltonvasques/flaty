@@ -23,7 +23,7 @@ module Physics
       Physics.solve_collision(body2, body1)
 
       if body1.collisions(body2) != Collision::NONE
-        puts "# second iteration needed #"
+        puts "# second iteration needed #{Gosu.milliseconds} #"
         Physics.solve_collision(body1, body2)
         Physics.solve_collision(body2, body1)
       end
@@ -45,13 +45,13 @@ module Physics
       #https://en.wikipedia.org/wiki/Elastic_collision#Two-Dimensional_Collision_With_Two_Moving_Objects
       theta1 = Math.atan2(v1.y, v1.x) # radians
       theta2 = Math.atan2(v2.y, v2.x)
-      cx = (body1.x - body2.x)
-      cy = (body1.y - body2.y)
+      cx = (body1.center.x - body2.center.x)
+      cy = (body1.center.y - body2.center.y)
       phi = Math.atan2(cy, cx)
-      phi = (Math::PI / 2) if body1.tag == :floor
-      phi = (Math::PI) if body1.tag == :left_wall
-      phi = 0 if body1.tag == :right_wall
-      phi = (Math::PI / 2) if body1.tag == :ceil
+      phi = 0 if [body1.tag, body2.tag].include?(:right_wall)
+      phi = (Math::PI / 2) if [body1.tag, body2.tag].include?(:ceil)
+      phi = (Math::PI) if [body1.tag, body2.tag].include?(:left_wall)
+      phi = (Math::PI / 2) if [body1.tag, body2.tag].include?(:floor)
 
       v1s = Math.sqrt(v1.x**2 + v1.y**2)
       v2s = Math.sqrt(v2.x**2 + v2.y**2)
@@ -90,6 +90,11 @@ module Physics
       body2.theta = (theta2 * pi_rad).round
       body1.phi = (phi * pi_rad).round
       body2.phi = (phi * pi_rad).round
+
+      body2.speed.x *= body2.damp if body1.tag == :floor
+      body2.speed.y *= body2.elasticity if body1.tag == :floor
+      body1.speed.x *= body1.damp if body2.tag == :floor
+      body1.speed.y *= body1.elasticity if body2.tag == :floor
     end
   end
 
@@ -158,15 +163,18 @@ module Physics
   end
 
   class World
-    attr_accessor :bodies
+    GRAVITY = Vector2d[0, -9.8].freeze # -9.8 m/s
+
+    attr_accessor :bodies, :gravity
 
     def initialize
       @bodies = []
+      @gravity = GRAVITY.dup
     end
 
     def update
       # collision after gravity are locking bodies X axis
-      # @bodies.select(&:rigidbody).each { |body| body.acceleration = GRAVITY.dup }
+      @bodies.select(&:rigidbody).each { |body| body.acceleration = @gravity.dup }
       collidables = @bodies.select { |body| body.is_a? Collider }
       @bodies.each(&:update)
       Physics.elastic_collisions(collidables)
