@@ -39,28 +39,29 @@ class Collisions < GameWindow
   end
 
   def restart
+    @frames = 0
+    @sum_frames = 0
     @world.bodies.clear
     create_walls
 
-    #@world.gravity.y = 0
-    @world.bodies << create_rect(Vector2d[0,  1], Vector2d[-4, 0], 1, 10, Gosu::Color::RED)
-    @world.bodies << create_rect(Vector2d[-4, 1], Vector2d[1,  0], 2, 100, Gosu::Color::BLUE)
+    #@world.bodies << create_rect(Vector2d[0,  1], Vector2d[-4, 0], 1, 10, Gosu::Color::RED)
+    #@world.bodies << create_rect(Vector2d[-4, 1], Vector2d[1,  0], 2, 100, Gosu::Color::BLUE)
     @world.bodies << create_circle([-3, 6], [5,   5], Gosu::Color::CYAN)
-    #@world.bodies << create_circle([-3, 2], [2,  -4], Gosu::Color::BLUE)
-    #@world.bodies << create_circle([-1, 4], [3,  -3], Gosu::Color::RED)
-    #@world.bodies << create_circle([0,  2], [0,   5], Gosu::Color::WHITE)
-    #@world.bodies << create_circle([0,  4], [0,   5], Gosu::Color::FUCHSIA)
-    #@world.bodies << create_circle([1,  4], [-4, -1], Gosu::Color::GREEN)
-    #@world.bodies << create_circle([2,  4], [-4, -1], Gosu::Color::AQUA)
-    #@world.bodies << create_circle([3,  4], [-1, -1], Gosu::Color::BLACK)
-    #@world.bodies << create_circle([3,  5], [2,  -1], Gosu::Color::RED)
-    #@world.bodies << create_circle([3,  6], [4,  -1], Gosu::Color::YELLOW)
+    @world.bodies << create_circle([-3, 2], [2,  -4], Gosu::Color::BLUE)
+    @world.bodies << create_circle([-1, 4], [3,  -3], Gosu::Color::RED)
+    @world.bodies << create_circle([0,  2], [0,   5], Gosu::Color::WHITE)
+    @world.bodies << create_circle([0,  4], [0,   5], Gosu::Color::FUCHSIA)
+    @world.bodies << create_circle([1,  4], [-4, -1], Gosu::Color::GREEN)
+    @world.bodies << create_circle([2,  4], [-4, -1], Gosu::Color::AQUA)
+    @world.bodies << create_circle([3,  4], [-1, -1], Gosu::Color::BLACK)
+    @world.bodies << create_circle([3,  5], [2,  -1], Gosu::Color::RED)
+    @world.bodies << create_circle([3,  6], [4,  -1], Gosu::Color::YELLOW)
   end
 
   def create_circle(xy, speed, c)
     xy = Vector2d.elements(xy) / 1.0
     speed = Vector2d.elements(speed) / 1.0
-    opts = { position: xy, speed: speed, radius: 0.5, color: c, mass: 10.0, elasticity: 0,
+    opts = { position: xy, speed: speed, radius: 0.5, color: c, mass: 10.0, elasticity: 0.9,
              rigidbody: true }
     CircleGameObject.new(opts)
   end
@@ -83,12 +84,20 @@ class Collisions < GameWindow
     super
     return if paused?
     restart if Gosu.button_down? Gosu::KB_R
-    @camera.zoom(-1) if Gosu.button_down? Gosu::KB_NUMPAD_PLUS
-    @camera.zoom(1)  if Gosu.button_down? Gosu::KB_NUMPAD_MINUS
-    @world.gravity.y += 0.1 if Gosu.button_down? Gosu::KB_DOWN
-    @world.gravity.y += -0.1 if Gosu.button_down? Gosu::KB_UP
+    t = Benchmark.elapsed do
+      @camera.zoom(-1) if Gosu.button_down? Gosu::KB_NUMPAD_PLUS
+      @camera.zoom(1)  if Gosu.button_down? Gosu::KB_NUMPAD_MINUS
+      @world.gravity.y += 0.1 if Gosu.button_down? Gosu::KB_DOWN
+      @world.gravity.y += -0.1 if Gosu.button_down? Gosu::KB_UP
 
-    @world.update
+      @world.update
+    end
+    @frames += 1
+    @sum_frames += t
+  end
+
+  def print_bench
+    puts "#{Benchmark::NANO/(@sum_frames/@frames)} UPS"
   end
 
   def draw
@@ -119,3 +128,4 @@ end
 
 game = Collisions.new
 game.show
+game.print_bench

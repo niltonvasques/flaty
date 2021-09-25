@@ -7,14 +7,6 @@ module Physics
         Physics.elastic_collision(bodies[i], bodies[j])
       end
     end
-
-    colliding = false
-    bodies.each_index do |i|
-      (i+1).upto(bodies.size - 1) do |j|
-        colliding = colliding or bodies[i].collisions(bodies[j]) != Collision::NONE
-      end
-    end
-    puts "#{colliding} colliding" if colliding
   end
 
   def self.elastic_collision(body1, body2)
@@ -94,9 +86,9 @@ module Physics
       body2.phi = (phi * pi_rad).round
 
       body2.speed.x *= body2.damp if body1.tag == :floor
-      body2.speed.y *= body2.elasticity if body1.tag == :floor
+      body2.speed.y *= body2.elasticity #if body1.tag == :floor
       body1.speed.x *= body1.damp if body2.tag == :floor
-      body1.speed.y *= body1.elasticity if body2.tag == :floor
+      body1.speed.y *= body1.elasticity #if body2.tag == :floor
     end
   end
 

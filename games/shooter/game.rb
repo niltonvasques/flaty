@@ -22,13 +22,23 @@ class Game < GameWindow
 
     @world = World.new
     LevelLoader.create_tiles(@world)
+    @frames = 0
+    @sum_frames = 0
   end
 
   def update
     super
     return if paused?
 
-    @world.update
+    t = Benchmark.elapsed do
+      @world.update
+    end
+    @frames += 1
+    @sum_frames += t
+  end
+
+  def print_bench
+    puts "#{Benchmark::NANO/(@sum_frames/@frames)} UPS"
   end
 
   def draw
@@ -48,3 +58,4 @@ end
 
 game = Game.new
 game.show
+game.print_bench
