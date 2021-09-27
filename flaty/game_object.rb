@@ -134,6 +134,14 @@ class CircleGameObject < GameObject
     self.position
   end
 
+  def collision_rect
+    self.rect.x = self.x - self.radius
+    self.rect.y = self.y - self.radius
+    self.rect.width = self.radius * 2
+    self.rect.height = self.radius * 2
+    self.rect
+  end
+
   def collisions(obj)
     case obj
     when CircleGameObject then Collision.detect_circle(self, obj)

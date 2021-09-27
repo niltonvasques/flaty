@@ -10,4 +10,8 @@ class Rect < Vector
   def y=(y); self[1] = y; end
   def width=(width); self[2] = width; end
   def height=(height); self[3] = height; end
+
+  def to_s
+    "Rect[#{x}x, #{y}y, #{width}w, #{height}h]"
+  end
 end

@@ -11,8 +11,10 @@ require 'math/poly'
 class Collisions < GameWindow
   SCREEN_WIDTH        = 1500
   SCREEN_HEIGHT       = 1500
-  CAMERA_WIDTH_UNITS  = 10
-  CAMERA_HEIGHT_UNITS = 10
+  CAMERA_WIDTH_UNITS  = 20
+  CAMERA_HEIGHT_UNITS = 20
+  HALF_WIDTH          = CAMERA_WIDTH_UNITS / 2.0
+  HALF_HEIGHT         = CAMERA_HEIGHT_UNITS / 2.0
   GRAVITY             = Vector2d[0, -1].freeze # -1 m/s
 
   def initialize
@@ -21,9 +23,10 @@ class Collisions < GameWindow
 
     @camera = GameWindow.camera
     @camera.size(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
-    @camera.look(0, 5)
+    @camera.look(0, HALF_HEIGHT)
     axis_colors = { lines: Gosu::Color::BLACK, text: Gosu::Color::BLACK }
     @camera_debug = CameraDebug.new(@camera, axis_colors)
+    @circle_up = 0
 
     # assets
     @font = Gosu::Font.new(25)
@@ -38,31 +41,34 @@ class Collisions < GameWindow
     @@font
   end
 
+  BIGNUM = (2**30).freeze
   def restart
     @frames = 0
-    @sum_frames = 0
+    @sum_frames = BIGNUM
+    @draws = 0
+    @sum_draws = BIGNUM
     @world.bodies.clear
     create_walls
 
     #@world.bodies << create_rect(Vector2d[0,  1], Vector2d[-4, 0], 1, 10, Gosu::Color::RED)
     #@world.bodies << create_rect(Vector2d[-4, 1], Vector2d[1,  0], 2, 100, Gosu::Color::BLUE)
-    @world.bodies << create_circle([-3, 6], [5,   5], Gosu::Color::CYAN)
-    @world.bodies << create_circle([-3, 2], [2,  -4], Gosu::Color::BLUE)
-    @world.bodies << create_circle([-1, 4], [3,  -3], Gosu::Color::RED)
-    @world.bodies << create_circle([0,  2], [0,   5], Gosu::Color::WHITE)
-    @world.bodies << create_circle([0,  4], [0,   5], Gosu::Color::FUCHSIA)
-    @world.bodies << create_circle([1,  4], [-4, -1], Gosu::Color::GREEN)
-    @world.bodies << create_circle([2,  4], [-4, -1], Gosu::Color::AQUA)
-    @world.bodies << create_circle([3,  4], [-1, -1], Gosu::Color::BLACK)
-    @world.bodies << create_circle([3,  5], [2,  -1], Gosu::Color::RED)
-    @world.bodies << create_circle([3,  6], [4,  -1], Gosu::Color::YELLOW)
+    @world.bodies << create_circle([-3, 6], [5,   5], Gosu::Color::CYAN, 'CYAN')
+    @world.bodies << create_circle([-3, 2], [2,  -4], Gosu::Color::BLUE, 'BLUE')
+    @world.bodies << create_circle([-1, 4], [3,  -3], Gosu::Color::RED, 'RED')
+    @world.bodies << create_circle([0,  2], [0,   5], Gosu::Color::WHITE, 'WHITE')
+    @world.bodies << create_circle([0,  4], [0,   5], Gosu::Color::FUCHSIA, 'FUCHSIA')
+    @world.bodies << create_circle([1,  4], [-4, -1], Gosu::Color::GREEN, 'GREEN')
+    @world.bodies << create_circle([2,  4], [-4, -1], Gosu::Color::AQUA, 'AQUA')
+    @world.bodies << create_circle([3,  4], [-1, -1], Gosu::Color::BLACK, 'BLACK')
+    @world.bodies << create_circle([3,  5], [2,  -1], Gosu::Color::RED, 'RED')
+    @world.bodies << create_circle([3,  6], [4,  -1], Gosu::Color::YELLOW, 'YELLOW')
   end
 
-  def create_circle(xy, speed, c)
+  def create_circle(xy, speed, c, tag)
     xy = Vector2d.elements(xy) / 1.0
     speed = Vector2d.elements(speed) / 1.0
-    opts = { position: xy, speed: speed, radius: 0.5, color: c, mass: 10.0, elasticity: 0.9,
-             rigidbody: true }
+    opts = { position: xy, speed: speed, radius: 0.5, color: c, mass: 10.0, elasticity: 1.0,
+             rigidbody: true, tag: tag }
     CircleGameObject.new(opts)
   end
 
@@ -74,10 +80,14 @@ class Collisions < GameWindow
   def create_walls
     m = 1000000000
     base = { speed: Vector2d[0, 0], mass: m, color: Gosu::Color::BLACK }
-    @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[-5, 0],   width: 1, height: 10, tag: :left_wall }))
-    @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[4, 0],    width: 1, height: 10, tag: :right_wall }))
-    @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[-5, -0.001], width: 10, height: 1, tag: :floor }))
-    @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[-5, 9],   width: 10, height: 1, tag: :ceil }))
+    @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[-HALF_WIDTH, 0], width: 1, height: HALF_HEIGHT, tag: :left_wall }))
+    @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[-HALF_WIDTH, HALF_HEIGHT], width: 1, height: HALF_HEIGHT, tag: :left_wall }))
+    @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[HALF_WIDTH-1, 0], width: 1, height: HALF_HEIGHT, tag: :right_wall }))
+    @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[HALF_WIDTH-1, HALF_HEIGHT], width: 1, height: HALF_HEIGHT, tag: :right_wall }))
+    @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[0, 0], width: HALF_WIDTH, height: 1, tag: :floor }))
+    @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[-HALF_WIDTH, 0], width: HALF_WIDTH, height: 1, tag: :floor }))
+    @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[-HALF_WIDTH, CAMERA_HEIGHT_UNITS-1], width: HALF_WIDTH, height: 1, tag: :ceil }))
+    @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[0, CAMERA_HEIGHT_UNITS-1], width: HALF_WIDTH, height: 1, tag: :ceil }))
   end
 
   def update
@@ -89,6 +99,12 @@ class Collisions < GameWindow
       @camera.zoom(1)  if Gosu.button_down? Gosu::KB_NUMPAD_MINUS
       @world.gravity.y += 0.1 if Gosu.button_down? Gosu::KB_DOWN
       @world.gravity.y += -0.1 if Gosu.button_down? Gosu::KB_UP
+      if Gosu.button_down? Gosu::KB_C and @circle_up == 0
+        @circle_up = Gosu.milliseconds
+        @world.bodies << create_circle([rand * HALF_WIDTH,  CAMERA_HEIGHT_UNITS - 2], [-1, -1], Gosu::Color::BLACK, 'BLACK')
+      elsif Gosu.milliseconds - @circle_up > 250
+        @circle_up = 0
+      end
 
       @world.update
     end
@@ -97,18 +113,30 @@ class Collisions < GameWindow
   end
 
   def print_bench
+    @sum_frames -= BIGNUM
+    @sum_draws -= BIGNUM
     puts "#{Benchmark::NANO/(@sum_frames/@frames)} UPS"
+    puts "#{Benchmark::NANO/(@sum_draws/@draws)} DPS"
+    puts "#{(@sum_frames/@frames)} AVG UPDATE TIME"
+    puts "#{(@sum_draws/@draws)} AVG DRAW TIME"
+    puts "#{@sum_frames} UPDATE TIME"
+    puts "#{@sum_draws} DRAW TIME"
   end
 
   def draw
-    @camera_debug.draw if GameWindow.debug
+    t = Benchmark.elapsed do
+      @camera_debug.draw if GameWindow.debug
+      @world.draw_quad
 
-    Flaty.paint(Gosu::Color::GRAY)
+      Flaty.paint(Gosu::Color::GRAY)
 
-    draw_bodies
+      draw_bodies
 
-    msg = "FPS: #{Gosu.fps} #{@world.gravity.round} gravity"
-    @font.draw_text(msg, 10, 10, 100, 1.0, 1.0, Gosu::Color::GREEN)
+      msg = "FPS: #{Gosu.fps} #{@world.gravity.round} gravity"
+      @font.draw_text(msg, 10, 10, 100, 1.0, 1.0, Gosu::Color::GREEN)
+    end
+    @draws += 1
+    @sum_draws += t
   end
 
   def draw_bodies

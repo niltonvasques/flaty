@@ -4,6 +4,7 @@ require 'flaty/camera_debug'
 require 'flaty/game_object'
 require 'flaty/math/vector_2d'
 require 'flaty/math/rect'
+require 'flaty/quadtree'
 require 'flaty/benchmark'
 require 'flaty/time'
 
@@ -46,6 +47,14 @@ class Flaty
     w = width * camera.unit_x + thickness
     h = height * camera.unit_y + thickness
     Gosu.draw_rect(x, y, w, h, c, z, mode)
+  end
+
+  def self.draw_rect_empty(x, y, width = 1, height = 1, c = Gosu::Color::BLACK, z = 0)
+    camera = GameWindow.camera
+    Flaty.draw_line(x, y, c, x + width, y, c, z)
+    Flaty.draw_line(x, y + height, c, x + width, y + height, c, z)
+    Flaty.draw_line(x, y, c, x, y + height, c, z)
+    Flaty.draw_line(x + width, y, c, x + width, y + height, c, z)
   end
 
   def self.draw_line(x1, y1, c1, x2, y2, c2, z = 0, mode = :default)

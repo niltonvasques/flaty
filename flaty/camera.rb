@@ -29,6 +29,12 @@ class Camera
     @unit_y = GameWindow.height / height.to_f
   end
 
+  def rect
+    w2 = self.width / 2.0
+    h2 = self.height / 2.0
+    Rect[self.position.x - w2, self.position.y - h2, self.width, self.height]
+  end
+
   MAX_CAMERA_SIZE = 10000000
   MIN_CAMERA_SIZE = 0.01
   def zoom(units)

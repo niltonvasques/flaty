@@ -1,12 +1,24 @@
 require 'flaty/collisions'
 
 module Physics
-  def self.elastic_collisions(bodies)
+  def self.elastic_collisions(bodies, quad)
+    # O(n²) naive approach
+    # we can improve by using quadtrees
+    total = 0
     bodies.each_index do |i|
-      (i+1).upto(bodies.size - 1) do |j|
-        Physics.elastic_collision(bodies[i], bodies[j])
+      candidates = quad.query(bodies[i])
+      candidates.each do |body|
+        next if body == bodies[i]
+        Physics.elastic_collision(bodies[i], body)
+        total += 1
       end
+      #(i+1).upto(bodies.size - 1) do |j|
+      #  Physics.elastic_collision(bodies[i], bodies[j])
+      #  total += 1
+      #end
     end
+    #puts "#{total} total collisions procesing"
+    #binding.pry if Gosu.milliseconds > 10000
   end
 
   def self.elastic_collision(body1, body2)
@@ -16,7 +28,7 @@ module Physics
 
       # https://gamedev.stackexchange.com/questions/104042/2d-multiple-circle-collision-response
       if body1.collisions(body2) != Collision::NONE
-        puts "# second iteration needed #{Gosu.milliseconds} #"
+        #puts "# second iteration needed #{Gosu.milliseconds} #"
         Physics.solve_collision(body1, body2)
         Physics.solve_collision(body2, body1)
       end
@@ -164,15 +176,47 @@ module Physics
     def initialize
       @bodies = []
       @gravity = GRAVITY.dup
+      @camera = GameWindow.camera
+      qx = @camera.rect.x
+      qy = @camera.rect.y
+      qw = @camera.rect.width
+      qh = @camera.rect.height
+      @quadtree = Quadtree.new(Vector2d[qx, qy], Vector2d[qw, qh])
+    end
+
+    def update_quad_rect
+      @quadtree.xy.x = @camera.rect.x
+      @quadtree.xy.y = @camera.rect.y
+      @quadtree.size.x = @camera.rect.width
+      @quadtree.size.y = @camera.rect.height
     end
 
     def update
+      @quadtree.clear
+      update_quad_rect
       # collision after gravity are locking bodies X axis
       updatables = @bodies.select(&:rigidbody)
       updatables.each { |body| body.acceleration = @gravity.dup }
       collidables = @bodies.select { |body| body.is_a? Collider }
+      collidables.each { |body| @quadtree.insert(body) }
       updatables.each(&:update)
-      Physics.elastic_collisions(collidables)
+      Physics.elastic_collisions(updatables, @quadtree)
+    end
+
+    def draw_quad
+      draw(@quadtree)
+    end
+
+    def draw(quad)
+      c = Gosu::Color::BLUE
+      quad.nodes.each do |node|
+        x = node.xy.x
+        y = node.xy.y
+        #puts "drawing #{x} #{y}"
+
+        Flaty.draw_rect_empty(x, y, node.size.x, node.size.y, c, z = 200)
+      end
+      quad.nodes.each { |q| draw(q) }
     end
   end
 end
