@@ -21,7 +21,7 @@ class Bird < RectGameObject
 
     super(position: Vector2d[1, 14], z: ZLayers::PLAYER, scale_x: SCALE, scale_y: SCALE,
           speed: IDLE_SPEED.dup, max_speed: Vector2d[SPEED, SPEED], damp: 0.8,
-          score: 0, tiles: bird_tiles, current: 0, debug: Gosu::Color::RED)
+          score: 0, tiles: bird_tiles, current: 0, rigidbody: true, debug: Gosu::Color::RED)
   end
 
   def update

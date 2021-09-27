@@ -21,7 +21,8 @@ class Game < GameWindow
     @song.play
 
     @world = World.new
-    LevelLoader.create_tiles(@world)
+    @level = LevelLoader.load_level
+    @world.level = @level
     @frames = 0
     @sum_frames = 0
   end

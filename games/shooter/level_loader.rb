@@ -32,12 +32,13 @@ class Tile < RectGameObject
 end
 
 class Level
-  attr_accessor :width, :height, :tilesmap
+  attr_accessor :width, :height, :tilesmap, :stars
 
   def initialize(width, height)
     @width = width
     @height = height
     @tilesmap = { }
+    @stars = []
   end
 
   def add_tile(tile)
@@ -102,13 +103,12 @@ class Level
 end
 
 class LevelLoader
-  def self.create_tiles(world)
+  def self.load_level
     tilemap = Gosu::Image.load_tiles("assets/tiles.png", Tile::SIZE, Tile::SIZE, tileable: true)
     star_anim = Gosu::Image.load_tiles("assets/star.png", 25, 25)
     level_tiles = self.load_tiles
     GameWindow.camera.bounds.width = level_tiles.width
     level = Level.new(level_tiles.width, level_tiles.height)
-    world.level = level
 
     scale_x = (GameWindow.camera.unit_x) / Tile::SIZE.to_f
     scale_y = (GameWindow.camera.unit_y) / Tile::SIZE.to_f
@@ -124,10 +124,12 @@ class LevelLoader
                                   scale_x: scale_x, scale_y: scale_y, tag: :floor))
         end
         if tile == Tile::STAR
-          world.stars.push(Star.new(star_anim, position: Vector2d[x, new_y]))
+          level.stars.push(Star.new(star_anim, position: Vector2d[x, new_y]))
         end
       end
     end
+
+    level
   end
 
   def self.load_tiles

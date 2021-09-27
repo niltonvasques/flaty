@@ -80,4 +80,11 @@ class Flaty
   def self.seconds
     Gosu.milliseconds / Second.in_millis
   end
+
+  def self.random_color
+    r = (0xff * rand).to_i
+    g = (0xff * rand).to_i
+    b = (0xff * rand).to_i
+    Gosu::Color.argb(0x5f000000 + (r << 16) + (g << 8) + (b))
+  end
 end

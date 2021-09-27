@@ -21,6 +21,8 @@ class Collisions < GameWindow
     super(SCREEN_WIDTH, SCREEN_HEIGHT, fullscreen: false)
     self.caption = 'Collisions Simulator'
 
+    @circle_img = Gosu::Image.new('assets/metal_ball.png')
+
     @camera = GameWindow.camera
     @camera.size(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
     @camera.look(0, HALF_HEIGHT)
@@ -33,6 +35,7 @@ class Collisions < GameWindow
     @@font = @font
 
     @world = Physics::World.new
+    @world.collision_type = :elastic
 
     restart
   end
@@ -50,25 +53,26 @@ class Collisions < GameWindow
     @world.bodies.clear
     create_walls
 
-    #@world.bodies << create_rect(Vector2d[0,  1], Vector2d[-4, 0], 1, 10, Gosu::Color::RED)
-    #@world.bodies << create_rect(Vector2d[-4, 1], Vector2d[1,  0], 2, 100, Gosu::Color::BLUE)
-    @world.bodies << create_circle([-3, 6], [5,   5], Gosu::Color::CYAN, 'CYAN')
-    @world.bodies << create_circle([-3, 2], [2,  -4], Gosu::Color::BLUE, 'BLUE')
-    @world.bodies << create_circle([-1, 4], [3,  -3], Gosu::Color::RED, 'RED')
-    @world.bodies << create_circle([0,  2], [0,   5], Gosu::Color::WHITE, 'WHITE')
-    @world.bodies << create_circle([0,  4], [0,   5], Gosu::Color::FUCHSIA, 'FUCHSIA')
-    @world.bodies << create_circle([1,  4], [-4, -1], Gosu::Color::GREEN, 'GREEN')
-    @world.bodies << create_circle([2,  4], [-4, -1], Gosu::Color::AQUA, 'AQUA')
-    @world.bodies << create_circle([3,  4], [-1, -1], Gosu::Color::BLACK, 'BLACK')
-    @world.bodies << create_circle([3,  5], [2,  -1], Gosu::Color::RED, 'RED')
-    @world.bodies << create_circle([3,  6], [4,  -1], Gosu::Color::YELLOW, 'YELLOW')
+    #@world.bodies << create_circle([-3.5001, 1.5001], [0,   0], Gosu::Color::CYAN, 'CYAN')
+    @world.bodies << create_rect(Vector2d[0,  1.001], Vector2d[-4, 0], 1, 10, Gosu::Color::RED)
+    @world.bodies << create_rect(Vector2d[-6, 1.001], Vector2d[1,  0], 2, 100, Gosu::Color::BLUE)
+    @world.bodies << create_circle([-3, 6], [5,   5])
+    @world.bodies << create_circle([-3, 2], [2,  -4])
+    @world.bodies << create_circle([-1, 4], [3,  -3])
+    @world.bodies << create_circle([0,  3], [0,   5])
+    @world.bodies << create_circle([1,  4], [-4, -1])
+    @world.bodies << create_circle([2,  4], [-4, -1])
+    @world.bodies << create_circle([3,  4], [-1, -1])
+    @world.bodies << create_circle([3,  5], [2,  -1])
+    @world.bodies << create_circle([3,  6], [4,  -1])
   end
 
-  def create_circle(xy, speed, c, tag)
+  def create_circle(xy, speed, tag = :circle)
     xy = Vector2d.elements(xy) / 1.0
     speed = Vector2d.elements(speed) / 1.0
-    opts = { position: xy, speed: speed, radius: 0.5, color: c, mass: 10.0, elasticity: 1.0,
-             rigidbody: true, tag: tag }
+    c = Flaty.random_color
+    opts = { position: xy, speed: speed, radius: 0.5, color: c, mass: 10.0, elasticity: 0.99,
+             rigidbody: true, tag: tag, image: @circle_img }
     CircleGameObject.new(opts)
   end
 
@@ -99,12 +103,7 @@ class Collisions < GameWindow
       @camera.zoom(1)  if Gosu.button_down? Gosu::KB_NUMPAD_MINUS
       @world.gravity.y += 0.1 if Gosu.button_down? Gosu::KB_DOWN
       @world.gravity.y += -0.1 if Gosu.button_down? Gosu::KB_UP
-      if Gosu.button_down? Gosu::KB_C and @circle_up == 0
-        @circle_up = Gosu.milliseconds
-        @world.bodies << create_circle([rand * HALF_WIDTH,  CAMERA_HEIGHT_UNITS - 2], [-1, -1], Gosu::Color::BLACK, 'BLACK')
-      elsif Gosu.milliseconds - @circle_up > 250
-        @circle_up = 0
-      end
+      generate_circle
 
       @world.update
     end
@@ -151,6 +150,17 @@ class Collisions < GameWindow
     end
 
     @world.bodies.select { |b| b.is_a? CircleGameObject }.each(&:draw)
+  end
+
+  def generate_circle
+    if Gosu.button_down? Gosu::KB_C and @circle_up == 0
+      @circle_up = Gosu.milliseconds
+      cx = (rand * (CAMERA_WIDTH_UNITS - 3))-((CAMERA_WIDTH_UNITS - 3)/2.0)
+      cy = CAMERA_HEIGHT_UNITS - 2
+      @world.bodies << create_circle([cx, cy], [-1, -1])
+    elsif Gosu.milliseconds - @circle_up > 250
+      @circle_up = 0
+    end
   end
 end
 

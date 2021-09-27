@@ -2,8 +2,6 @@ require 'flaty/collisions'
 
 module Physics
   def self.elastic_collisions(bodies, quad)
-    # O(n²) naive approach
-    # we can improve by using quadtrees
     total = 0
     bodies.each_index do |i|
       candidates = quad.query(bodies[i])
@@ -19,6 +17,21 @@ module Physics
     end
     #puts "#{total} total collisions procesing"
     #binding.pry if Gosu.milliseconds > 10000
+  end
+
+  def self.basic_collisions(bodies, quad)
+    total = 0
+    bodies.each_index do |i|
+      candidates = quad.query(bodies[i])
+      candidates.each do |body|
+        next if body == bodies[i]
+        Physics.solve_collision(bodies[i], body)
+        Physics.solve_collision(body, bodies[i])
+        total += 1
+      end
+    end
+    puts "#{total} total collisions procesing"
+    #binding.pry if Gosu.milliseconds > 3000
   end
 
   def self.elastic_collision(body1, body2)
@@ -171,7 +184,7 @@ module Physics
   class World
     GRAVITY = Vector2d[0, -9.8].freeze # -9.8 m/s
 
-    attr_accessor :bodies, :gravity
+    attr_accessor :bodies, :gravity, :collision_type
 
     def initialize
       @bodies = []
@@ -182,6 +195,7 @@ module Physics
       qw = @camera.rect.width
       qh = @camera.rect.height
       @quadtree = Quadtree.new(Vector2d[qx, qy], Vector2d[qw, qh])
+      @collision_type = :basic
     end
 
     def update_quad_rect
@@ -198,9 +212,17 @@ module Physics
       updatables = @bodies.select(&:rigidbody)
       updatables.each { |body| body.acceleration = @gravity.dup }
       collidables = @bodies.select { |body| body.is_a? Collider }
-      collidables.each { |body| @quadtree.insert(body) }
+      collidables.each do |body|
+       @quadtree.insert(body) unless body.outside_window?
+      end
       updatables.each(&:update)
-      Physics.elastic_collisions(updatables, @quadtree)
+
+      case @collision_type
+      when :basic
+        Physics.basic_collisions(updatables, @quadtree)
+      when :elastic
+        Physics.elastic_collisions(updatables, @quadtree)
+      end
     end
 
     def draw_quad

@@ -16,7 +16,7 @@ class World
   CAMERA_WIDTH_UNITS  = 50
   CAMERA_HEIGHT_UNITS = 28
 
-  attr_accessor :level, :stars
+  attr_accessor :level, :stars, :world
 
   def initialize
     @camera = GameWindow.camera
@@ -27,32 +27,27 @@ class World
     @camera_debug = CameraDebug.new(@camera)
 
     # objects
+    @world = Physics::World.new
     @background = Background.new
     @bob = Bob.new
-    @bob.rigidbody = true
     @bird = Bird.new
-    @bird.rigidbody = true
     @hud = HUD.new
-    self.stars = Array.new
+    @world.bodies << @bob
+    @world.bodies << @bird
+  end
+
+  def level=(level)
+    @level = level
+    @world.bodies += @level.tiles
   end
 
   def update
-    self.level.tiles.each { |tile| tile.debug = Gosu::Color::GREEN } if GameWindow.debug
+    @level.tiles.each { |tile| tile.debug = Gosu::Color::GREEN } if GameWindow.debug
 
-    @bob.update
-    @bird.update
-    #Physics.elastic_collisions([@bob, @bird])
-    #Physics.elastic_collisions([@bob] + @level.around(@bob.collision_rect))
-    #Physics.elastic_collisions([@bird] + @level.around(@bird.collision_rect))
-    Physics.solve_collisions(@bob, @level.around(@bob.collision_rect))
-    Physics.solve_collisions(@bird, @level.around(@bird.collision_rect))
-    if @bob.collisions(@bird) != Collision::NONE
-      Physics.solve_collision(@bird, @bob)
-      Physics.solve_collision(@bob, @bird)
-    end
+    @world.update
 
-    self.stars.each(&:update)
-    @bob.collect_stars(stars)
+    @level.stars.each(&:update)
+    @bob.collect_stars(@level.stars)
     GameWindow.camera.look(@bob.x, @bob.y)
 
     @background.update(@bob.speed) if GameWindow.camera.position.x == @bob.x
@@ -66,12 +61,15 @@ class World
     @bob.draw
     @bird.draw
 
-    self.stars.each(&:draw)
-    self.level.tiles.each(&:draw)
+    @level.stars.each(&:draw)
+    @level.tiles.each(&:draw)
 
     @hud.draw
 
-    @camera_debug.draw if GameWindow.debug
+    if GameWindow.debug
+      @camera_debug.draw
+      @world.draw_quad
+    end
   end
 
   def pause

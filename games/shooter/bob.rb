@@ -39,7 +39,7 @@ class Bob < RectGameObject
     super(position: Vector2d[0, 4], z: ZLayers::PLAYER, scale_x: scale, scale_y: scale,
           speed: IDLE_SPEED.dup, max_speed: Vector2d[SPEED, TERMINAL_SPEED], damp: 0.8,
           score: 0, tiles: bob_tiles, current: 0, debug: Gosu::Color::RED,
-          state: :idle, face: :right)
+          state: :idle, face: :right, rigidbody: true)
   end
 
   def update

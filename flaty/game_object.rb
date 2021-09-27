@@ -41,10 +41,7 @@ class GameObject < OpenStruct
   end
 
   def update
-    unless current_image.nil?
-      self.width = GameWindow.camera.pixel_to_unit_x(current_image.width * self.scale_x)
-      self.height = GameWindow.camera.pixel_to_unit_y(current_image.height * self.scale_y)
-    end
+    update_width_height
     self.previous_position = self.position.dup
 
     self.speed += self.acceleration * GameWindow.delta
@@ -83,6 +80,13 @@ class GameObject < OpenStruct
 
   def draw_obj(x, y, z)
     current_image.draw(x, y, z, scale_x = self.scale_x, scale_y = self.scale_y)
+  end
+
+  def update_width_height
+    unless current_image.nil?
+      self.width = GameWindow.camera.pixel_to_unit_x(current_image.width * self.scale_x)
+      self.height = GameWindow.camera.pixel_to_unit_y(current_image.height * self.scale_y)
+    end
   end
 
   def grounded
@@ -128,6 +132,12 @@ class CircleGameObject < GameObject
 
   def initialize(opts = {})
     super({ radius: 1 }.merge(opts))
+    self.width = self.radius * 2.0
+    self.height = self.radius * 2.0
+    #puts GameWindow.camera.unit_x
+    #puts self.current_image.width
+    #puts GameWindow.camera.pixel_to_unit_x(current_image.width.to_f)
+    #puts self.scale_x
   end
 
   def center
@@ -152,7 +162,12 @@ class CircleGameObject < GameObject
   end
 
   def draw
+    draw_debug
+    return draw_image if current_image
     Flaty.draw_circle(self.center, self.radius, self.color)
+  end
+
+  def draw_debug
     if GameWindow.debug
       Flaty.draw_line(self.center.x, self.center.y, self.color, self.center.x + self.speed.x, self.center.y + self.speed.y, self.color)
       if self.theta
@@ -160,6 +175,32 @@ class CircleGameObject < GameObject
         msg += " #{self.phi}" if self.phi
         Flaty.draw_text(Collisions.font, msg, self.x, self.y) if self.theta
       end
+      Flaty.draw_circle(self.center, self.radius, self.color) unless current_image
+    end
+  end
+
+  def update_width_height
+  end
+
+  def draw_obj(x, y, z)
+    current_image.draw(x, y, z, self.scale_x, self.scale_y, self.color, :add)
+  end
+
+  def draw_image
+    if current_image
+      self.scale_x = self.width / GameWindow.camera.pixel_to_unit_x(current_image.width.to_f)
+      self.scale_y = self.height / GameWindow.camera.pixel_to_unit_y(current_image.height.to_f)
+    end
+    return if outside_window?
+
+    new_pos = self.position
+
+    new_pos = GameWindow.camera.translate(self.collision_rect) if self.camera
+
+    draw_obj(new_pos.x, new_pos.y, z)
+    if self.debug and GameWindow.debug
+      Gosu.draw_rect(new_pos.x, new_pos.y, width * GameWindow.camera.unit_x,
+                     height * GameWindow.camera.unit_y, self.debug, z = 100, mode = :add)
     end
   end
 end
