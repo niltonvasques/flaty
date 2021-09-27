@@ -1,8 +1,6 @@
 require 'matrix'
 require 'flaty/math/vector_2d'
 require 'flaty/math/rect'
-#require './flaty/math/vector_2d'
-#require './flaty/math/rect'
 
 class Quadtree
   MAX = 4
@@ -91,7 +89,6 @@ class Quadtree
         rect = r
         rect = r.collision_rect if r.is_a? GameObject
 
-        binding.pry if rect.x.nil? or @xy.x.nil? or rect.width.nil? or s.x.nil?
         left   = true if rect.x >= @xy.x - rect.width and rect.x <= @xy.x + s.x
         right  = true if rect.x >= @xy.x + s.x - rect.width and rect.x <= @xy.x + @size.x
         bottom = true if rect.y >= @xy.y - rect.height and rect.y <= @xy.y + s.y
