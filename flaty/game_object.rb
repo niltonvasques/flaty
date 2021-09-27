@@ -134,10 +134,6 @@ class CircleGameObject < GameObject
     super({ radius: 1 }.merge(opts))
     self.width = self.radius * 2.0
     self.height = self.radius * 2.0
-    #puts GameWindow.camera.unit_x
-    #puts self.current_image.width
-    #puts GameWindow.camera.pixel_to_unit_x(current_image.width.to_f)
-    #puts self.scale_x
   end
 
   def center
@@ -167,25 +163,6 @@ class CircleGameObject < GameObject
     Flaty.draw_circle(self.center, self.radius, self.color)
   end
 
-  def draw_debug
-    if GameWindow.debug
-      Flaty.draw_line(self.center.x, self.center.y, self.color, self.center.x + self.speed.x, self.center.y + self.speed.y, self.color)
-      if self.theta
-        msg = "#{self.theta} #{self.speed.round}"
-        msg += " #{self.phi}" if self.phi
-        Flaty.draw_text(Collisions.font, msg, self.x, self.y) if self.theta
-      end
-      Flaty.draw_circle(self.center, self.radius, self.color) unless current_image
-    end
-  end
-
-  def update_width_height
-  end
-
-  def draw_obj(x, y, z)
-    current_image.draw(x, y, z, self.scale_x, self.scale_y, self.color, :add)
-  end
-
   def draw_image
     if current_image
       self.scale_x = self.width / GameWindow.camera.pixel_to_unit_x(current_image.width.to_f)
@@ -202,5 +179,24 @@ class CircleGameObject < GameObject
       Gosu.draw_rect(new_pos.x, new_pos.y, width * GameWindow.camera.unit_x,
                      height * GameWindow.camera.unit_y, self.debug, z = 100, mode = :add)
     end
+  end
+
+  def draw_obj(x, y, z)
+    current_image.draw(x, y, z, self.scale_x, self.scale_y, self.color, :add)
+  end
+
+  def draw_debug
+    if GameWindow.debug
+      Flaty.draw_line(self.center.x, self.center.y, self.color, self.center.x + self.speed.x, self.center.y + self.speed.y, self.color)
+      if self.theta
+        msg = "#{self.theta} #{self.speed.round}"
+        msg += " #{self.phi}" if self.phi
+        Flaty.draw_text(Collisions.font, msg, self.x, self.y) if self.theta
+      end
+      Flaty.draw_circle(self.center, self.radius, self.color) unless current_image
+    end
+  end
+
+  def update_width_height
   end
 end
