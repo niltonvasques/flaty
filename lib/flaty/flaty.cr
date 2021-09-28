@@ -1,3 +1,4 @@
+# https://github.com/oprypin/crsfml/tree/master/docs/tutorials
 require "crsfml"
 require "crsfml/audio"
 require "flaty/game_window"
@@ -56,6 +57,32 @@ module Flaty
     Flaty.window.draw connection, Flaty.states
   end
 
+  def self.draw_text(font, msg, x, y, size = 24, color = Flaty::Colors::BLACK)
+    text = SF::Text.new
+
+    # select the font
+    text.font = font # font is a SF::Font
+
+    # set the string to display
+    text.string = msg
+
+    # set the character size
+    text.character_size = size # in pixels, not points!
+
+    # set the color
+    text.color = color
+
+    text.position = Vec2i.new(x.to_i, y.to_i)
+
+    # set the text style
+    #text.style = (SF::Text::Bold | SF::Text::Underlined)
+
+    Flaty.window.draw text
+  end
+
+  def self.paint(color)
+    Flaty.window.clear color
+  end
 
   module Colors
     BLACK = SF::Color.new(0,   0,     0)

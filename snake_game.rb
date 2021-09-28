@@ -30,9 +30,9 @@ class SnakeGame < GameWindow
     #
     ## assets
     #@font = Gosu::Font.new(25)
-    #@eat  = Gosu::Sample.new('assets/sounds/snake_eat.wav')
+    @font = SF::Font.from_file("assets/Cantarell-Regular.otf")
     eat_buffer = SF::SoundBuffer.from_file("assets/sounds/snake_eat.wav")
-    @eat = SF::Sound.new(eat_buffer)
+    @eat       = SF::Sound.new(eat_buffer)
 
     @updated_at = 0
     @speed      = DEFAULT_SPEED
@@ -54,7 +54,6 @@ class SnakeGame < GameWindow
     super
     return if paused?
 
-    #restart if Gosu.button_down? Gosu::KB_R
     return if @loose
 
     previous = update_snake_position
@@ -65,21 +64,19 @@ class SnakeGame < GameWindow
   def draw(target, states)
     #@camera_debug.draw
 
-    #Gosu.draw_rect(0, 0, GameWindow.width, GameWindow.height, Gosu::Color::GRAY, 0)
-    @window.clear Flaty::Colors::GRAY
+    Flaty.paint(Flaty::Colors::GRAY)
 
     draw_food
 
     draw_snake
 
-    #draw_hud
+    draw_hud
   end
 
   def button_down(code)
     # last direction avoids walking backward and bite in the opposite direction
     case code
-    when .r?
-      restart
+    when .r? then restart
     when .left? then @direction = Vec2i.new(-1, 0) if @last_direction.x == 0
     when .up? then @direction = Vec2i.new(0, 1)  if @last_direction.y == 0
     when .right? then @direction = Vec2i.new(1, 0)  if @last_direction.x == 0
@@ -151,12 +148,14 @@ class SnakeGame < GameWindow
   end
 
   def draw_hud
-    #@font.draw_text("Score: #{@snake.size}", GameWindow.width - 200, 10, 10, 2.0, 2.0,
-    #                Gosu::Color::GREEN)
-    #if @loose
-    #  x = GameWindow.width / 2 - @camera.unit_x
-    #  @font.draw_text("GAME OVER", x, 10, 10, 2.0, 2.0, Gosu::Color::RED)
-    #end
+    Flaty.draw_text(@font, "Score: #{@snake.size}", 9, 9)
+    if @loose
+      msg = "GAME OVER"
+      font_size = 50
+      x = (SCREEN_WIDTH / 2) - (msg.size/2.0) * font_size
+      y = 9
+      Flaty.draw_text(@font, "GAME OVER", x, y, font_size, Flaty::Colors::RED)
+    end
   end
 
   def dead
