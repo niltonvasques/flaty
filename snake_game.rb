@@ -57,8 +57,6 @@ class SnakeGame < GameWindow
     #restart if Gosu.button_down? Gosu::KB_R
     return if @loose
 
-    #update_snake_direction
-
     previous = update_snake_position
 
     detect_collisions(previous)
@@ -82,14 +80,10 @@ class SnakeGame < GameWindow
     case code
     when .r?
       restart
-    when .left?
-      @direction = Vec2i.new(-1, 0) if @last_direction.x == 0
-    when .up?
-      @direction = Vec2i.new(0, 1)  if @last_direction.y == 0
-    when .right?
-      @direction = Vec2i.new(1, 0)  if @last_direction.x == 0
-    when .down?
-      @direction = Vec2i.new(0, -1) if @last_direction.y == 0
+    when .left? then @direction = Vec2i.new(-1, 0) if @last_direction.x == 0
+    when .up? then @direction = Vec2i.new(0, 1)  if @last_direction.y == 0
+    when .right? then @direction = Vec2i.new(1, 0)  if @last_direction.x == 0
+    when .down? then @direction = Vec2i.new(0, -1) if @last_direction.y == 0
     end
   end
 
