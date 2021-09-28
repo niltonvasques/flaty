@@ -31,7 +31,7 @@ class SnakeGame < GameWindow
     #@font = Gosu::Font.new(25)
     #@eat  = Gosu::Sample.new('assets/sounds/snake_eat.wav')
 
-    #@updated_at = 0
+    @updated_at = 0
     @speed      = DEFAULT_SPEED
     restart
   end
@@ -45,7 +45,7 @@ class SnakeGame < GameWindow
     @last_direction = @direction = Vec2i.new(-1,0)
   end
 
-  def update
+  def update(delta)
     super
     #return if paused?
 
@@ -54,7 +54,7 @@ class SnakeGame < GameWindow
 
     #update_snake_direction
 
-    #previous = update_snake_position
+    previous = update_snake_position
 
     #detect_collisions(previous)
   end
@@ -72,30 +72,41 @@ class SnakeGame < GameWindow
     #draw_hud
   end
 
-  def update_snake_direction
+  def button_down(code)
     # last direction avoids walking backward and bite in the opposite direction
-    #@direction = Vector2d[0, 1]  if Gosu.button_down? Gosu::KB_UP and @last_direction.y == 0
-    #@direction = Vector2d[0, -1] if Gosu.button_down? Gosu::KB_DOWN and @last_direction.y == 0
-    #@direction = Vector2d[-1, 0] if Gosu.button_down? Gosu::KB_LEFT and @last_direction.x == 0
-    #@direction = Vector2d[1, 0]  if Gosu.button_down? Gosu::KB_RIGHT and @last_direction.x == 0
+    case code
+    when .left?
+      @direction = Vec2i.new(-1, 0) if @last_direction.x == 0
+    when .up?
+      @direction = Vec2i.new(0, 1)  if @last_direction.y == 0
+    when .right?
+      @direction = Vec2i.new(1, 0)  if @last_direction.x == 0
+    when .down?
+      @direction = Vec2i.new(0, -1) if @last_direction.y == 0
+    end
+  end
+
+  def update_snake_direction
   end
 
   def update_snake_position
-    #seconds = (Gosu.milliseconds / (Second.in_millis / @speed)).to_i
+    seconds = (elapsed_seconds * @speed).to_i
 
-    #previous = @snake[0].dup
-    #if seconds - @updated_at > 0
-    #  @updated_at = seconds
-    #  @snake[0] += @direction
-    #  @last_direction = @direction
-    #  @snake.each_index do |index|
-    #    next if index == 0
-    #    aux = @snake[index]
-    #    @snake[index] = previous
-    #    previous = aux
-    #  end
-    #end
-    #previous
+    previous = @snake[0]
+    puts seconds
+    puts @direction
+    if seconds - @updated_at > 0
+      @updated_at = seconds
+      @snake[0] += @direction
+      @last_direction = @direction
+      @snake.each_index do |index|
+        next if index == 0
+        aux = @snake[index]
+        @snake[index] = previous
+        previous = aux
+      end
+    end
+    previous
   end
 
   def detect_collisions(previous)

@@ -43,6 +43,10 @@ class GameWindow
     @clock.elapsed_time.as_milliseconds
   end
 
+  def elapsed_seconds
+    @clock.elapsed_time.as_seconds
+  end
+
   def self.width
     @@width
   end
@@ -66,8 +70,6 @@ class GameWindow
   def needs_cursor?; false; end
 
   def update(delta)
-    puts delta
-    puts delta.as_seconds
     #@@delta_seconds = (Gosu.milliseconds - @@updated_at) / 1000.0
     #@@updated_at = Gosu.milliseconds
   end
