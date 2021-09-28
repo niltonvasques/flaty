@@ -1,5 +1,13 @@
 # Flaty
 
+## Intall
+
+https://github.com/oprypin/crsfml#install-sfml
+https://github.com/oprypin/crsfml#generating-sources
+
+
+## Running
+
 ```crystal
 crystal snake_game.cr
 ```
