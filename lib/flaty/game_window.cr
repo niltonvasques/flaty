@@ -27,9 +27,8 @@ class GameWindow
     @delta = SF::Time.new()
 
     @states = SF::RenderStates.new(
-      transform: SF::Transform.new
-      .scale(@scale, @scale)  # Allow all operations to use 1 as the size of the grid
-      .translate(0.5, 0.5)  # Move the reference point to centers of grid squares
+      # Allow all operations to use 1 as the size of the grid
+      transform: SF::Transform.new.scale(@scale, @scale)
     )
 
     @window = SF::RenderWindow.new(
@@ -38,6 +37,10 @@ class GameWindow
     )
     @window.framerate_limit = 10
     Flaty.init(@window, @states)
+  end
+
+  def elapsed_time
+    @clock.elapsed_time.as_milliseconds
   end
 
   def self.width

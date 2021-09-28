@@ -4,28 +4,18 @@
 
 require "flaty/flaty"
 
-struct SF::Rect
-  def center
-    SF::Vector2.new(left + width/2, top + height/2)
-  end
-end
-
-class SF::Transformable
-  def center!
-    self.origin = local_bounds.center
-    self
-  end
-end
-
 class SnakeGame < GameWindow
   SCREEN_WIDTH        = 1500
   SCREEN_HEIGHT       = 1500
-  CAMERA_WIDTH_UNITS  = 10
-  CAMERA_HEIGHT_UNITS = 10
+  CAMERA_WIDTH_UNITS  = 10.0
+  CAMERA_HEIGHT_UNITS = 10.0
   SCALE               = SCREEN_WIDTH / CAMERA_WIDTH_UNITS
   DEFAULT_SPEED       = 8 # 8 units per second
 
-  @food : SF::Vector2(Int32)
+  @food           = Vec2i.new(1, 1)
+  @snake          = Deque(Vec2i).new()
+  @last_direction = Vec2i.new(-1,0)
+  @direction      = Vec2i.new(-1,0)
 
   def initialize
     #super(SCREEN_WIDTH, SCREEN_HEIGHT, fullscreen: false)
@@ -37,22 +27,22 @@ class SnakeGame < GameWindow
     #axis_colors = { lines: Gosu::Color::BLACK, text: Gosu::Color::BLACK }
     #@camera_debug = CameraDebug.new(@camera, axis_colors)
     #
-    @food = SF::Vector2.new(1, 1)
     ## assets
     #@font = Gosu::Font.new(25)
     #@eat  = Gosu::Sample.new('assets/sounds/snake_eat.wav')
 
     #@updated_at = 0
     @speed      = DEFAULT_SPEED
-    #restart
+    restart
   end
 
   def restart
-    #@snake = [Vector2d[0,0]]
-    #@snake << Vector2d[1,0]
-    #@snake << Vector2d[2,0]
-    #@loose = false
-    #@last_direction = @direction = Vector2d[-1, 0]
+    @food = Vec2i.new(1, 1)
+    @snake.push Vec2i.new(0,0)
+    @snake.push Vec2i.new(1,0)
+    @snake.push Vec2i.new(2,0)
+    @loose = false
+    @last_direction = @direction = Vec2i.new(-1,0)
   end
 
   def update
@@ -73,10 +63,11 @@ class SnakeGame < GameWindow
     #@camera_debug.draw
 
     #Gosu.draw_rect(0, 0, GameWindow.width, GameWindow.height, Gosu::Color::GRAY, 0)
+    @window.clear Flaty::Colors::GRAY
 
-    draw_food(target, states)
+    draw_food
 
-    #draw_snake
+    draw_snake
 
     #draw_hud
   end
@@ -133,17 +124,17 @@ class SnakeGame < GameWindow
   end
 
   FOOD_ANIMATION_SPEED = 100 # 10 blinks per second
-  def draw_food(window, states)
-    seconds = (@clock.elapsed_time.as_milliseconds / FOOD_ANIMATION_SPEED).to_i % 2
+  def draw_food
+    seconds = (elapsed_time / FOOD_ANIMATION_SPEED).to_i % 2
     color = seconds == 0 ? Flaty::Colors::BLUE : Flaty::Colors::GREEN
     Flaty.draw_rect(@food.x, @food.y, 1, 1, color)
   end
 
   def draw_snake
-    #@snake.each_with_index do |v, index|
-    #  color = index == 0 ? Gosu::Color::RED : Gosu::Color::BLACK
-    #  Flaty.draw_rect(v.x, v.y, 1, 1, color, 0)
-    #end
+    @snake.each_with_index do |v, index|
+      color = index == 0 ? Flaty::Colors::RED : Flaty::Colors::BLACK
+      Flaty.draw_rect(v.x, v.y, 1, 1, color)
+    end
   end
 
   def draw_hud
