@@ -92,20 +92,9 @@ class GameWindow
   #  end
   #end
 
-  #def paused?
-  #  if Gosu.button_down? Gosu::KB_P
-  #    if (Gosu.milliseconds - @paused_at) > 1000
-  #      @paused = !@paused
-  #      @paused_at = Gosu.milliseconds
-  #      if @paused
-  #        paused if defined? paused
-  #      else
-  #        play if defined? play
-  #      end
-  #    end
-  #  end
-  #  @paused
-  #end
+  def paused?
+    @paused
+  end
 
   def button_down(code)
   end
@@ -120,26 +109,8 @@ class GameWindow
         )
           @window.close()
         elsif event.is_a? SF::Event::KeyPressed
+          @paused = !@paused if event.code.p?
           button_down(event.code)
-          #case event.code
-          #when .a?
-          #  snake1.turn Left
-          #when .w?
-          #  snake1.turn Up
-          #when .d?
-          #  snake1.turn Right
-          #when .s?
-          #  snake1.turn Down
-
-          #when .left?
-          #  snake2.turn Left
-          #when .up?
-          #  snake2.turn Up
-          #when .right?
-          #  snake2.turn Right
-          #when .down?
-          #  snake2.turn Down
-          #end
         end
       end
 

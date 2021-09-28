@@ -2,6 +2,7 @@
 #  $LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__) + '/..'))
 #end
 
+require "crsfml"
 require "flaty/flaty"
 
 class SnakeGame < GameWindow
@@ -30,6 +31,8 @@ class SnakeGame < GameWindow
     ## assets
     #@font = Gosu::Font.new(25)
     #@eat  = Gosu::Sample.new('assets/sounds/snake_eat.wav')
+    eat_buffer = SF::SoundBuffer.from_file("assets/sounds/snake_eat.wav")
+    @eat = SF::Sound.new(eat_buffer)
 
     @updated_at = 0
     @speed      = DEFAULT_SPEED
@@ -49,7 +52,7 @@ class SnakeGame < GameWindow
 
   def update(delta)
     super
-    #return if paused?
+    return if paused?
 
     #restart if Gosu.button_down? Gosu::KB_R
     return if @loose
@@ -126,7 +129,7 @@ class SnakeGame < GameWindow
     dead if @snake[0].y >= (CAMERA_HEIGHT_UNITS)
 
     if @snake[0] == @food
-    #  @eat.play
+      @eat.play
       @snake.push previous
       generate_food
     end

@@ -1,4 +1,5 @@
 require "crsfml"
+require "crsfml/audio"
 require "flaty/game_window"
 
 struct SF::Rect
