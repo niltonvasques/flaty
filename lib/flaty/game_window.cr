@@ -26,10 +26,15 @@ class GameWindow
     @delta_clock = SF::Clock.new
     @delta = SF::Time.new()
 
-    @states = SF::RenderStates.new(
-      # Allow all operations to use 1 as the size of the grid
-      transform: SF::Transform.new.scale(@scale, @scale)
+    # Allow all operations to use 1 as the size of the grid
+    t = SF::Transform.new(
+      1, 0,  0,
+      0, -1, 0, # vertical flip
+      0, 0,  1
     )
+    t.translate(0, -(height - 1) * @scale)
+    t.scale(@scale, @scale)
+    @states = SF::RenderStates.new(transform: t)
 
     @window = SF::RenderWindow.new(
       SF::VideoMode.new((width * @scale).to_i, (height * @scale).to_i), title,

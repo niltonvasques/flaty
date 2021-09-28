@@ -10,7 +10,7 @@ class SnakeGame < GameWindow
   CAMERA_WIDTH_UNITS  = 10.0
   CAMERA_HEIGHT_UNITS = 10.0
   SCALE               = SCREEN_WIDTH / CAMERA_WIDTH_UNITS
-  DEFAULT_SPEED       = 8 # 8 units per second
+  DEFAULT_SPEED       = 4 # 8 units per second
 
   @food           = Vec2i.new(1, 1)
   @snake          = Deque(Vec2i).new()
@@ -37,10 +37,12 @@ class SnakeGame < GameWindow
   end
 
   def restart
-    @food = Vec2i.new(1, 1)
-    @snake.push Vec2i.new(0,0)
-    @snake.push Vec2i.new(1,0)
-    @snake.push Vec2i.new(2,0)
+    @updated_at = 0
+    @food = Vec2i.new(0, 1)
+    @snake.clear
+    @snake.push Vec2i.new(5,0)
+    @snake.push Vec2i.new(6,0)
+    @snake.push Vec2i.new(7,0)
     @loose = false
     @last_direction = @direction = Vec2i.new(-1,0)
   end
@@ -50,13 +52,13 @@ class SnakeGame < GameWindow
     #return if paused?
 
     #restart if Gosu.button_down? Gosu::KB_R
-    #return if @loose
+    return if @loose
 
     #update_snake_direction
 
     previous = update_snake_position
 
-    #detect_collisions(previous)
+    detect_collisions(previous)
   end
 
   def draw(target, states)
@@ -75,6 +77,8 @@ class SnakeGame < GameWindow
   def button_down(code)
     # last direction avoids walking backward and bite in the opposite direction
     case code
+    when .r?
+      restart
     when .left?
       @direction = Vec2i.new(-1, 0) if @last_direction.x == 0
     when .up?
@@ -111,27 +115,28 @@ class SnakeGame < GameWindow
 
   def detect_collisions(previous)
     # tail
-    #@snake.each_with_index do |v, index|
-    #  next if index == 0
-    #  dead if v == @snake[0]
-    #end
+    @snake.each_with_index do |v, index|
+      next if index == 0
+      dead if v == @snake[0]
+    end
 
-    ## walls
-    #dead if @snake[0].x < @camera.shift_x or @snake[0].y < @camera.shift_y
-    #dead if @snake[0].x >= (@camera.shift_x + @camera.width)
-    #dead if @snake[0].y >= (@camera.shift_y + @camera.height)
+    # walls
+    dead if @snake[0].x < 0 || @snake[0].y < 0
+    dead if @snake[0].x >= (CAMERA_WIDTH_UNITS)
+    dead if @snake[0].y >= (CAMERA_HEIGHT_UNITS)
 
-    #if @snake[0] == @food
+    if @snake[0] == @food
     #  @eat.play
-    #  @snake << previous
-    #  generate_food
-    #end
+      @snake.push previous
+      generate_food
+    end
   end
 
   def generate_food
-    #x = (rand * @camera.width + @camera.shift_x).to_i
-    #y = (rand * @camera.height + @camera.shift_y).to_i
-    #@food = Vector2d[x, y]
+    x = (rand * CAMERA_WIDTH_UNITS).to_i
+    y = (rand * CAMERA_HEIGHT_UNITS).to_i
+    @food.x = x
+    @food.y = y
   end
 
   FOOD_ANIMATION_SPEED = 100 # 10 blinks per second

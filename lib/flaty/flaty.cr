@@ -5,11 +5,20 @@ struct SF::Rect
   def center
     SF::Vector2.new(left + width/2, top + height/2)
   end
+
+  def left_bottom_origin
+    SF::Vector2.new(left, top + height)
+  end
 end
 
 class SF::Transformable
   def center!
     self.origin = local_bounds.center
+    self
+  end
+
+  def left_bottom_origin!
+    self.origin = local_bounds.left_bottom_origin
     self
   end
 end
@@ -39,7 +48,8 @@ module Flaty
   end
 
   def self.draw_rect(x = 0.0, y = 0.0, width = 1.0, height = 1.0, color = Flaty::Colors::RED)
-    connection = SF::RectangleShape.new({ width, height }) #.center!
+    #connection = SF::RectangleShape.new({ width, height }) #.center!
+    connection = SF::RectangleShape.new({ width, height }).left_bottom_origin!
     connection.fill_color = color
     connection.position = SF::Vector2.new(x, y)
     Flaty.window.draw connection, Flaty.states
