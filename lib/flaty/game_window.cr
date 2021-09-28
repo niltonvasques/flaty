@@ -1,11 +1,12 @@
 class GameWindow
-  SCREEN_WIDTH   = 1280
-  SCREEN_HEIGHT  = 720
+  SCREEN_WIDTH        = 1280
+  SCREEN_HEIGHT       = 720
   CAMERA_WIDTH_UNITS  = 100
   CAMERA_HEIGHT_UNITS = 56
-  SCALE = 20
+  SCALE               = 20
 
-  def initialize(width = SCREEN_WIDTH, height = SCREEN_HEIGHT, scale = SCALE)
+  def initialize(width = SCREEN_WIDTH, height = SCREEN_HEIGHT, scale : Float64 = SCALE,
+                 title = "Window")
     @@width = width
     @@height = height
 
@@ -21,6 +22,10 @@ class GameWindow
 
     @scale = scale
 
+    @clock = SF::Clock.new
+    @delta_clock = SF::Clock.new
+    @delta = SF::Time.new()
+
     @states = SF::RenderStates.new(
       transform: SF::Transform.new
       .scale(@scale, @scale)  # Allow all operations to use 1 as the size of the grid
@@ -28,10 +33,11 @@ class GameWindow
     )
 
     @window = SF::RenderWindow.new(
-      SF::VideoMode.new(width * @scale, height * @scale), "Snakes",
+      SF::VideoMode.new((width * @scale).to_i, (height * @scale).to_i), title,
       settings: SF::ContextSettings.new(depth: 24, antialiasing: 8)
     )
     @window.framerate_limit = 10
+    Flaty.init(@window, @states)
   end
 
   def self.width
@@ -56,12 +62,14 @@ class GameWindow
 
   def needs_cursor?; false; end
 
-  def update
+  def update(delta)
+    puts delta
+    puts delta.as_seconds
     #@@delta_seconds = (Gosu.milliseconds - @@updated_at) / 1000.0
     #@@updated_at = Gosu.milliseconds
   end
 
-  def draw(window)
+  def draw(window, states)
   end
 
   #def button_down(id)
@@ -94,6 +102,7 @@ class GameWindow
 
   def loop
     while @window.open?
+      @delta = @delta_clock.restart
       while event = @window.poll_event()
         if (
             event.is_a?(SF::Event::Closed) ||
@@ -124,10 +133,10 @@ class GameWindow
         end
       end
 
-      update()
+      update(@delta)
 
       @window.clear SF::Color::Black
-      draw(@window)
+      draw(@window, @states)
       #@window.draw field, states
 
       @window.display()

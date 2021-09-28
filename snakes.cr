@@ -1,28 +1,10 @@
-require "crsfml"
-require "./flaty/flaty"
-require "./flaty/game_window"
-
+require "flaty/flaty"
 
 Left = SF.vector2(-1, 0)
 Up = SF.vector2(0, -1)
 Right = SF.vector2(1, 0)
 Down = SF.vector2(0, 1)
 Directions = [Left, Up, Right, Down]
-
-
-struct SF::Rect
-  def center
-    SF::Vector2.new(left + width/2, top + height/2)
-  end
-end
-
-class SF::Transformable
-  def center!
-    self.origin = local_bounds.center
-    self
-  end
-end
-
 
 struct Food
   include SF::Drawable
@@ -108,7 +90,9 @@ class Snake
         )
           connection = SF::RectangleShape.new({0.9, 0.9}).center!
           connection.position = current + offset / 2.0
+          puts connection.position
           connection.fill_color = @color
+          connection.fill_color = Flaty::Colors::RED
           target.draw connection, states
         end
       end
@@ -177,7 +161,7 @@ class Field
 end
 
 class SnakeWindow < GameWindow
-  UNIT_SCALE = 40
+  UNIT_SCALE = 40.0
 
   def initialize()
     @field = Field.new(SF.vector2(40, 40))
@@ -186,12 +170,37 @@ class SnakeWindow < GameWindow
 
     center = SF.vector2((@field.size.x / 2).to_i, (@field.size.y / 2).to_i)
 
-    @field.add (snake1 = Snake.new(@field, center - {5, 0}, Flaty.random_color()))
-    @field.add (snake2 = Snake.new(@field, center + {5, 0}, Flaty.random_color()))
+    @field.add(@snake1 = Snake.new(@field, center - {5, 0}, Flaty.random_color()))
+    @field.add(@snake2 = Snake.new(@field, center + {5, 0}, Flaty.random_color()))
+  end
+
+  def update
+    @field.step()
   end
 
   def draw(window)
     window.draw @field, @states
+  end
+
+  def button_down(code)
+    case code
+    when .a?
+      @snake1.turn Left
+    when .w?
+      @snake1.turn Up
+    when .d?
+      @snake1.turn Right
+    when .s?
+      @snake1.turn Down
+    when .left?
+      @snake2.turn Left
+    when .up?
+      @snake2.turn Up
+    when .right?
+      @snake2.turn Right
+    when .down?
+      @snake2.turn Down
+    end
   end
 end
 
