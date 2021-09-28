@@ -28,6 +28,8 @@ module Flaty
       @delta = SF::Time.new()
 
       # Allow all operations to use 1 as the size of the grid
+      # vertical flip reference
+      # https://gamedev.stackexchange.com/questions/149062/how-to-mirror-reflect-flip-a-4d-transformation-matrix
       t = SF::Transform.new(
         1, 0,  0,
         0, -1, 0, # vertical flip

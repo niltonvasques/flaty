@@ -30,7 +30,7 @@ class SnakeGame < Flaty::GameWindow
     #
     ## assets
     #@font = Gosu::Font.new(25)
-    @font = SF::Font.from_file("assets/Cantarell-Regular.otf")
+    @font      = SF::Font.from_file("assets/Cantarell-Regular.otf")
     eat_buffer = SF::SoundBuffer.from_file("assets/sounds/snake_eat.wav")
     @eat       = SF::Sound.new(eat_buffer)
 
