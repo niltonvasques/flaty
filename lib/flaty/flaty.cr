@@ -2,6 +2,7 @@
 require "crsfml"
 require "crsfml/audio"
 require "flaty/game_window"
+require "flaty/camera"
 
 struct SF::Rect
   def self.xywh(x, y, w, h)

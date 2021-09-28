@@ -8,8 +8,8 @@ require "flaty/flaty"
 class SnakeGame < Flaty::GameWindow
   SCREEN_WIDTH        = 1500
   SCREEN_HEIGHT       = 1500
-  CAMERA_WIDTH_UNITS  = 10.0
-  CAMERA_HEIGHT_UNITS = 10.0
+  CAMERA_WIDTH_UNITS  = 10_f32
+  CAMERA_HEIGHT_UNITS = 10_f32
   SCALE               = SCREEN_WIDTH / CAMERA_WIDTH_UNITS
   DEFAULT_SPEED       = 4 # 8 units per second
 
@@ -27,8 +27,9 @@ class SnakeGame < Flaty::GameWindow
     puts Rect.xywh(1,1,2,4).width
     puts Rect.xywh(1,1,2,4).height
     #@camera = GameWindow.camera
-    #@camera.size(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
-    #@camera.look(0, 0)
+    @camera.size(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
+    @camera.look(CAMERA_WIDTH_UNITS / 2, CAMERA_HEIGHT_UNITS / 2)
+    update_camera
     #axis_colors = { lines: Gosu::Color::BLACK, text: Gosu::Color::BLACK }
     #@camera_debug = CameraDebug.new(@camera, axis_colors)
     #

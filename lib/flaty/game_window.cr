@@ -2,16 +2,18 @@ module Flaty
   class GameWindow
     SCREEN_WIDTH        = 1280
     SCREEN_HEIGHT       = 720
-    CAMERA_WIDTH_UNITS  = 100
-    CAMERA_HEIGHT_UNITS = 56
+    CAMERA_WIDTH_UNITS  = 100_f32
+    CAMERA_HEIGHT_UNITS = 56_f32
     SCALE               = 20
 
-    def initialize(width = SCREEN_WIDTH, height = SCREEN_HEIGHT, scale : Float64 = SCALE,
+    property camera
+
+    def initialize(width = SCREEN_WIDTH, height = SCREEN_HEIGHT, scale : Float32 = SCALE,
                    title = "Window")
       @@width = width
       @@height = height
 
-      #@@camera = Camera.new(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
+      @camera = Camera.new(width, height, scale)
       #@@camera.look(CAMERA_WIDTH_UNITS / 2.0, CAMERA_HEIGHT_UNITS / 2.0)
 
       # state
@@ -45,6 +47,10 @@ module Flaty
       )
       @window.framerate_limit = 10
       Flaty.init(@window, @states)
+    end
+
+    def update_camera
+      @window.view = @camera.view
     end
 
     def elapsed_time
