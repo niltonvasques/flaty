@@ -4,12 +4,24 @@ require "crsfml/audio"
 require "flaty/game_window"
 
 struct SF::Rect
+  def self.xywh(x, y, w, h)
+    SF::Rect.new(x, y - h, w, h)
+  end
+
   def center
     SF::Vector2.new(left + width/2, top + height/2)
   end
 
   def left_bottom_origin
     SF::Vector2.new(left, top + height)
+  end
+
+  def x
+    left
+  end
+
+  def y
+    top + height
   end
 end
 
@@ -27,6 +39,8 @@ end
 
 alias Vec2d = SF::Vector2(Float32)
 alias Vec2i = SF::Vector2(Int32)
+alias Rect  = SF::Rect(Float32)
+alias RectI = SF::Rect(Int32)
 
 module Flaty
   DEFAULT_WINDOW = SF::RenderWindow.new(SF::VideoMode.new(10, 10), "Flaty")

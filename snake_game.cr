@@ -22,6 +22,10 @@ class SnakeGame < Flaty::GameWindow
     #super(SCREEN_WIDTH, SCREEN_HEIGHT, fullscreen: false)
     super(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS, SCALE, "Snake Game")
 
+    puts Rect.xywh(1,1,2,4).x
+    puts Rect.xywh(1,1,2,4).y
+    puts Rect.xywh(1,1,2,4).width
+    puts Rect.xywh(1,1,2,4).height
     #@camera = GameWindow.camera
     #@camera.size(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
     #@camera.look(0, 0)
@@ -91,8 +95,6 @@ class SnakeGame < Flaty::GameWindow
     seconds = (elapsed_seconds * @speed).to_i
 
     previous = @snake[0]
-    puts seconds
-    puts @direction
     if seconds - @updated_at > 0
       @updated_at = seconds
       @snake[0] += @direction
