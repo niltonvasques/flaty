@@ -5,7 +5,7 @@
 require "crsfml"
 require "flaty/flaty"
 
-class SnakeGame < GameWindow
+class SnakeGame < Flaty::GameWindow
   SCREEN_WIDTH        = 1500
   SCREEN_HEIGHT       = 1500
   CAMERA_WIDTH_UNITS  = 10.0
