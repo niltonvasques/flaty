@@ -45,14 +45,14 @@ class Camera
     Rect.new(@position.x - w2, @position.y - h2, @width, @height)
   end
 
-  #MAX_CAMERA_SIZE = 10000000
-  #MIN_CAMERA_SIZE = 0.01
-  #def zoom(units)
-  #  units *= @width / 10.0
-  #  return if units < 0 && @width <= MIN_CAMERA_SIZE
-  #  return if units > 0 && @width >= MAX_CAMERA_SIZE
-  #  self.size(@width + units, @height + units)
-  #end
+  MAX_CAMERA_SIZE = 10000000_f32
+  MIN_CAMERA_SIZE = 0.01_f32
+  def zoom(units : Float32)
+    units *= @width / 10.0
+    return if units < 0 && @width <= MIN_CAMERA_SIZE
+    return if units > 0 && @width >= MAX_CAMERA_SIZE
+    size(@width + units, @height + units)
+  end
 
   #def move(direction)
   #  unit = @width / 20.0
