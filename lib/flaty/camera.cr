@@ -4,6 +4,8 @@ class Camera
   NOT_BOUNDED = -1_f32
   #attr_accessor :width, :height, :position, :bounds
   property view
+  property width
+  property height
 
   #attr_reader :unit_x, :unit_y
   @bounds : Rect
@@ -26,7 +28,7 @@ class Camera
     y = @bounds.y if @bounds.y != NOT_BOUNDED && y < @bounds.y
     x = @bounds.x if @bounds.x != NOT_BOUNDED && x < @bounds.x
     x = @bounds.width if @bounds.width != NOT_BOUNDED && x > @bounds.width
-    @position = Vec2d.new(x, y)
+    @position = Vec2d.new(x, @height - y)
     @view.center = @position * @scale
   end
 
@@ -54,10 +56,10 @@ class Camera
     size(@width + units, @height + units)
   end
 
-  #def move(direction)
-  #  unit = @width / 20.0
-  #  @position += (direction * unit)
-  #end
+  def move(direction : Vec2d)
+    unit = @width / 20_f32
+    @position += (direction * unit)
+  end
 
   #def visible?(obj)
   #  rect = obj
@@ -69,33 +71,33 @@ class Camera
   #  true
   #end
 
-  #def width_pixels
-  #  @width * @unit_x
-  #end
+  def shift_x
+    @position.x - (@width / 2)
+  end
 
-  #def height_pixels
-  #  @height * @unit_y
-  #end
+  def shift_y
+    (@height / 2) - @position.y
+  end
 
-  #def shift_x
-  #  @position.x - (@width / 2)
-  #end
+  def width_pixels
+    @width * @scale
+  end
 
-  #def shift_y
-  #  @position.y - (@height / 2)
-  #end
+  def height_pixels
+    @height * @scale
+  end
 
-  #def pixel_to_unit_x(w)
-  #  w / @unit_x.to_f
-  #end
+  def pixel_to_unit_x(w : Float32)
+    w / @scale
+  end
 
-  #def pixel_to_unit_y(h)
-  #  h / @unit_y.to_f
-  #end
+  def pixel_to_unit_y(h : Float32)
+    h / @scale
+  end
 
-  #def scale(size_in_pixels, size_in_units)
-  #  (@unit_y * size_in_units) / size_in_pixels.to_f
-  #end
+  def scale(size_in_pixels : Float32, size_in_units : Float32)
+    (@scale * size_in_units) / size_in_pixels
+  end
 
   #def translate_x(x)
   #  (x - shift_x) * @unit_x

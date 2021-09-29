@@ -19,22 +19,21 @@ class SnakeGame < Flaty::GameWindow
   @direction      = Vec2i.new(-1,0)
 
   def initialize
-    #super(SCREEN_WIDTH, SCREEN_HEIGHT, fullscreen: false)
     super(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS, SCALE, "Snake Game")
 
     puts Rect.xywh(1,1,2,4).x
     puts Rect.xywh(1,1,2,4).y
     puts Rect.xywh(1,1,2,4).width
     puts Rect.xywh(1,1,2,4).height
-    #@camera = GameWindow.camera
     @camera.size(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
-    @camera.look(CAMERA_WIDTH_UNITS / 2, CAMERA_HEIGHT_UNITS / 2)
+    #@camera.look(CAMERA_WIDTH_UNITS / 2, CAMERA_HEIGHT_UNITS / 2)
+    #@camera.look(0, CAMERA_HEIGHT_UNITS / 2)
+    @camera.look(0, 0)
     update_camera
-    #axis_colors = { lines: Gosu::Color::BLACK, text: Gosu::Color::BLACK }
-    #@camera_debug = CameraDebug.new(@camera, axis_colors)
-    #
+    axis_colors = { lines: Flaty::Colors::BLACK, text: Flaty::Colors::BLACK }
+    @camera_debug = CameraDebug.new(@camera, axis_colors)
+
     ## assets
-    #@font = Gosu::Font.new(25)
     @font      = SF::Font.from_file("assets/Cantarell-Regular.otf")
     eat_buffer = SF::SoundBuffer.from_file("assets/sounds/snake_eat.wav")
     @eat       = SF::Sound.new(eat_buffer)
@@ -67,8 +66,6 @@ class SnakeGame < Flaty::GameWindow
   end
 
   def draw(target, states)
-    #@camera_debug.draw
-
     Flaty.paint(Flaty::Colors::GRAY)
 
     draw_food
@@ -76,6 +73,8 @@ class SnakeGame < Flaty::GameWindow
     draw_snake
 
     draw_hud
+
+    @camera_debug.draw
   end
 
   def button_down(code)
@@ -86,6 +85,12 @@ class SnakeGame < Flaty::GameWindow
     when .up? then @direction = Vec2i.new(0, 1)  if @last_direction.y == 0
     when .right? then @direction = Vec2i.new(1, 0)  if @last_direction.x == 0
     when .down? then @direction = Vec2i.new(0, -1) if @last_direction.y == 0
+    when .o?
+      @camera.zoom(1)
+      update_camera
+    when .i?
+      @camera.zoom(-1)
+      update_camera
     end
   end
 

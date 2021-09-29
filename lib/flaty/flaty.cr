@@ -3,6 +3,7 @@ require "crsfml"
 require "crsfml/audio"
 require "flaty/game_window"
 require "flaty/camera"
+require "flaty/camera_debug"
 
 struct SF::Rect
   def self.xywh(x, y, w, h)
@@ -72,6 +73,13 @@ module Flaty
     Flaty.window.draw connection, Flaty.states
   end
 
+  def self.draw_line(x1 : Float32, y1 : Float32, x2 : Float32, y2 : Float32, color = Flaty::Colors::BLACK)
+    line = SF::VertexArray.new(SF::Lines, 2)
+    line[0] = SF::Vertex.new(Vec2d.new(x1, y1 -1), color)
+    line[1] = SF::Vertex.new(Vec2d.new(x2, y2 -1), color)
+    Flaty.window.draw(line, Flaty.states)
+  end
+
   def self.draw_text(font, msg, x, y, size = 24, color = Flaty::Colors::BLACK)
     text = SF::Text.new
 
@@ -100,10 +108,12 @@ module Flaty
   end
 
   module Colors
-    BLACK = SF::Color.new(0,   0,     0)
-    GRAY  = SF::Color.new(128, 128, 128)
-    RED   = SF::Color.new(255, 0,     0)
-    GREEN = SF::Color.new(0,   255,   0)
-    BLUE  = SF::Color.new(0,   0,   255)
+    BLACK  = SF::Color.new(0,   0,     0)
+    WHITE  = SF::Color.new(255, 255, 255)
+    GRAY   = SF::Color.new(128, 128, 128)
+    RED    = SF::Color.new(255, 0,     0)
+    GREEN  = SF::Color.new(0,   255,   0)
+    BLUE   = SF::Color.new(0,   0,   255)
+    YELLOW = SF::Color.new(255, 0,   255)
   end
 end
