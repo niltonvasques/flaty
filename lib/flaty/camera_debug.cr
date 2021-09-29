@@ -7,7 +7,7 @@ class CameraDebug
     text: Flaty::Colors::WHITE
   }
   @colors : NamedTuple(origin: SF::Color, lines: SF::Color, text: SF::Color)
-  @step = 1_f32
+  @step = 1_f64
 
   def initialize(@camera : Camera, colors)
     @colors = DEFAULT_COLORS.merge(colors)
@@ -23,11 +23,11 @@ class CameraDebug
   end
 
   def update_step
-    @step = @camera.width / 100_f32
+    @step = @camera.width / 100_f64
     if @camera.width > 2
       @step = @step.ceil
     else
-      @step = @camera.width / 10_f32
+      @step = @camera.width / 10_f64
     end
   end
 

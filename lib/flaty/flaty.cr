@@ -39,9 +39,9 @@ class SF::Transformable
   end
 end
 
-alias Vec2d = SF::Vector2(Float32)
+alias Vec2d = SF::Vector2(Float64)
 alias Vec2i = SF::Vector2(Int32)
-alias Rect  = SF::Rect(Float32)
+alias Rect  = SF::Rect(Float64)
 alias RectI = SF::Rect(Int32)
 
 module Flaty
@@ -74,14 +74,14 @@ module Flaty
     Flaty.window.draw connection, Flaty.states
   end
 
-  def self.draw_line(x1 : Float32, y1 : Float32, x2 : Float32, y2 : Float32, color = Flaty::Colors::BLACK)
+  def self.draw_line(x1 : Float64, y1 : Float64, x2 : Float64, y2 : Float64, color = Flaty::Colors::BLACK)
     line = SF::VertexArray.new(SF::Lines, 2)
     line[0] = SF::Vertex.new(Vec2d.new(x1, -y1), color)
     line[1] = SF::Vertex.new(Vec2d.new(x2, -y2), color)
     Flaty.window.draw(line, Flaty.states)
   end
 
-  def self.draw_text_world(font, msg, x : Float32, y : Float32, size = 24, color = Flaty::Colors::BLACK)
+  def self.draw_text_world(font, msg, x : Float64, y : Float64, size = 24, color = Flaty::Colors::BLACK)
     scale = Flaty.camera.scale
     world_pos = Vec2i.new((x * scale).to_i, (-y * scale).to_i)
     pixel_pos = Flaty.window.map_coords_to_pixel(world_pos, Flaty.camera.view)

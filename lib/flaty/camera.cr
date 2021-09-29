@@ -1,7 +1,7 @@
 require "flaty"
 
 class Camera
-  NOT_BOUNDED = -1_f32
+  NOT_BOUNDED = -1.0
   #attr_accessor :width, :height, :position, :bounds
   property view
   property width
@@ -15,12 +15,12 @@ class Camera
   @rect : Rect
   @view : SF::View
 
-  def initialize(width : Float32, height : Float32, scale : Float32)
+  def initialize(width : Float64, height : Float64, scale : Float64)
     @bounds = Rect.xywh(NOT_BOUNDED, NOT_BOUNDED, NOT_BOUNDED, NOT_BOUNDED)
-    @rect = Rect.xywh(0_f32, 0_f32, width, height)
+    @rect = Rect.xywh(0.0, 0.0, width, height)
 
-    @width       = uninitialized Float32
-    @height      = uninitialized Float32
+    @width       = uninitialized Float64
+    @height      = uninitialized Float64
     @position    = uninitialized Vec2d
     @scale       = scale
     @view        = SF::View.new(Vec2d.new(0, 0), Vec2d.new(width, height))
@@ -30,7 +30,7 @@ class Camera
     look(width / 2, height / 2)
   end
 
-  def look(x : Float32, y : Float32)
+  def look(x : Float64, y : Float64)
     y = @bounds.y if @bounds.y != NOT_BOUNDED && y < @bounds.y
     x = @bounds.x if @bounds.x != NOT_BOUNDED && x < @bounds.x
     x = @bounds.width if @bounds.width != NOT_BOUNDED && x > @bounds.width
@@ -39,10 +39,10 @@ class Camera
     update_rect
   end
 
-  def size(width : Float32, height : Float32)
+  def size(width : Float64, height : Float64)
     previous_width = @width
-    @width = Math.max(width, 0_f32)
-    @height = Math.max(height, 0_f32)
+    @width = Math.max(width, 0.0)
+    @height = Math.max(height, 0_f64)
     @view.size = Vec2d.new(@width, @height) * @scale
     update_rect
   end
@@ -54,9 +54,9 @@ class Camera
     @rect.height = @height
   end
 
-  MAX_CAMERA_SIZE = 10000000_f32
-  MIN_CAMERA_SIZE = 0.01_f32
-  def zoom(units : Float32)
+  MAX_CAMERA_SIZE = 10000000_f64
+  MIN_CAMERA_SIZE = 0.01_f64
+  def zoom(units : Float64)
     units *= @width / 10.0
     return if units < 0 && @width <= MIN_CAMERA_SIZE
     return if units > 0 && @width >= MAX_CAMERA_SIZE
@@ -64,7 +64,7 @@ class Camera
   end
 
   def move(direction : Vec2d)
-    unit = @width / 20_f32
+    unit = @width / 20_f64
     @position += (direction * unit)
   end
 
@@ -86,15 +86,15 @@ class Camera
     @height * @scale
   end
 
-  def pixel_to_unit_x(w : Float32)
+  def pixel_to_unit_x(w : Float64)
     w / @scale
   end
 
-  def pixel_to_unit_y(h : Float32)
+  def pixel_to_unit_y(h : Float64)
     h / @scale
   end
 
-  def scale(size_in_pixels : Float32, size_in_units : Float32)
+  def scale(size_in_pixels : Float64, size_in_units : Float64)
     (@scale * size_in_units) / size_in_pixels
   end
 
