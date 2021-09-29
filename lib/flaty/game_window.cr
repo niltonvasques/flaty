@@ -88,16 +88,6 @@ module Flaty
     def draw(window, states)
     end
 
-    #def button_down(id)
-    #  if id == Gosu::KB_ESCAPE
-    #    close
-    #  elsif id == Gosu::KB_O
-    #    @@debug = !@@debug
-    #  else
-    #    super
-    #  end
-    #end
-
     def paused?
       @paused
     end
@@ -124,8 +114,8 @@ module Flaty
         update(@delta)
 
         @window.clear SF::Color::Black
+
         draw(@window, @states)
-        #@window.draw field, states
 
         @window.display()
       end
