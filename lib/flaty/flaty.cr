@@ -23,7 +23,7 @@ struct SF::Rect
   end
 
   def y
-    top + height
+    top
   end
 end
 

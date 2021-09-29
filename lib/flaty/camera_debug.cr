@@ -34,22 +34,22 @@ class CameraDebug
   end
 
   def draw_origin
-    x = @camera.shift_x.floor
-    y = @camera.shift_y.floor
+    x = @camera.rect.x.floor
+    y = @camera.rect.y.floor
     Flaty.draw_line(0, y, 0, y + @camera.height + 1, @colors[:origin])
     Flaty.draw_line(x, 0, x + @camera.width + 1, 0, @colors[:origin])
   end
 
   def draw_rows
-    x = @camera.shift_x.floor
-    y = @camera.shift_y.floor
-    while y <= (@camera.shift_y + @camera.height.ceil + 1)
+    x = @camera.rect.x.floor
+    y = @camera.rect.y.floor
+    while y <= (@camera.rect.y + @camera.height.ceil + 1)
       if y == 0
         y += @step
         next
       end
       Flaty.draw_line(x, y, x + @camera.width + 1, y, @colors[:lines])
-      tx = @camera.shift_x * @camera.scale
+      tx = @camera.rect.x * @camera.scale
       ty = y * @camera.scale
       Flaty.draw_text(@font, "#{format(y)}", tx, ty, 20, @colors[:text])
       y += @step
@@ -57,16 +57,16 @@ class CameraDebug
   end
 
   def draw_columns
-    x = @camera.shift_x.floor
-    y = @camera.shift_y.floor
-    while x <= (@camera.shift_x + @camera.width.ceil)
+    x = @camera.rect.x.floor
+    y = @camera.rect.y.floor
+    while x <= (@camera.rect.x + @camera.width.ceil)
       if x == 0
         x += @step
         next
       end
       Flaty.draw_line(x, y, x, y + @camera.height + 1, @colors[:lines])
       tx = x * @camera.scale
-      ty = (@camera.shift_y + @camera.height) * @camera.scale
+      ty = (@camera.rect.y + @camera.height) * @camera.scale
       Flaty.draw_text(@font, "#{format(x)}", tx, ty, 20, @colors[:text])
       x += @step
     end

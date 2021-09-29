@@ -8,13 +8,16 @@ class Camera
   property height
   property scale
   property position
+  property rect
 
   #attr_reader :unit_x, :unit_y
   @bounds : Rect
+  @rect : Rect
   @view : SF::View
 
   def initialize(width : Float32, height : Float32, scale : Float32)
     @bounds = Rect.xywh(NOT_BOUNDED, NOT_BOUNDED, NOT_BOUNDED, NOT_BOUNDED)
+    @rect = Rect.xywh(0_f32, 0_f32, width, height)
 
     @width       = uninitialized Float32
     @height      = uninitialized Float32
@@ -33,6 +36,7 @@ class Camera
     x = @bounds.width if @bounds.width != NOT_BOUNDED && x > @bounds.width
     @position = Vec2d.new(x, y)
     @view.center = Vec2d.new(@position.x, -@position.y) * @scale
+    update_rect
   end
 
   def size(width : Float32, height : Float32)
@@ -40,15 +44,17 @@ class Camera
     @width = Math.max(width, 0_f32)
     @height = Math.max(height, 0_f32)
     @view.size = Vec2d.new(@width, @height) * @scale
+    update_rect
 
   #  @unit_x = GameWindow.width / width.to_f
   #  @unit_y = GameWindow.height / height.to_f
   end
 
-  def rect
-    w2 = @width / 2.0
-    h2 = @height / 2.0
-    Rect.new(@position.x - w2, @position.y - h2, @width, @height)
+  def update_rect
+    @rect.left = @position.x - @width / 2.0
+    @rect.top = @position.y - @height / 2.0
+    @rect.width = @width
+    @rect.height = @height
   end
 
   MAX_CAMERA_SIZE = 10000000_f32
@@ -74,14 +80,6 @@ class Camera
   #  return false if rect.y + rect.height < (@position.y - @height / 2.0)
   #  true
   #end
-
-  def shift_x
-    @position.x - (@width / 2)
-  end
-
-  def shift_y
-    (@position.y - (@height / 2))
-  end
 
   def width_pixels
     @width * @scale
