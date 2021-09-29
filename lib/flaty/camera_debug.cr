@@ -47,9 +47,7 @@ class CameraDebug
         next
       end
       Flaty.draw_line(x, y, x + @camera.width + 1, y, @colors[:lines])
-      tx = @camera.rect.x * @camera.scale
-      ty = y * @camera.scale
-      Flaty.draw_text(@font, "#{format(y)}", tx, ty, 20, @colors[:text])
+      Flaty.draw_text_world(@font, "#{format(y)}", @camera.rect.x, y, 15, @colors[:text])
       y += @step
     end
   end
@@ -63,9 +61,8 @@ class CameraDebug
         next
       end
       Flaty.draw_line(x, y, x, y + @camera.height + 1, @colors[:lines])
-      tx = x * @camera.scale
-      ty = (@camera.rect.y + @camera.height) * @camera.scale
-      Flaty.draw_text(@font, "#{format(x)}", tx, ty, 20, @colors[:text])
+      ty = (@camera.rect.y + @camera.height)
+      Flaty.draw_text_world(@font, "#{format(x)}", x, ty, 15, @colors[:text])
       x += @step
     end
   end

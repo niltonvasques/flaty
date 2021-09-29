@@ -156,13 +156,13 @@ class SnakeGame < Flaty::GameWindow
   end
 
   def draw_hud
-    Flaty.draw_text(@font, "Score: #{@snake.size}", 9, 9)
+    Flaty.draw_text_in_pixels(@font, "Score: #{@snake.size}", 9, 9)
     if @loose
       msg = "GAME OVER"
       font_size = 50
-      x = (SCREEN_WIDTH / 2) - (msg.size/2.0) * font_size
+      x = ((SCREEN_WIDTH / 2_f32) - (msg.size/2_f32) * font_size).to_i
       y = 9
-      Flaty.draw_text(@font, "GAME OVER", x, y, font_size, Flaty::Colors::RED)
+      Flaty.draw_text_in_pixels(@font, "GAME OVER", x, y, font_size, Flaty::Colors::RED)
     end
   end
 

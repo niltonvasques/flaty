@@ -82,7 +82,21 @@ module Flaty
     Flaty.window.draw(line, Flaty.states)
   end
 
-  def self.draw_text(font, msg, x, y, size = 24, color = Flaty::Colors::BLACK)
+  def self.draw_text_world(font, msg, x : Float32, y : Float32, size = 24, color = Flaty::Colors::BLACK)
+    scale = Flaty.camera.scale
+    world_pos = Vec2i.new((x * scale).to_i, (-y * scale).to_i)
+    pixel_pos = Flaty.window.map_coords_to_pixel(world_pos, Flaty.camera.view)
+
+    self.draw_text(font, msg, pixel_pos.x.to_i, pixel_pos.y.to_i, size, color, true)
+  end
+
+  def self.draw_text_in_pixels(font, msg, x : Int32, y : Int32, size = 24,
+      color = Flaty::Colors::BLACK)
+    self.draw_text(font, msg, x, y, size, color, true)
+  end
+
+  def self.draw_text(font, msg, x : Int32, y : Int32, size = 24, color = Flaty::Colors::BLACK,
+      pixels = false)
     text = SF::Text.new
 
     # select the font
@@ -97,15 +111,16 @@ module Flaty
     # set the color
     text.color = color
 
-    text.position = Vec2i.new(x.to_i, -y.to_i)
+    text.position = Vec2i.new(x, y)
 
-    # set the text style
     #text.style = (SF::Text::Bold | SF::Text::Underlined)
 
-    #v = Flaty.window.view.dup
-    #Flaty.window.view = Flaty.window.default_view
+    v = Flaty.window.view.dup
+    Flaty.window.view = Flaty.window.default_view if pixels
+
     Flaty.window.draw text
-    #Flaty.window.view = v
+
+    Flaty.window.view = v if pixels
   end
 
   def self.paint(color)
