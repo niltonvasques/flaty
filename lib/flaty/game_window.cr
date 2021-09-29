@@ -34,10 +34,11 @@ module Flaty
       # https://gamedev.stackexchange.com/questions/149062/how-to-mirror-reflect-flip-a-4d-transformation-matrix
       t = SF::Transform.new(
         1, 0,  0,
-        0, -1, 0, # vertical flip
+        0, 1, 0, # vertical flip
         0, 0,  1
       )
-      t.translate(0, -(height - 1) * @scale)
+      #t.translate(0, -(height - 1) * @scale)
+      #t.translate(0, (height + 1) * @scale)
       t.scale(@scale, @scale)
       @states = SF::RenderStates.new(transform: t)
 

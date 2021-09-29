@@ -16,11 +16,12 @@ class Camera
   def initialize(width : Float32, height : Float32, scale : Float32)
     @bounds = Rect.xywh(NOT_BOUNDED, NOT_BOUNDED, NOT_BOUNDED, NOT_BOUNDED)
 
-    @width    = uninitialized Float32
-    @height   = uninitialized Float32
-    @position = uninitialized Vec2d
-    @scale    = scale
-    @view     = SF::View.new(Vec2d.new(0, 0), Vec2d.new(width, height))
+    @width       = uninitialized Float32
+    @height      = uninitialized Float32
+    @position    = uninitialized Vec2d
+    @scale       = scale
+    @view        = SF::View.new(Vec2d.new(0, 0), Vec2d.new(width, height))
+    @screen_size = Vec2d.new(width * scale, height * scale)
 
     size(width, height)
     look(width / 2, height / 2)
@@ -31,10 +32,11 @@ class Camera
     x = @bounds.x if @bounds.x != NOT_BOUNDED && x < @bounds.x
     x = @bounds.width if @bounds.width != NOT_BOUNDED && x > @bounds.width
     @position = Vec2d.new(x, y)
-    @view.center = Vec2d.new(@position.x, @height - @position.y) * @scale
+    @view.center = Vec2d.new(@position.x, -@position.y) * @scale
   end
 
   def size(width : Float32, height : Float32)
+    previous_width = @width
     @width = Math.max(width, 0_f32)
     @height = Math.max(height, 0_f32)
     @view.size = Vec2d.new(@width, @height) * @scale
@@ -78,8 +80,7 @@ class Camera
   end
 
   def shift_y
-    y = @position.y + @height
-    -(y - (@height / 2))
+    (@position.y - (@height / 2))
   end
 
   def width_pixels

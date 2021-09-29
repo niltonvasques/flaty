@@ -7,7 +7,7 @@ require "flaty/camera_debug"
 
 struct SF::Rect
   def self.xywh(x, y, w, h)
-    SF::Rect.new(x, y - h, w, h)
+    SF::Rect.new(x, y, w, h)
   end
 
   def center
@@ -69,14 +69,14 @@ module Flaty
     #connection = SF::RectangleShape.new({ width, height }) #.center!
     connection = SF::RectangleShape.new({ width, height }).left_bottom_origin!
     connection.fill_color = color
-    connection.position = SF::Vector2.new(x, y)
+    connection.position = SF::Vector2.new(x, -y)
     Flaty.window.draw connection, Flaty.states
   end
 
   def self.draw_line(x1 : Float32, y1 : Float32, x2 : Float32, y2 : Float32, color = Flaty::Colors::BLACK)
     line = SF::VertexArray.new(SF::Lines, 2)
-    line[0] = SF::Vertex.new(Vec2d.new(x1, y1 -1), color)
-    line[1] = SF::Vertex.new(Vec2d.new(x2, y2 -1), color)
+    line[0] = SF::Vertex.new(Vec2d.new(x1, -y1), color)
+    line[1] = SF::Vertex.new(Vec2d.new(x2, -y2), color)
     Flaty.window.draw(line, Flaty.states)
   end
 
@@ -95,12 +95,15 @@ module Flaty
     # set the color
     text.color = color
 
-    text.position = Vec2i.new(x.to_i, y.to_i)
+    text.position = Vec2i.new(x.to_i, -y.to_i)
 
     # set the text style
     #text.style = (SF::Text::Bold | SF::Text::Underlined)
 
+    #v = Flaty.window.view.dup
+    #Flaty.window.view = Flaty.window.default_view
     Flaty.window.draw text
+    #Flaty.window.view = v
   end
 
   def self.paint(color)
