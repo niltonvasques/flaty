@@ -45,9 +45,6 @@ class Camera
     @height = Math.max(height, 0_f32)
     @view.size = Vec2d.new(@width, @height) * @scale
     update_rect
-
-  #  @unit_x = GameWindow.width / width.to_f
-  #  @unit_y = GameWindow.height / height.to_f
   end
 
   def update_rect

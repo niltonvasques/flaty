@@ -47,7 +47,7 @@ module Flaty
         settings: SF::ContextSettings.new(depth: 24, antialiasing: 8)
       )
       @window.framerate_limit = 10
-      Flaty.init(@window, @states)
+      Flaty.init(@window, @states, @camera)
     end
 
     def update_camera

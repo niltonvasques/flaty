@@ -54,11 +54,13 @@ module Flaty
 
   class_property window : SF::RenderWindow = DEFAULT_WINDOW
   class_property states : SF::RenderStates = DEFAULT_STATES
+  class_property camera : Camera = Camera.new(0, 0, 0)
 
-  def self.init(window : SF::RenderWindow, states : SF::RenderStates)
-    Flaty.window.close()
+  def self.init(window : SF::RenderWindow, states : SF::RenderStates, camera : Camera)
+    Flaty.window.close() # required because of the forced window initialized on GameWindow
     Flaty.window = window
     Flaty.states = states
+    Flaty.camera = camera
   end
 
   def self.random_color()

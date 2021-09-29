@@ -22,8 +22,6 @@ class CameraDebug
     draw_columns
   end
 
-  #private
-
   def update_step
     @step = @camera.width / 100_f32
     if @camera.width > 2
