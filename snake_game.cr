@@ -159,8 +159,8 @@ class SnakeGame < Flaty::GameWindow
     @fps_list << (1.0/@delta.as_seconds).round(2)
     @fps_list = @fps_list[2..@fps_list.size] if @fps_list.size > 1000
 
-    fps = "FPS: #{@fps_list.sum / @fps_list.size}"
-    Flaty.draw_text_in_pixels(@font, fps, SCREEN_WIDTH-100, 9,
+    fps = "FPS: #{(@fps_list.sum / @fps_list.size).to_i}"
+    Flaty.draw_text_in_pixels(@font, fps, SCREEN_WIDTH-(fps.size * 12), 9,
                               20, Flaty::Colors::GREEN)
     if @loose
       msg = "GAME OVER"
