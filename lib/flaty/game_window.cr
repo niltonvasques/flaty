@@ -14,7 +14,7 @@ module Flaty
       @@height = height
 
       @camera = Camera.new(width, height, scale)
-      #@@camera.look(CAMERA_WIDTH_UNITS / 2.0, CAMERA_HEIGHT_UNITS / 2.0)
+      @camera.look(CAMERA_WIDTH_UNITS / 2.0, CAMERA_HEIGHT_UNITS / 2.0)
 
       # state
       @paused = false
@@ -33,9 +33,9 @@ module Flaty
       # vertical flip reference
       # https://gamedev.stackexchange.com/questions/149062/how-to-mirror-reflect-flip-a-4d-transformation-matrix
       t = SF::Transform.new(
-        1, 0,  0,
-        0, 1, 0, # vertical flip
-        0, 0,  1
+        1, 0, 0,
+        0, 1, 0,
+        0, 0, 1
       )
       #t.translate(0, -(height - 1) * @scale)
       #t.translate(0, (height + 1) * @scale)
@@ -46,7 +46,7 @@ module Flaty
         SF::VideoMode.new((width * @scale).to_i, (height * @scale).to_i), title,
         settings: SF::ContextSettings.new(depth: 24, antialiasing: 8)
       )
-      @window.framerate_limit = 10
+      @window.framerate_limit = 120
       Flaty.init(@window, @states, @camera)
     end
 
