@@ -6,6 +6,8 @@ class Camera
   property view
   property width
   property height
+  property scale
+  property position
 
   #attr_reader :unit_x, :unit_y
   @bounds : Rect
@@ -28,8 +30,8 @@ class Camera
     y = @bounds.y if @bounds.y != NOT_BOUNDED && y < @bounds.y
     x = @bounds.x if @bounds.x != NOT_BOUNDED && x < @bounds.x
     x = @bounds.width if @bounds.width != NOT_BOUNDED && x > @bounds.width
-    @position = Vec2d.new(x, @height - y)
-    @view.center = @position * @scale
+    @position = Vec2d.new(x, y)
+    @view.center = Vec2d.new(@position.x, @height - @position.y) * @scale
   end
 
   def size(width : Float32, height : Float32)
@@ -76,7 +78,8 @@ class Camera
   end
 
   def shift_y
-    (@height / 2) - @position.y
+    y = @position.y + @height
+    -(y - (@height / 2))
   end
 
   def width_pixels
