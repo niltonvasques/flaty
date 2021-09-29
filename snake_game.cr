@@ -16,13 +16,10 @@ class SnakeGame < Flaty::GameWindow
   def initialize
     super(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS, SCALE, "Snake Game")
 
-    puts Rect.xywh(1,1,2,4).x
-    puts Rect.xywh(1,1,2,4).y
-    puts Rect.xywh(1,1,2,4).width
-    puts Rect.xywh(1,1,2,4).height
     @camera.size(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
     @camera.look(CAMERA_WIDTH_UNITS / 2, CAMERA_HEIGHT_UNITS / 2)
     update_camera
+
     axis_colors = { lines: Flaty::Colors::BLACK, text: Flaty::Colors::BLACK }
     @camera_debug = CameraDebug.new(@camera, axis_colors)
 
