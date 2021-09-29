@@ -2,8 +2,8 @@ module Flaty
   class GameWindow
     SCREEN_WIDTH        = 1280
     SCREEN_HEIGHT       = 720
-    CAMERA_WIDTH_UNITS  = 100_f64
-    CAMERA_HEIGHT_UNITS = 56_f64
+    CAMERA_WIDTH_UNITS  = 100.0
+    CAMERA_HEIGHT_UNITS = 56.0
     SCALE               = 20
 
     property camera

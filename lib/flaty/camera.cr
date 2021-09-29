@@ -42,7 +42,7 @@ class Camera
   def size(width : Float64, height : Float64)
     previous_width = @width
     @width = Math.max(width, 0.0)
-    @height = Math.max(height, 0_f64)
+    @height = Math.max(height, 0.0)
     @view.size = Vec2d.new(@width, @height) * @scale
     update_rect
   end
@@ -54,8 +54,8 @@ class Camera
     @rect.height = @height
   end
 
-  MAX_CAMERA_SIZE = 10000000_f64
-  MIN_CAMERA_SIZE = 0.01_f64
+  MAX_CAMERA_SIZE = 10000000.0
+  MIN_CAMERA_SIZE = 0.01
   def zoom(units : Float64)
     units *= @width / 10.0
     return if units < 0 && @width <= MIN_CAMERA_SIZE
@@ -64,7 +64,7 @@ class Camera
   end
 
   def move(direction : Vec2d)
-    unit = @width / 20_f64
+    unit = @width / 20.0
     @position += (direction * unit)
   end
 

@@ -8,8 +8,8 @@ require "flaty/flaty"
 class SnakeGame < Flaty::GameWindow
   SCREEN_WIDTH        = 1500
   SCREEN_HEIGHT       = 1500
-  CAMERA_WIDTH_UNITS  = 10_f64
-  CAMERA_HEIGHT_UNITS = 10_f64
+  CAMERA_WIDTH_UNITS  = 10.0
+  CAMERA_HEIGHT_UNITS = 10.0
   SCALE               = SCREEN_WIDTH / CAMERA_WIDTH_UNITS
   DEFAULT_SPEED       = 4 # 8 units per second
 
@@ -160,7 +160,7 @@ class SnakeGame < Flaty::GameWindow
     if @loose
       msg = "GAME OVER"
       font_size = 50
-      x = ((SCREEN_WIDTH / 2_f64) - (msg.size/2_f64) * font_size).to_i
+      x = ((SCREEN_WIDTH / 2.0) - (msg.size/2.0) * font_size).to_i
       y = 9
       Flaty.draw_text_in_pixels(@font, "GAME OVER", x, y, font_size, Flaty::Colors::RED)
     end
