@@ -74,7 +74,7 @@ class SnakeGame < Flaty::GameWindow
 
     draw_hud
 
-    @camera_debug.draw
+    @camera_debug.draw if debug?
   end
 
   def button_down(code)

@@ -21,7 +21,7 @@ module Flaty
       @paused_at = 0
       @@updated_at = 0
       @@delta_seconds = 0
-      @@debug = false
+      @debug = false
 
       @scale = scale
 
@@ -50,6 +50,10 @@ module Flaty
       Flaty.init(@window, @states, @camera)
     end
 
+    def debug?
+      @debug
+    end
+
     def update_camera
       @window.view = @camera.view
     end
@@ -72,10 +76,6 @@ module Flaty
 
     def self.delta
       @@delta_seconds
-    end
-
-    def self.debug
-      @@debug
     end
 
     def self.camera
@@ -120,6 +120,7 @@ module Flaty
             @window.close()
           elsif event.is_a? SF::Event::KeyPressed
             @paused = !@paused if event.code.p?
+            @debug = !@debug if event.code.d?
             button_down(event.code)
           end
         end
