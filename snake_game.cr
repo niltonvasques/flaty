@@ -76,6 +76,9 @@ class SnakeGame < Flaty::GameWindow
     when .up? then @direction = Vec2i.new(0, 1)  if @last_direction.y == 0
     when .right? then @direction = Vec2i.new(1, 0)  if @last_direction.x == 0
     when .down? then @direction = Vec2i.new(0, -1) if @last_direction.y == 0
+    when .h?
+      @camera.move(Vec2i.new(-1, 0))
+      update_camera
     when .o?
       @camera.zoom(1)
       update_camera

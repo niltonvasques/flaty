@@ -66,6 +66,7 @@ class Camera
   def move(direction : Vec2d)
     unit = @width / 20.0
     @position += (direction * unit)
+    look(@position.x, @position.y)
   end
 
   #def visible?(obj)
