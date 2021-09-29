@@ -19,8 +19,6 @@ module Flaty
       # state
       @paused = false
       @paused_at = 0
-      @@updated_at = 0
-      @@delta_seconds = 0
       @debug = false
 
       @scale = scale
@@ -85,8 +83,6 @@ module Flaty
     def needs_cursor?; false; end
 
     def update(delta)
-      #@@delta_seconds = (Gosu.milliseconds - @@updated_at) / 1000.0
-      #@@updated_at = Gosu.milliseconds
     end
 
     def draw(window, states)
