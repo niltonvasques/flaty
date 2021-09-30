@@ -17,18 +17,16 @@ class Flaty::CameraDebug
   def draw
     update_step
 
-    draw_origin
     draw_rows
     draw_columns
+    draw_origin
   end
 
   def update_step
     @step = @camera.width / 100.0
-    if @camera.width > 2
-      @step = @step.ceil
-    else
-      @step = @camera.width / 10.0
-    end
+    return @step = @step.ceil if @camera.width > 2
+    return @step = 0.1 if @camera.width > 0.4
+    @step = 0.01
   end
 
   def draw_origin
@@ -68,7 +66,7 @@ class Flaty::CameraDebug
   end
 
   def format(x)
-    return ("%.5f" % x) if @camera.width < 2
+    return ("%.2f" % x) if @camera.width < 2
     x
   end
 end

@@ -37,7 +37,7 @@ class MathAxis < Flaty::GameWindow
     draw_fx("e^x", Flaty::Colors::YELLOW)     { |x| Math.exp(-x) }
 
     #draw_fx_and_dydx("sin(x²)") { |x| Math.sin(x**2) }
-    draw_fx_and_dydx("sin(x)") { |x| Math.sin(x) }
+    draw_fx_and_dydx("sin(x)", Flaty::Colors::GREEN) { |x| Math.sin(x) }
 
     @fps.draw(@delta)
   end
@@ -56,8 +56,8 @@ class MathAxis < Flaty::GameWindow
     @px += direction * precision
   end
 
-  def draw_fx_and_dydx(label, &block : Float64 -> Float64)
-    draw_fx(label, Flaty::Colors::BLACK) { |x| block.call(x) }
+  def draw_fx_and_dydx(label, color, &block : Float64 -> Float64)
+    draw_fx(label, color) { |x| block.call(x) }
     dxdy_label = "dy/dx #{label}"
     draw_fx(dxdy_label, Flaty::Colors::WHITE) do |x|
       Calculus.derivative_line(x, @px.to_f, block)
@@ -77,7 +77,7 @@ class MathAxis < Flaty::GameWindow
       y2 = block.call(x2)
       w = (x2 - x1)
       h = (y2 - y1)
-      unless y1 > (@camera.rect.y + @camera.height) || y1 < @camera.rect.y
+      if y1 < (@camera.rect.y + @camera.height) && y1 > @camera.rect.y
         Flaty.draw_line(x1, y1, x2, y2, color)
       end
       x1 = x2
