@@ -23,7 +23,6 @@ class MathAxis < Flaty::GameWindow
     @camera_debug = Flaty::CameraDebug.new(@camera, axis_colors)
     @fps = Flaty::FPS.new(SCREEN_WIDTH, @font)
 
-    @points   = [[0,2],[1,1],[2,2],[3,0],[4,3],[5,0],[6,3],[7,1]]
     @px       = 0.0
     @label_y  = 0
   end
