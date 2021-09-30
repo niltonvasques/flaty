@@ -1,4 +1,5 @@
 require "flaty/flaty"
+require "flaty/fps"
 
 class SnakeGame < Flaty::GameWindow
   SCREEN_WIDTH        = 1500
@@ -28,7 +29,7 @@ class SnakeGame < Flaty::GameWindow
     eat_buffer = SF::SoundBuffer.from_file("assets/sounds/snake_eat.wav")
     @eat       = SF::Sound.new(eat_buffer)
 
-    @fps_list = [] of Float64
+    @fps = Flaty::FPS.new(SCREEN_WIDTH, @font)
     @updated_at = 0
     @speed      = DEFAULT_SPEED
     restart
@@ -160,12 +161,6 @@ class SnakeGame < Flaty::GameWindow
 
   def draw_hud
     Flaty.draw_text_in_pixels(@font, "Score: #{@snake.size}", 9, 9)
-    @fps_list << (1.0/@delta.as_seconds).round(2)
-    @fps_list = @fps_list[2..@fps_list.size] if @fps_list.size > 1000
-
-    fps = "FPS: #{(@fps_list.sum / @fps_list.size).to_i}"
-    Flaty.draw_text_in_pixels(@font, fps, SCREEN_WIDTH-(fps.size * 12), 9,
-                              20, Flaty::Colors::GREEN)
     if @loose
       msg = "GAME OVER"
       font_size = 50
@@ -173,6 +168,8 @@ class SnakeGame < Flaty::GameWindow
       y = 9
       Flaty.draw_text_in_pixels(@font, "GAME OVER", x, y, font_size, Flaty::Colors::RED)
     end
+
+    @fps.draw(@delta)
   end
 
   def dead
