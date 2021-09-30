@@ -47,7 +47,8 @@ class MathAxis < Flaty::GameWindow
   def draw(target, states)
     Flaty.paint(Flaty::Colors::GRAY)
     @camera_debug.draw
-  #  @axis_image.draw(0, 0, 0)
+
+    draw_fx(Flaty::Colors::GREEN) { |x| Math.sin(x) }
   end
 
   def button_down(code)
@@ -84,7 +85,7 @@ class MathAxis < Flaty::GameWindow
   #  @axis_image = Gosu.render(SCREEN_WIDTH, SCREEN_HEIGHT) { draw_axis }
   #end
 
-  #def draw_axis
+  def draw_axis
   #  t = Benchmark.elapsed do
   #    @camera_debug.draw
 
@@ -106,7 +107,7 @@ class MathAxis < Flaty::GameWindow
   #    #draw_fx(Gosu::Color::BLUE, label: fx) { |x| f.x(x)                                 }
   #  end
   #  puts t
-  #end
+  end
 
   #def draw_fx_and_dydx(&block)
   #  label = format_equation(block.source.scan(/\{ \|x\| (.*) \}/).flatten.first)
@@ -117,31 +118,28 @@ class MathAxis < Flaty::GameWindow
   #  end
   #end
 
-  #LINE_THICKNESS = 3
-  #MIN_PRECISION = 0.000000000001
-  #def draw_fx(color, opts = {}, &block)
+  LINE_THICKNESS = 3
+  MIN_PRECISION = 0.000000000001
+  def draw_fx(color, opts = nil, &block)
   #  opts = { bold: true }.merge(opts)
-  #  precision = [(@camera.width / 1000.0).abs, MIN_PRECISION].max
+    precision = Math.max((@camera.width / 1000.0).abs, MIN_PRECISION)
 
-  #  x2 = @camera.shift_x
-  #  x1 = x2
-  #  y1 = block.call(x1)
+    x2 = @camera.rect.x
+    x1 = x2
+    y1 = yield(x1)
 
-  #  while x2 <= (@camera.shift_x + @camera.width)
-  #    y2 = block.call(x2)
-  #    w = (x2 - x1)
-  #    h = (y2 - y1)
-  #    Flaty.draw_line(x1, y1, color, x2, y2, color, z = 100, mode = :default)
-  #    if opts[:bold]
-  #      Flaty.draw_rect(x1, y1, w, h, color, z = 100, mode = :default, thickness = LINE_THICKNESS)
-  #    end
-  #    x1 = x2
-  #    y1 = y2
-  #    x2 += precision
-  #  end
+    while x2 <= (@camera.rect.x + @camera.width)
+      y2 = yield(x2)
+      w = (x2 - x1)
+      h = (y2 - y1)
+      Flaty.draw_line(x1, y1, x2, y2, color)
+      x1 = x2
+      y1 = y2
+      x2 += precision
+    end
 
   #  draw_equation_label(block, color, opts[:label])
-  #end
+  end
 
   #def draw_equation_label(block, color, label)
   #  @label_y += 40
