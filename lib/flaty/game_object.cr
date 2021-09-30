@@ -11,6 +11,7 @@ class Flaty::GameObject
   property mass : Float64
   property rect : Rect
   property color : SF::Color
+  property rigidbody : Bool
 
   def initialize(opts = {} of Symbol => (Int32 | Vec2d | Rect | Float64 | Bool | SF::Color))
     default = {
@@ -31,6 +32,7 @@ class Flaty::GameObject
       :current => 0,
       :camera => true,
       :debug => false,
+      :rigidbody => false,
       :color => Flaty::Colors::BLUE
     }.merge(opts)
 
@@ -47,6 +49,7 @@ class Flaty::GameObject
     @color             = default[:color].as SF::Color
     @width             = default[:width].as Float64
     @height            = default[:height].as Float64
+    @rigidbody         = default[:rigidbody].as Bool
 
 #    unless current_image.nil?
 #      self.width = GameWindow.camera.pixel_to_unit_x(current_image.width * self.scale_x)

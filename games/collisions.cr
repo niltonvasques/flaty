@@ -15,20 +15,19 @@ class Collisions < Flaty::GameWindow
   def initialize
     super(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS, SCALE, "Collisions Simulator")
 
+    # assets
+    @font      = SF::Font.from_file("assets/Cantarell-Regular.otf")
+
   #  @circle_img = Gosu::Image.new('assets/metal_ball.png')
 
     @camera.size(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
     @camera.look(0, HALF_HEIGHT)
     update_camera
 
-    axis_colors = { lines: Flaty::Colors::BLACK, text: Flaty::Colors::BLACK }
+    axis_colors   = { lines: Flaty::Colors::BLACK, text: Flaty::Colors::BLACK }
     @camera_debug = Flaty::CameraDebug.new(@camera, axis_colors)
 
-    @obj = Flaty::GameObject.new()
-
-  #  # assets
-  #  @font = Gosu::Font.new(25)
-  #  @@font = @font
+    @fps = Flaty::FPS.new(SCREEN_WIDTH, @font)
 
     @bodies = [] of Flaty::GameObject
   #  @world = Physics::World.new
@@ -152,18 +151,17 @@ class Collisions < Flaty::GameWindow
   #  @draws += 1
   #  @sum_draws += t
     @camera_debug.draw
+    @fps.draw(@delta)
   end
 
   def draw_bodies
     @bodies.each do |body|
   #    next if body.is_a? CircleGameObject
 
-      puts "#{body.x} x #{body.y} #{body.width} w #{body.height}"
       Flaty.draw_rect(body.x, body.y, body.width, body.height, body.color)
-  #    x = body.x + (body.width / 2.0)
-  #    y = body.y + (body.height / 2.0)
-  #    mass = "#{body.mass.to_i.to_s} kg"
-  #    Flaty.draw_text(@font, mass, x, y) if body.rigidbody
+      mass = "#{body.mass.to_i.to_s} kg"
+      x = body.center.x - 0.2
+      Flaty.draw_text_world(@font, mass, x, body.center.y, 20) if body.rigidbody
     end
 
   #  @world.bodies.select { |b| b.is_a? CircleGameObject }.each(&:draw)
