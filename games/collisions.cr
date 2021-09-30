@@ -69,10 +69,14 @@ class Collisions < Flaty::GameWindow
   #  CircleGameObject.new(opts)
   #end
 
-  #def create_rect(xy, speed, size, mass,  c)
-  #  opts = { position: xy, speed: speed, width: size, height: size, color: c, mass: mass, rigidbody: true, elasticity: 0.6, damp: 1 }
-  #  RectGameObject.new(opts)
-  #end
+  def create_rect(xy, speed, size, mass,  c)
+    opts = { position: xy, speed: speed, width: size, height: size, color: c, mass: mass, rigidbody: true, elasticity: 0.6, damp: 1 }
+    opts = {
+      :position => xy, :speed => speed, :width => size, :height => size, :color => c,
+      :mass => mass, :rigidbody => true, :elasticity => 0.6, :damp => 1.0
+    }
+    RectGameObject.new(opts)
+  end
 
   def create_walls
     m = 1000000000.0
