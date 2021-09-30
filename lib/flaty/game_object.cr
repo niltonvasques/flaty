@@ -1,41 +1,57 @@
 require "flaty"
 
 class Flaty::GameObject
-  def initialize(opts = {} of Symbol -> Int32)
-#    default = {
-#      z: 0,
-#      position: Vector2d[0,0],
-#      previous_position: Vector2d[0,0],
-#      rect: Rect[0, 0, 0, 0],
-#      mass: 1,
-#      acceleration: Vector2d[0,0],
-#      speed: Vector2d[0,0],
-#      max_speed: Vector2d[1000, 1000],
-#      damp: 1,
-#      elasticity: 1,
-#      scale_x: 1,
-#      scale_y: 1,
-#      angle: 0,
-#      current: 0,
-#      camera: true,
-#      debug: false
-#    }
-#    super(default.merge(opts))
-#    self.previous_position = self.position.dup
-#
+
+  property position : Vec2d
+  property previous_position : Vec2d
+  property speed : Vec2d
+  property acceleration : Vec2d
+  property mass : Float64
+  property rect : Rect
+
+  def initialize(opts = {} of Symbol => (Int32 | Vec2d | Rect | Float64 | Bool))
+    default = {
+      :position => Vec2d.new(0,0),
+      :previous_position => Vec2d.new(0,0),
+      :rect => Rect.xywh(0.0, 0.0, 0.0, 0.0),
+      :mass => 1.0,
+      :acceleration => Vec2d.new(0,0),
+      :speed => Vec2d.new(0,0),
+      :max_speed => Vec2d.new(0,0),
+      :damp => 1.0,
+      :elasticity => 1.0,
+      :scale_x => 1.0,
+      :scale_y => 1.0,
+      :angle => 0.0,
+      :current => 0,
+      :camera => true,
+      :debug => false
+    }.merge(opts)
+
+    @position          = default[:position].as Vec2d
+    @rect              = default[:rect].as Rect
+    @mass              = default[:mass].as Float64
+    @speed             = default[:speed].as Vec2d
+    @acceleration      = default[:acceleration].as Vec2d
+    @max_speed         = default[:max_speed].as Vec2d
+    @elasticity        = default[:elasticity].as Float64
+    @damp              = default[:damp].as Float64
+    @current           = default[:current].as Int32
+    @previous_position = default[:position].as Vec2d
+
 #    unless current_image.nil?
 #      self.width = GameWindow.camera.pixel_to_unit_x(current_image.width * self.scale_x)
 #      self.height = GameWindow.camera.pixel_to_unit_y(current_image.height * self.scale_y)
 #    end
   end
-#
-#  def x; self.position.x; end
-#  def y; self.position.y; end
-#
-#  def center
-#    Vector2d[self.position.x + self.width/2.0, self.position.y + self.height/2.0]
-#  end
-#
+
+  def x; @position.x; end
+  def y; @position.y; end
+
+  def center
+    Vec2d.new(@position.x + @width/2.0, @position.y + @height/2.0)
+  end
+
 #  def update
 #    update_width_height
 #    self.previous_position = self.position.dup

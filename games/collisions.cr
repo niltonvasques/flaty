@@ -1,5 +1,6 @@
 require "flaty"
 require "flaty/fps"
+require "flaty/game_object"
 
 class Collisions < Flaty::GameWindow
   SCREEN_WIDTH        = 1500
@@ -22,6 +23,8 @@ class Collisions < Flaty::GameWindow
 
     axis_colors = { lines: Flaty::Colors::BLACK, text: Flaty::Colors::BLACK }
     @camera_debug = Flaty::CameraDebug.new(@camera, axis_colors)
+
+    @obj = Flaty::GameObject.new()
 
   #  # assets
   #  @font = Gosu::Font.new(25)
