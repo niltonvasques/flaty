@@ -82,17 +82,30 @@ class Collisions < Flaty::GameWindow
       :color => Flaty::Colors::BLACK
     }
     p = base.merge({
-      :position => Vec2d.new(-HALF_WIDTH, 0), :width => 1.0, :height => HALF_HEIGHT.to_f, :tag => :left_wall
+      :position => Vec2d.new(-HALF_WIDTH, 0), :width => 1.0,
+      :height => HALF_HEIGHT.to_f, :tag => :left_wall
+    })
+
+    # left
+    @bodies << Flaty::RectGameObject.new(p)
+    @bodies << Flaty::RectGameObject.new(p.merge({ :position => Vec2d.new(-HALF_WIDTH, HALF_HEIGHT) }))
+
+    # right
+    p = p.merge({ :position => Vec2d.new(HALF_WIDTH-1, HALF_HEIGHT), :tag => :right_wall })
+    @bodies << Flaty::RectGameObject.new(p)
+    @bodies << Flaty::RectGameObject.new(p.merge({ :position => Vec2d.new(HALF_WIDTH-1, 0) }))
+
+    # floor
+    p = p.merge({
+      :position => Vec2d.new(0, 0), :width => HALF_WIDTH.to_f, :height => 1.0, :tag => :floor
     })
     @bodies << Flaty::RectGameObject.new(p)
-  #  @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[-HALF_WIDTH, 0], width: 1, height: HALF_HEIGHT, tag: :left_wall }))
-  #  @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[-HALF_WIDTH, HALF_HEIGHT], width: 1, height: HALF_HEIGHT, tag: :left_wall }))
-  #  @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[HALF_WIDTH-1, 0], width: 1, height: HALF_HEIGHT, tag: :right_wall }))
-  #  @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[HALF_WIDTH-1, HALF_HEIGHT], width: 1, height: HALF_HEIGHT, tag: :right_wall }))
-  #  @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[0, 0], width: HALF_WIDTH, height: 1, tag: :floor }))
-  #  @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[-HALF_WIDTH, 0], width: HALF_WIDTH, height: 1, tag: :floor }))
-  #  @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[-HALF_WIDTH, CAMERA_HEIGHT_UNITS-1], width: HALF_WIDTH, height: 1, tag: :ceil }))
-  #  @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[0, CAMERA_HEIGHT_UNITS-1], width: HALF_WIDTH, height: 1, tag: :ceil }))
+    @bodies << Flaty::RectGameObject.new(p.merge({ :position => Vec2d.new(-HALF_WIDTH, 0) }))
+
+    # ceil
+    p = p.merge({ :position => Vec2d.new(-HALF_WIDTH, CAMERA_HEIGHT_UNITS-1), :tag => :ceil })
+    @bodies << Flaty::RectGameObject.new(p)
+    @bodies << Flaty::RectGameObject.new(p.merge({ :position => Vec2d.new(0, CAMERA_HEIGHT_UNITS-1) }))
   end
 
   #def update
