@@ -52,45 +52,14 @@ class MathAxis < Flaty::GameWindow
     @camera.key_pressed(self, code)
 
     case code
-    when .a? then @px -= 0.1
-    when .d? then @px += 0.1
+    when .a? then move_derivative(-1)
+    when .d? then move_derivative(+1)
     end
   end
 
-  #def animate_polynomial
-  #  negative = 1
-  #  negative = -1 if Flaty.seconds % 2 == 0
-  #  @points[0][1] += ((Flaty.seconds % 3) * negative) * 0.1
-  #  @points[1][1] += ((Flaty.seconds % 3) * negative) * 0.1
-  #  @points[2][1] += ((Flaty.seconds % 3) * negative) * 0.5
-  #  @points[3][1] += ((Flaty.seconds % 3) * negative) * 0.1
-  #  @points[0][0] += ((Flaty.seconds % 3) * negative) * 0.5
-  #  @points[0][0] = @points[1][0] - 10 if @points[0][0] <= @points[1][0]
-  #  @axis_image = Gosu.render(SCREEN_WIDTH, SCREEN_HEIGHT) { draw_axis }
-  #end
-
-  def draw_axis
-  #  t = Benchmark.elapsed do
-  #    @camera_debug.draw
-
-  #    Flaty.paint(Gosu::Color::GRAY)
-  #    Flaty.draw_circle(Vector2d[3.5, 3.5], 3)
-
-  #    f = Poly.interpolate(@points)
-  #    fx = f.equation(2)
-
-  #    @label_y = 0
-  #    #draw_fx_and_dydx { |x| Math.sin(x**2) }
-  #    draw_fx_and_dydx { |x| Math.sin(x) }
-
-
-  #    #draw_fx(Gosu::Color::GREEN)           { |x| Math.sin(x)                            }
-  #    #draw_fx(Gosu::Color::WHITE)           { |x| derivative_line(x) { |x| x**3 }        }
-  #    draw_fx(Gosu::Color::FUCHSIA)         { |x| 1.0/(1+Math.exp(-x))                   }
-  #    draw_fx(Gosu::Color::YELLOW)          { |x| Math.exp(-x)                           }
-  #    #draw_fx(Gosu::Color::BLUE, label: fx) { |x| f.x(x)                                 }
-  #  end
-  #  puts t
+  def move_derivative(direction : Int32)
+    precision = (@camera.width / 1000.0).abs
+    @px += direction * precision
   end
 
   def draw_fx_and_dydx(label, &block : Float64 -> Float64)
@@ -116,7 +85,9 @@ class MathAxis < Flaty::GameWindow
       w = (x2 - x1)
       h = (y2 - y1)
       #puts "#{x1} x1 #{y1} x2 #{x2} x2 #{y2} y2"
-      Flaty.draw_line(x1, y1, x2, y2, color)
+      unless y1 > (@camera.rect.y + @camera.height) || y1 < @camera.rect.y
+        Flaty.draw_line(x1, y1, x2, y2, color)
+      end
       x1 = x2
       y1 = y2
       x2 += precision
