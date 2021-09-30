@@ -47,8 +47,8 @@ class Collisions < Flaty::GameWindow
     create_walls
 
   #  #@world.bodies << create_circle([-3.5001, 1.5001], [0,   0], Gosu::Color::CYAN, 'CYAN')
-  #  @world.bodies << create_rect(Vector2d[0,  1.001], Vector2d[-4, 0], 1, 10, Gosu::Color::RED)
-  #  @world.bodies << create_rect(Vector2d[-6, 1.001], Vector2d[1,  0], 2, 100, Gosu::Color::BLUE)
+    @bodies << create_rect(Vec2d.new(0,  1.001), Vec2d.new(-4, 0), 1.0, 10.0, Flaty::Colors::RED)
+    @bodies << create_rect(Vec2d.new(-6,  1.001), Vec2d.new(1, 0), 2.0, 100.0, Flaty::Colors::BLUE)
   #  @world.bodies << create_circle([-3, 6], [5,   5])
   #  @world.bodies << create_circle([-3, 2], [2,  -4])
   #  @world.bodies << create_circle([-1, 4], [3,  -3])
@@ -75,7 +75,7 @@ class Collisions < Flaty::GameWindow
       :position => xy, :speed => speed, :width => size, :height => size, :color => c,
       :mass => mass, :rigidbody => true, :elasticity => 0.6, :damp => 1.0
     }
-    RectGameObject.new(opts)
+    Flaty::RectGameObject.new(opts)
   end
 
   def create_walls
