@@ -4,12 +4,15 @@ class Flaty::GameObject
 
   property position : Vec2d
   property previous_position : Vec2d
+  property width : Float64
+  property height : Float64
   property speed : Vec2d
   property acceleration : Vec2d
   property mass : Float64
   property rect : Rect
+  property color : SF::Color
 
-  def initialize(opts = {} of Symbol => (Int32 | Vec2d | Rect | Float64 | Bool))
+  def initialize(opts = {} of Symbol => (Int32 | Vec2d | Rect | Float64 | Bool | SF::Color))
     default = {
       :position => Vec2d.new(0,0),
       :previous_position => Vec2d.new(0,0),
@@ -22,10 +25,13 @@ class Flaty::GameObject
       :elasticity => 1.0,
       :scale_x => 1.0,
       :scale_y => 1.0,
+      :width => 1.0,
+      :height => 1.0,
       :angle => 0.0,
       :current => 0,
       :camera => true,
-      :debug => false
+      :debug => false,
+      :color => Flaty::Colors::BLUE
     }.merge(opts)
 
     @position          = default[:position].as Vec2d
@@ -38,6 +44,9 @@ class Flaty::GameObject
     @damp              = default[:damp].as Float64
     @current           = default[:current].as Int32
     @previous_position = default[:position].as Vec2d
+    @color             = default[:color].as SF::Color
+    @width             = default[:width].as Float64
+    @height            = default[:height].as Float64
 
 #    unless current_image.nil?
 #      self.width = GameWindow.camera.pixel_to_unit_x(current_image.width * self.scale_x)
@@ -118,7 +127,7 @@ class Flaty::GameObject
 #  end
 #end
 #
-#class RectGameObject < GameObject
+class Flaty::RectGameObject < Flaty::GameObject
 #  include Collider
 #
 #  def collisions(obj)
@@ -130,14 +139,14 @@ class Flaty::GameObject
 #    end
 #  end
 #
-#  def collision_rect
-#    self.rect.x = self.x
-#    self.rect.y = self.y
-#    self.rect.width = self.width
-#    self.rect.height = self.height
-#    self.rect
-#  end
-#end
+  def collision_rect
+    @rect.x = x
+    @rect.y = y
+    @rect.width = @width
+    @rect.height = @height
+    @rect
+  end
+end
 #
 #class CircleGameObject < GameObject
 #  include Collider

@@ -30,10 +30,11 @@ class Collisions < Flaty::GameWindow
   #  @font = Gosu::Font.new(25)
   #  @@font = @font
 
+    @bodies = [] of Flaty::GameObject
   #  @world = Physics::World.new
   #  @world.collision_type = :elastic
 
-  #  restart
+    restart
   end
 
   #BIGNUM = (2**30).freeze
@@ -74,8 +75,16 @@ class Collisions < Flaty::GameWindow
   #end
 
   def create_walls
-    m = 1000000000
-    base = { speed: Vec2d.new(0, 0), mass: m, color: Flaty::Colors::BLACK }
+    m = 1000000000.0
+    base = {
+      :speed => Vec2d.new(0, 0),
+      :mass => m,
+      :color => Flaty::Colors::BLACK
+    }
+    p = base.merge({
+      :position => Vec2d.new(-HALF_WIDTH, 0), :width => 1.0, :height => HALF_HEIGHT.to_f, :tag => :left_wall
+    })
+    @bodies << Flaty::RectGameObject.new(p)
   #  @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[-HALF_WIDTH, 0], width: 1, height: HALF_HEIGHT, tag: :left_wall }))
   #  @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[-HALF_WIDTH, HALF_HEIGHT], width: 1, height: HALF_HEIGHT, tag: :left_wall }))
   #  @world.bodies << RectGameObject.new(base.merge({ position: Vector2d[HALF_WIDTH-1, 0], width: 1, height: HALF_HEIGHT, tag: :right_wall }))
@@ -122,7 +131,7 @@ class Collisions < Flaty::GameWindow
 
   #    Flaty.paint(Gosu::Color::GRAY)
 
-  #    draw_bodies
+    draw_bodies
 
   #    msg = "FPS: #{Gosu.fps} #{@world.gravity.round} gravity"
   #    @font.draw_text(msg, 10, 10, 100, 1.0, 1.0, Gosu::Color::GREEN)
@@ -132,19 +141,24 @@ class Collisions < Flaty::GameWindow
     @camera_debug.draw
   end
 
-  #def draw_bodies
-  #  @world.bodies.each do |body|
+  def draw_bodies
+    @bodies.each do |body|
   #    next if body.is_a? CircleGameObject
 
-  #    Flaty.draw_rect(body.x, body.y, body.width, body.height, body.color, 0)
+      puts "#{body.x} x #{body.y} #{body.width} w #{body.height}"
+      Flaty.draw_rect(body.x, body.y, body.width, body.height, body.color)
   #    x = body.x + (body.width / 2.0)
   #    y = body.y + (body.height / 2.0)
   #    mass = "#{body.mass.to_i.to_s} kg"
   #    Flaty.draw_text(@font, mass, x, y) if body.rigidbody
-  #  end
+    end
 
   #  @world.bodies.select { |b| b.is_a? CircleGameObject }.each(&:draw)
-  #end
+  end
+
+  def button_down(code)
+    @camera.key_pressed(self, code)
+  end
 
   #def generate_circle
   #  if Gosu.button_down? Gosu::KB_C and @circle_up == 0
