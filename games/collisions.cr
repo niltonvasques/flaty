@@ -110,7 +110,8 @@ class Collisions < Flaty::GameWindow
     @bodies << Flaty::RectGameObject.new(p.merge({ :position => Vec2d.new(0, CAMERA_HEIGHT_UNITS-1) }))
   end
 
-  #def update
+  def update(delta)
+    @bodies.each { |b| b.update(delta) }
   #  super
   #  return if paused?
   #  restart if Gosu.button_down? Gosu::KB_R
@@ -125,7 +126,7 @@ class Collisions < Flaty::GameWindow
   #  end
   #  @frames += 1
   #  @sum_frames += t
-  #end
+  end
 
   def draw(window, states)
     Flaty.paint(Flaty::Colors::GRAY)

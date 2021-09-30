@@ -21,7 +21,7 @@ class Flaty::GameObject
       :mass => 1.0,
       :acceleration => Vec2d.new(0,0),
       :speed => Vec2d.new(0,0),
-      :max_speed => Vec2d.new(0,0),
+      :max_speed => Vec2d.new(100,100),
       :damp => 1.0,
       :elasticity => 1.0,
       :scale_x => 1.0,
@@ -52,8 +52,8 @@ class Flaty::GameObject
     @rigidbody         = default[:rigidbody].as Bool
 
     #    unless current_image.nil?
-    #      self.width = GameWindow.camera.pixel_to_unit_x(current_image.width * self.scale_x)
-    #      self.height = GameWindow.camera.pixel_to_unit_y(current_image.height * self.scale_y)
+    #      @width = GameWindow.camera.pixel_to_unit_x(current_image.width * @scale_x)
+    #      @height = GameWindow.camera.pixel_to_unit_y(current_image.height * @scale_y)
     #    end
 end
 
@@ -64,52 +64,52 @@ end
     Vec2d.new(@position.x + @width/2.0, @position.y + @height/2.0)
   end
 
-  #  def update
-  #    update_width_height
-  #    self.previous_position = self.position.dup
-  #
-  #    self.speed += self.acceleration * GameWindow.delta
-  #    self.speed.x = self.max_speed.x if self.speed.x > 0 and self.speed.x.abs > self.max_speed.x
-  #    self.speed.x = -self.max_speed.x if self.speed.x < 0 and self.speed.x.abs > self.max_speed.x
-  #    self.speed.y = self.max_speed.y if self.speed.y > 0 and self.speed.y.abs > self.max_speed.y
-  #    self.speed.y = -self.max_speed.y if self.speed.y < 0 and self.speed.y.abs > self.max_speed.y
-  #    self.speed.y *= self.damp if self.acceleration.y == 0
-  #    self.speed.x *= self.damp if self.acceleration.x == 0
-  #    self.speed.x = 0 if self.speed.x.abs < 0.01
-  #
-  #    self.position += self.speed * GameWindow.delta
-  #  end
-  #
-  #  def reset
-  #    self.position = self.previous_position
-  #  end
-  #
+  def update(delta)
+    #update_width_height
+    @previous_position = @position
+
+    @speed += @acceleration * delta.as_seconds
+    @speed.x = @max_speed.x if @speed.x > 0 && @speed.x.abs > @max_speed.x
+    @speed.x = -@max_speed.x if @speed.x < 0 && @speed.x.abs > @max_speed.x
+    @speed.y = @max_speed.y if @speed.y > 0 && @speed.y.abs > @max_speed.y
+    @speed.y = -@max_speed.y if @speed.y < 0 && @speed.y.abs > @max_speed.y
+    @speed.y *= @damp if @acceleration.y == 0
+    @speed.x *= @damp if @acceleration.x == 0
+    @speed.x = 0 if @speed.x.abs < 0.01
+
+    @position += @speed * delta.as_seconds
+  end
+
+  def reset
+    @position = @previous_position
+  end
+
     def draw
   #    unless current_image.nil?
-  #      self.width = GameWindow.camera.pixel_to_unit_x(current_image.width * self.scale_x)
-  #      self.height = GameWindow.camera.pixel_to_unit_y(current_image.height * self.scale_y)
+  #      @width = GameWindow.camera.pixel_to_unit_x(current_image.width * @scale_x)
+  #      @height = GameWindow.camera.pixel_to_unit_y(current_image.height * @scale_y)
   #    end
   #    return if outside_window?
   #
-  #    new_pos = self.position
+  #    new_pos = @position
   #
-  #    new_pos = GameWindow.camera.translate(self) if self.camera
+  #    new_pos = GameWindow.camera.translate(self) if @camera
   #
   #    draw_obj(new_pos.x, new_pos.y, z)
-  #    if self.debug and GameWindow.debug
+  #    if @debug and GameWindow.debug
   #      Gosu.draw_rect(new_pos.x, new_pos.y, width * GameWindow.camera.unit_x,
-  #                     height * GameWindow.camera.unit_y, self.debug, z = 100, mode = :add)
+  #                     height * GameWindow.camera.unit_y, @debug, z = 100, mode = :add)
   #    end
     end
   #
   #  def draw_obj(x, y, z)
-  #    current_image.draw(x, y, z, scale_x = self.scale_x, scale_y = self.scale_y)
+  #    current_image.draw(x, y, z, scale_x = @scale_x, scale_y = @scale_y)
   #  end
   #
   #  def update_width_height
   #    unless current_image.nil?
-  #      self.width = GameWindow.camera.pixel_to_unit_x(current_image.width * self.scale_x)
-  #      self.height = GameWindow.camera.pixel_to_unit_y(current_image.height * self.scale_y)
+  #      @width = GameWindow.camera.pixel_to_unit_x(current_image.width * @scale_x)
+  #      @height = GameWindow.camera.pixel_to_unit_y(current_image.height * @scale_y)
   #    end
   #  end
   #
@@ -120,8 +120,8 @@ end
   #  end
   #
   #  def outside_window?
-  #    return false unless self.camera
-  #    not GameWindow.camera.visible?(self)
+  #    return false unless @camera
+  #    not GameWindow.camera.visible?(@
   #  end
   #
   #  def current_image
@@ -136,7 +136,7 @@ class Flaty::RectGameObject < Flaty::GameObject
 #
 #  def collisions(obj)
 #    case obj
-#    when CircleGameObject then Collision.detect_circle_rect(obj, self.collision_rect)
+#    when CircleGameObject then Collision.detect_circle_rect(obj, @collision_rect)
 #    when RectGameObject   then Collision.detect_rect(self.collision_rect, obj)
 #    when Rect             then Collision.detect_rect(self.collision_rect, obj)
 #    else Collision::NONE
@@ -166,11 +166,11 @@ class Flaty::CircleGameObject < Flaty::GameObject
   end
 
 #  def collision_rect
-#    self.rect.x = self.x - self.radius
-#    self.rect.y = self.y - self.radius
-#    self.rect.width = self.radius * 2
-#    self.rect.height = self.radius * 2
-#    self.rect
+#    @rect.x = self.x - @radius
+#    @rect.y = self.y - @radius
+#    @rect.width = @radius * 2
+#    @rect.height = @radius * 2
+#    @rect
 #  end
 #
 #  def collisions(obj)
@@ -190,35 +190,35 @@ class Flaty::CircleGameObject < Flaty::GameObject
 #
 #  def draw_image
 #    if current_image
-#      self.scale_x = self.width / GameWindow.camera.pixel_to_unit_x(current_image.width.to_f)
-#      self.scale_y = self.height / GameWindow.camera.pixel_to_unit_y(current_image.height.to_f)
+#      @scale_x = @width / GameWindow.camera.pixel_to_unit_x(current_image.width.to_f)
+#      @scale_y = @height / GameWindow.camera.pixel_to_unit_y(current_image.height.to_f)
 #    end
 #    return if outside_window?
 #
-#    new_pos = self.position
+#    new_pos = @position
 #
-#    new_pos = GameWindow.camera.translate(self.collision_rect) if self.camera
+#    new_pos = GameWindow.camera.translate(@collision_rect) if @camera
 #
 #    draw_obj(new_pos.x, new_pos.y, z)
-#    if self.debug and GameWindow.debug
+#    if @debug and GameWindow.debug
 #      Gosu.draw_rect(new_pos.x, new_pos.y, width * GameWindow.camera.unit_x,
-#                     height * GameWindow.camera.unit_y, self.debug, z = 100, mode = :add)
+#                     height * GameWindow.camera.unit_y, @debug, z = 100, mode = :add)
 #    end
 #  end
 #
 #  def draw_obj(x, y, z)
-#    current_image.draw(x, y, z, self.scale_x, self.scale_y, self.color, :add)
+#    current_image.draw(x, y, z, @scale_x, @scale_y, @color, :add)
 #  end
 #
 #  def draw_debug
 #    if GameWindow.debug
-#      Flaty.draw_line(self.center.x, self.center.y, self.color, self.center.x + self.speed.x, self.center.y + self.speed.y, self.color)
-#      if self.theta
-#        msg = "#{self.theta} #{self.speed.round}"
-#        msg += " #{self.phi}" if self.phi
-#        Flaty.draw_text(Collisions.font, msg, self.x, self.y) if self.theta
+#      Flaty.draw_line(@center.x, @center.y, @color, @center.x + @speed.x, @center.y + @speed.y, @color)
+#      if @theta
+#        msg = "#{@theta} #{@speed.round}"
+#        msg += " #{@phi}" if @phi
+#        Flaty.draw_text(Collisions.font, msg, @x, @y) if @theta
 #      end
-#      Flaty.draw_circle(self.center, self.radius, self.color) unless current_image
+#      Flaty.draw_circle(@center, @radius, @color) unless current_image
 #    end
 #  end
 #
