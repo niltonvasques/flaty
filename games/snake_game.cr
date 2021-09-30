@@ -21,7 +21,7 @@ class SnakeGame < Flaty::GameWindow
     update_camera
 
     axis_colors = { lines: Flaty::Colors::BLACK, text: Flaty::Colors::BLACK }
-    @camera_debug = CameraDebug.new(@camera, axis_colors)
+    @camera_debug = Flaty::CameraDebug.new(@camera, axis_colors)
 
     ## assets
     @font      = SF::Font.from_file("assets/Cantarell-Regular.otf")

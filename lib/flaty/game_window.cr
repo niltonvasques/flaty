@@ -1,15 +1,14 @@
 module Flaty
   class GameWindow
-    SCREEN_WIDTH        = 1280
-    SCREEN_HEIGHT       = 720
+    SCREEN_WIDTH        = 1280.0
+    SCREEN_HEIGHT       = 720.0
     CAMERA_WIDTH_UNITS  = 100.0
     CAMERA_HEIGHT_UNITS = 56.0
-    SCALE               = 20
+    SCALE               = 20.0
 
     property camera
 
-    def initialize(width = SCREEN_WIDTH, height = SCREEN_HEIGHT, scale : Float64 = SCALE,
-                   title = "Window")
+    def initialize(width = SCREEN_WIDTH, height = SCREEN_HEIGHT, scale = SCALE, title = "Window")
       @@width = width
       @@height = height
 

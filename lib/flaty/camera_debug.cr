@@ -1,6 +1,6 @@
 require "flaty"
 
-class CameraDebug
+class Flaty::CameraDebug
   DEFAULT_COLORS = {
     origin: Flaty::Colors::RED,
     lines: Flaty::Colors::YELLOW,

@@ -1,6 +1,6 @@
 require "flaty"
 
-class Camera
+class Flaty::Camera
   NOT_BOUNDED = -1.0
   #attr_accessor :width, :height, :position, :bounds
   property view
@@ -97,6 +97,29 @@ class Camera
 
   def scale(size_in_pixels : Float64, size_in_units : Float64)
     (@scale * size_in_units) / size_in_pixels
+  end
+
+  def key_pressed(window : Flaty::GameWindow, code)
+    case code
+    when .k?
+      move(Vec2d.new(0, 1))
+      window.update_camera
+    when .j?
+      move(Vec2d.new(0, -1))
+      window.update_camera
+    when .h?
+      move(Vec2d.new(-1, 0))
+      window.update_camera
+    when .l?
+      move(Vec2d.new(1, 0))
+      window.update_camera
+    when .o?
+      zoom(1)
+      window.update_camera
+    when .i?
+      zoom(-1)
+      window.update_camera
+    end
   end
 
   #def translate_x(x)
