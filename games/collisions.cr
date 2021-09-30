@@ -76,11 +76,7 @@ class Collisions < Flaty::GameWindow
 
   def create_walls
     m = 1000000000.0
-    base = {
-      :speed => Vec2d.new(0, 0),
-      :mass => m,
-      :color => Flaty::Colors::BLACK
-    }
+    base = { :speed => Vec2d.new(0, 0), :mass => m, :color => Flaty::Colors::BLACK }
     p = base.merge({
       :position => Vec2d.new(-HALF_WIDTH, 0), :width => 1.0,
       :height => HALF_HEIGHT.to_f, :tag => :left_wall
