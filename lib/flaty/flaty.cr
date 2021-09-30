@@ -67,6 +67,13 @@ module Flaty
     SF::Color.new(rand(128) + 128, rand(128) + 128, rand(128) + 128)
   end
 
+  def self.draw_circle(x = 0.0, y = 0.0, radius = 1.0, color = Flaty::Colors::RED)
+    connection = SF::CircleShape.new(radius)
+    connection.fill_color = color
+    connection.position = SF::Vector2.new(x, -y-radius*2) # xy left bottom
+    Flaty.window.draw connection, Flaty.states
+  end
+
   def self.draw_rect(x = 0.0, y = 0.0, width = 1.0, height = 1.0, color = Flaty::Colors::RED)
     connection = SF::RectangleShape.new({ width, height }).left_bottom_origin!
     connection.fill_color = color
@@ -124,6 +131,13 @@ module Flaty
 
   def self.paint(color)
     Flaty.window.clear color
+  end
+
+  def self.random_color
+    r = (128 * rand).to_i + 128
+    g = (128 * rand).to_i + 128
+    b = (128 * rand).to_i + 128
+    SF::Color.new(r, g, b)
   end
 
   module Colors

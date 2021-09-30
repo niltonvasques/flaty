@@ -48,28 +48,31 @@ class Collisions < Flaty::GameWindow
   #  #@world.bodies << create_circle([-3.5001, 1.5001], [0,   0], Gosu::Color::CYAN, 'CYAN')
     @bodies << create_rect(Vec2d.new(0,  1.001), Vec2d.new(-4, 0), 1.0, 10.0, Flaty::Colors::RED)
     @bodies << create_rect(Vec2d.new(-6,  1.001), Vec2d.new(1, 0), 2.0, 100.0, Flaty::Colors::BLUE)
-  #  @world.bodies << create_circle([-3, 6], [5,   5])
-  #  @world.bodies << create_circle([-3, 2], [2,  -4])
-  #  @world.bodies << create_circle([-1, 4], [3,  -3])
-  #  @world.bodies << create_circle([0,  3], [0,   5])
-  #  @world.bodies << create_circle([1,  4], [-4, -1])
-  #  @world.bodies << create_circle([2,  4], [-4, -1])
-  #  @world.bodies << create_circle([3,  4], [-1, -1])
-  #  @world.bodies << create_circle([3,  5], [2,  -1])
-  #  @world.bodies << create_circle([3,  6], [4,  -1])
+    @bodies << create_circle([-3, 6], [5,   5])
+    @bodies << create_circle([-3, 2], [2,  -4])
+    @bodies << create_circle([-1, 4], [3,  -3])
+    @bodies << create_circle([0,  3], [0,   5])
+    @bodies << create_circle([1,  4], [-4, -1])
+    @bodies << create_circle([2,  4], [-4, -1])
+    @bodies << create_circle([3,  4], [-1, -1])
+    @bodies << create_circle([3,  5], [2,  -1])
+    @bodies << create_circle([3,  6], [4,  -1])
   end
 
-  #def create_circle(xy, speed, tag = :circle)
-  #  xy = Vector2d.elements(xy) / 1.0
-  #  speed = Vector2d.elements(speed) / 1.0
-  #  c = Flaty.random_color
+  def create_circle(xy, speed, tag = :circle)
+    xy = Vec2d.new(xy[0].to_f, xy[1].to_f)
+    speed = Vec2d.new(speed[0].to_f, speed[1].to_f)
+    c = Flaty.random_color
   #  opts = { position: xy, speed: speed, radius: 0.5, color: c, mass: 10.0, elasticity: 0.99,
   #           rigidbody: true, tag: tag, image: @circle_img }
-  #  CircleGameObject.new(opts)
-  #end
+    opts = {
+      :position => xy, :speed => speed, :color => c, :tag => tag,
+      :mass => 10.0, :rigidbody => true, :elasticity => 0.99
+    }
+    Flaty::CircleGameObject.new(0.5, opts)
+  end
 
   def create_rect(xy, speed, size, mass,  c)
-    opts = { position: xy, speed: speed, width: size, height: size, color: c, mass: mass, rigidbody: true, elasticity: 0.6, damp: 1 }
     opts = {
       :position => xy, :speed => speed, :width => size, :height => size, :color => c,
       :mass => mass, :rigidbody => true, :elasticity => 0.6, :damp => 1.0
@@ -124,39 +127,19 @@ class Collisions < Flaty::GameWindow
   #  @sum_frames += t
   #end
 
-  #def print_bench
-  #  @sum_frames -= BIGNUM
-  #  @sum_draws -= BIGNUM
-  #  puts "#{Benchmark::NANO/(@sum_frames/@frames)} UPS"
-  #  puts "#{Benchmark::NANO/(@sum_draws/@draws)} DPS"
-  #  puts "#{(@sum_frames/@frames)} AVG UPDATE TIME"
-  #  puts "#{(@sum_draws/@draws)} AVG DRAW TIME"
-  #  puts "#{@sum_frames} UPDATE TIME"
-  #  puts "#{@sum_draws} DRAW TIME"
-  #end
-
   def draw(window, states)
     Flaty.paint(Flaty::Colors::GRAY)
-  #  t = Benchmark.elapsed do
-  #    @camera_debug.draw if GameWindow.debug
-  #    @world.draw_quad
-
-  #    Flaty.paint(Gosu::Color::GRAY)
+    # @world.draw_quad
 
     draw_bodies
 
-  #    msg = "FPS: #{Gosu.fps} #{@world.gravity.round} gravity"
-  #    @font.draw_text(msg, 10, 10, 100, 1.0, 1.0, Gosu::Color::GREEN)
-  #  end
-  #  @draws += 1
-  #  @sum_draws += t
     @camera_debug.draw
     @fps.draw(@delta)
   end
 
   def draw_bodies
     @bodies.each do |body|
-  #    next if body.is_a? CircleGameObject
+      next if body.is_a? Flaty::CircleGameObject
 
       Flaty.draw_rect(body.x, body.y, body.width, body.height, body.color)
       mass = "#{body.mass.to_i.to_s} kg"
@@ -164,7 +147,7 @@ class Collisions < Flaty::GameWindow
       Flaty.draw_text_world(@font, mass, x, body.center.y, 20) if body.rigidbody
     end
 
-  #  @world.bodies.select { |b| b.is_a? CircleGameObject }.each(&:draw)
+    @bodies.select { |b| b.is_a? Flaty::CircleGameObject }.each { |b| b.draw }
   end
 
   def button_down(code)
