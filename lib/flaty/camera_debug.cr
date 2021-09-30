@@ -9,7 +9,7 @@ class Flaty::CameraDebug
   @colors : NamedTuple(origin: SF::Color, lines: SF::Color, text: SF::Color)
   @step = 1.0
 
-  def initialize(@camera : Camera, colors)
+  def initialize(@camera : Camera, colors = DEFAULT_COLORS)
     @colors = DEFAULT_COLORS.merge(colors)
     @font   = SF::Font.from_file("assets/Cantarell-Regular.otf")
   end
@@ -67,6 +67,6 @@ class Flaty::CameraDebug
 
   def format(x)
     return ("%.2f" % x) if @camera.width < 2
-    x
+    x.to_i
   end
 end

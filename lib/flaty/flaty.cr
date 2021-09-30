@@ -133,6 +133,6 @@ module Flaty
     RED    = SF::Color.new(255, 0,     0)
     GREEN  = SF::Color.new(0,   255,   0)
     BLUE   = SF::Color.new(0,   0,   255)
-    YELLOW = SF::Color.new(255, 0,   255)
+    YELLOW = SF::Color.new(255, 255,   0)
   end
 end

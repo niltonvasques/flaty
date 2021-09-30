@@ -9,6 +9,7 @@ class Flaty::Camera
   property scale
   property position
   property rect
+  property bounds
 
   #attr_reader :unit_x, :unit_y
   @bounds : Rect
