@@ -17,8 +17,10 @@ class MathAxis < Flaty::GameWindow
     axis_colors = { lines: Flaty::Colors::BLACK, text: Flaty::Colors::BLACK }
     @camera_debug = Flaty::CameraDebug.new(@camera, axis_colors)
 
-    @points = [[0,2],[1,1],[2,2],[3,0],[4,3],[5,0],[6,3],[7,1]]
-    @px = 0
+    @points   = [[0,2],[1,1],[2,2],[3,0],[4,3],[5,0],[6,3],[7,1]]
+    @fps_list = [] of Float64
+    @px       = 0
+    @label_y  = 0
 
     ## assets
     @font      = SF::Font.from_file("assets/Cantarell-Regular.otf")
@@ -28,50 +30,27 @@ class MathAxis < Flaty::GameWindow
   #  @axis_image.save('axis.png')
   end
 
-  #def update
-  #  super
-  #  return if paused?
-
-  #  move(Vector2d[0, 1])  if Gosu.button_down? Gosu::KB_UP
-  #  move(Vector2d[0, -1]) if Gosu.button_down? Gosu::KB_DOWN
-  #  move(Vector2d[-1, 0]) if Gosu.button_down? Gosu::KB_LEFT
-  #  move(Vector2d[1, 0])  if Gosu.button_down? Gosu::KB_RIGHT
-  #  move_derivative(-1) if Gosu.button_down? Gosu::KB_A
-  #  move_derivative(1)  if Gosu.button_down? Gosu::KB_D
-  #  zoom(-1) if Gosu.button_down? Gosu::KB_NUMPAD_PLUS
-  #  zoom(1)  if Gosu.button_down? Gosu::KB_NUMPAD_MINUS
-
-  #  #animate_polynomial
-  #end
-
   def draw(target, states)
     Flaty.paint(Flaty::Colors::GRAY)
     @camera_debug.draw
 
-    draw_fx(Flaty::Colors::GREEN) { |x| Math.sin(x) }
+    @label_y = 0
+    draw_fx("sin(x)", Flaty::Colors::GREEN)   { |x| Math.sin(x) }
+    draw_fx("1/(1+e^-x)", Flaty::Colors::RED) { |x| 1.0/(1+Math.exp(-x)) }
+    draw_fx("e^x", Flaty::Colors::YELLOW)     { |x| Math.exp(-x) }
+
+    @fps_list << (1.0/@delta.as_seconds).round(2)
+    @fps_list = @fps_list[2..@fps_list.size] if @fps_list.size > 1000
+    fps = "FPS: #{(@fps_list.sum / @fps_list.size).to_i}"
+    Flaty.draw_text_in_pixels(@font, fps, SCREEN_WIDTH-(fps.size * 12), 9, 20, Flaty::Colors::GREEN)
   end
 
   def button_down(code)
     @camera.key_pressed(self, code)
+
+    #  move_derivative(-1) if Gosu.button_down? Gosu::KB_A
+    #  move_derivative(1)  if Gosu.button_down? Gosu::KB_D
   end
-
-  #private
-
-  #def zoom(direction)
-  #  @camera.zoom(direction)
-  #  @axis_image = Gosu.render(SCREEN_WIDTH, SCREEN_HEIGHT) { draw_axis }
-  #end
-
-  #def move(direction)
-  #  @camera.move(direction)
-  #  @axis_image = Gosu.render(SCREEN_WIDTH, SCREEN_HEIGHT) { draw_axis }
-  #end
-
-  #def move_derivative(direction)
-  #  precision = (@camera.width / 1000.0).abs
-  #  @px += direction * precision
-  #  @axis_image = Gosu.render(SCREEN_WIDTH, SCREEN_HEIGHT) { draw_axis }
-  #end
 
   #def animate_polynomial
   #  negative = 1
@@ -120,7 +99,7 @@ class MathAxis < Flaty::GameWindow
 
   LINE_THICKNESS = 3
   MIN_PRECISION = 0.000000000001
-  def draw_fx(color, opts = nil, &block)
+  def draw_fx(label, color)
   #  opts = { bold: true }.merge(opts)
     precision = Math.max((@camera.width / 1000.0).abs, MIN_PRECISION)
 
@@ -132,25 +111,20 @@ class MathAxis < Flaty::GameWindow
       y2 = yield(x2)
       w = (x2 - x1)
       h = (y2 - y1)
+      puts "#{x1} x1 #{y1} x2 #{x2} x2 #{y2} y2"
       Flaty.draw_line(x1, y1, x2, y2, color)
       x1 = x2
       y1 = y2
       x2 += precision
     end
 
-  #  draw_equation_label(block, color, opts[:label])
+    draw_equation_label(label, color)
   end
 
-  #def draw_equation_label(block, color, label)
-  #  @label_y += 40
-  #  label = format_equation(block.source.scan(/\{ \|x\| (.*) \}/).flatten.first) unless label
-  #  @font.draw_text("#{label}", 20, @label_y, 100, 1.0, 1.0, color)
-  #end
-
-  #def format_equation(eq)
-  #  eq = eq.gsub('**2', '²').gsub('**3', '³').gsub('**', '^').gsub('Math.log', 'ln')
-  #  eq.gsub('Math.', '')
-  #end
+  def draw_equation_label(label, color)
+    @label_y += 40
+    Flaty.draw_text_in_pixels(@font, label, 9, @label_y, 24, color)
+  end
 end
 
 game = MathAxis.new
