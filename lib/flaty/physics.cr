@@ -209,7 +209,7 @@ module Physics
 
     def initialize
       @bodies = [] of Flaty::GameObject
-#      @gravity = GRAVITY.dup
+      @gravity = GRAVITY
 #      @camera = GameWindow.camera
 #      qx = @camera.rect.x
 #      qy = @camera.rect.y
