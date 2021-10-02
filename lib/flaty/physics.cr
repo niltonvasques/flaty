@@ -126,7 +126,7 @@ module Physics
 
     collision = Collision::NONE
     candidates.each do |obj|
-      obj.debug = Gosu::Color::CYAN
+      obj.debug = Flaty::Colors::CYAN
       collision |= body1.collisions(obj)
     end
 
@@ -137,7 +137,7 @@ module Physics
 
       collision = Collision::NONE
       candidates.each do |obj|
-        obj.debug = Gosu::Color::CYAN
+        obj.debug = Flaty::Colors::CYAN
         collision |= body1.collisions(obj)
       end
       body1.grounded if collision == Collision::NONE
@@ -149,7 +149,7 @@ module Physics
 
       collision = Collision::NONE
       candidates.each do |obj|
-        obj.debug = Gosu::Color::CYAN
+        obj.debug = Flaty::Colors::CYAN
         collision |= body1.collisions(obj)
       end
     end
@@ -160,7 +160,7 @@ module Physics
 
       collision = Collision::NONE
       candidates.each do |obj|
-        obj.debug = Gosu::Color::CYAN
+        obj.debug = Flaty::Colors::CYAN
         collision |= body1.collisions(obj)
       end
     end
@@ -170,7 +170,7 @@ module Physics
 
       collision = Collision::NONE
       candidates.each do |obj|
-        obj.debug = Gosu::Color::CYAN
+        obj.debug = Flaty::Colors::CYAN
         collision |= body1.collisions(obj)
       end
       body1.ceil_hit if collision == Collision::NONE
@@ -180,14 +180,14 @@ module Physics
 
     collided
   end
-#
-#  class World
-#    GRAVITY = Vector2d[0, -9.8].freeze # -9.8 m/s
-#
-#    attr_accessor :bodies, :gravity, :collision_type
-#
-#    def initialize
-#      @bodies = []
+
+  class World
+    GRAVITY = Vec2d.new(0, -9.8) # -9.8 m/s
+
+    property bodies
+
+    def initialize
+      @bodies = [] of Flaty::GameObject
 #      @gravity = GRAVITY.dup
 #      @camera = GameWindow.camera
 #      qx = @camera.rect.x
@@ -195,8 +195,8 @@ module Physics
 #      qw = @camera.rect.width
 #      qh = @camera.rect.height
 #      @quadtree = Quadtree.new(Vector2d[qx, qy], Vector2d[qw, qh])
-#      @collision_type = :basic
-#    end
+      @collision_type = :basic
+    end
 #
 #    def update_quad_rect
 #      @quadtree.xy.x = @camera.rect.x
@@ -205,7 +205,7 @@ module Physics
 #      @quadtree.size.y = @camera.rect.height
 #    end
 #
-#    def update
+    def update
 #      @quadtree.clear
 #      update_quad_rect
 #      # collision after gravity are locking bodies X axis
@@ -223,14 +223,14 @@ module Physics
 #      when :elastic
 #        Physics.elastic_collisions(updatables, @quadtree)
 #      end
-#    end
+    end
 #
 #    def draw_quad
 #      draw(@quadtree)
 #    end
 #
 #    def draw(quad)
-#      c = Gosu::Color::BLUE
+#      c = Flaty::Colors::BLUE
 #      quad.nodes.each do |node|
 #        x = node.xy.x
 #        y = node.xy.y
@@ -240,5 +240,5 @@ module Physics
 #      end
 #      quad.nodes.each { |q| draw(q) }
 #    end
-#  end
+  end
 end

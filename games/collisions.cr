@@ -30,7 +30,7 @@ class Collisions < Flaty::GameWindow
     @fps = Flaty::FPS.new(SCREEN_WIDTH, @font)
 
     @bodies = [] of Flaty::GameObject
-  #  @world = Physics::World.new
+    @world = Physics::World.new
   #  @world.collision_type = :elastic
 
     create_walls
@@ -42,17 +42,17 @@ class Collisions < Flaty::GameWindow
   #  @world.bodies.clear
 
   #  #@world.bodies << create_circle([-3.5001, 1.5001], [0,   0], Gosu::Color::CYAN, 'CYAN')
-    @bodies << create_rect(Vec2d.new(0,  1.001), Vec2d.new(-4, 0), 1.0, 10.0, Flaty::Colors::RED)
-    @bodies << create_rect(Vec2d.new(-6,  1.001), Vec2d.new(1, 0), 2.0, 100.0, Flaty::Colors::BLUE)
-    @bodies << create_circle([-3, 6], [5,   5])
-    @bodies << create_circle([-3, 2], [2,  -4])
-    @bodies << create_circle([-1, 4], [3,  -3])
-    @bodies << create_circle([0,  3], [0,   5])
-    @bodies << create_circle([1,  4], [-4, -1])
-    @bodies << create_circle([2,  4], [-4, -1])
-    @bodies << create_circle([3,  4], [-1, -1])
-    @bodies << create_circle([3,  5], [2,  -1])
-    @bodies << create_circle([3,  6], [4,  -1])
+    @world.bodies << create_rect(Vec2d.new(0,  1.001), Vec2d.new(-4, 0), 1.0, 10.0, Flaty::Colors::RED)
+    @world.bodies << create_rect(Vec2d.new(-6,  1.001), Vec2d.new(1, 0), 2.0, 100.0, Flaty::Colors::BLUE)
+    @world.bodies << create_circle([-3, 6], [5,   5])
+    @world.bodies << create_circle([-3, 2], [2,  -4])
+    @world.bodies << create_circle([-1, 4], [3,  -3])
+    @world.bodies << create_circle([0,  3], [0,   5])
+    @world.bodies << create_circle([1,  4], [-4, -1])
+    @world.bodies << create_circle([2,  4], [-4, -1])
+    @world.bodies << create_circle([3,  4], [-1, -1])
+    @world.bodies << create_circle([3,  5], [2,  -1])
+    @world.bodies << create_circle([3,  6], [4,  -1])
   end
 
   def create_circle(xy, speed, tag = :circle)
@@ -85,29 +85,29 @@ class Collisions < Flaty::GameWindow
     })
 
     # left
-    @bodies << Flaty::RectGameObject.new(p)
-    @bodies << Flaty::RectGameObject.new(p.merge({ :position => Vec2d.new(-HALF_WIDTH, HALF_HEIGHT) }))
+    @world.bodies << Flaty::RectGameObject.new(p)
+    @world.bodies << Flaty::RectGameObject.new(p.merge({ :position => Vec2d.new(-HALF_WIDTH, HALF_HEIGHT) }))
 
     # right
     p = p.merge({ :position => Vec2d.new(HALF_WIDTH-1, HALF_HEIGHT), :tag => :right_wall })
-    @bodies << Flaty::RectGameObject.new(p)
-    @bodies << Flaty::RectGameObject.new(p.merge({ :position => Vec2d.new(HALF_WIDTH-1, 0) }))
+    @world.bodies << Flaty::RectGameObject.new(p)
+    @world.bodies << Flaty::RectGameObject.new(p.merge({ :position => Vec2d.new(HALF_WIDTH-1, 0) }))
 
     # floor
     p = p.merge({
       :position => Vec2d.new(0, 0), :width => HALF_WIDTH.to_f, :height => 1.0, :tag => :floor
     })
-    @bodies << Flaty::RectGameObject.new(p)
-    @bodies << Flaty::RectGameObject.new(p.merge({ :position => Vec2d.new(-HALF_WIDTH, 0) }))
+    @world.bodies << Flaty::RectGameObject.new(p)
+    @world.bodies << Flaty::RectGameObject.new(p.merge({ :position => Vec2d.new(-HALF_WIDTH, 0) }))
 
     # ceil
     p = p.merge({ :position => Vec2d.new(-HALF_WIDTH, CAMERA_HEIGHT_UNITS-1), :tag => :ceil })
-    @bodies << Flaty::RectGameObject.new(p)
-    @bodies << Flaty::RectGameObject.new(p.merge({ :position => Vec2d.new(0, CAMERA_HEIGHT_UNITS-1) }))
+    @world.bodies << Flaty::RectGameObject.new(p)
+    @world.bodies << Flaty::RectGameObject.new(p.merge({ :position => Vec2d.new(0, CAMERA_HEIGHT_UNITS-1) }))
   end
 
   def update(delta)
-    @bodies.each { |b| b.update(delta) }
+    @world.bodies.each { |b| b.update(delta) }
   #  t = Benchmark.elapsed do
   #    @world.gravity.y += 0.1 if Gosu.button_down? Gosu::KB_DOWN
   #    @world.gravity.y += -0.1 if Gosu.button_down? Gosu::KB_UP
@@ -128,7 +128,7 @@ class Collisions < Flaty::GameWindow
   end
 
   def draw_bodies
-    visible_bodies = @bodies.select { |b| @camera.visible?(b) }
+    visible_bodies = @world.bodies.select { |b| @camera.visible?(b) }
     visible_bodies.each do |body|
       next if body.is_a? Flaty::CircleGameObject
 
