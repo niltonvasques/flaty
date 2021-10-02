@@ -31,7 +31,7 @@ class Collisions < Flaty::GameWindow
 
     @bodies = [] of Flaty::GameObject
     @world = Physics::World.new
-  #  @world.collision_type = :elastic
+    @world.collision_type = :elastic
 
     create_walls
     restart
