@@ -33,17 +33,13 @@ class Collisions < Flaty::GameWindow
   #  @world = Physics::World.new
   #  @world.collision_type = :elastic
 
+    create_walls
     restart
   end
 
   #BIGNUM = (2**30).freeze
   def restart
-  #  @frames = 0
-  #  @sum_frames = BIGNUM
-  #  @draws = 0
-  #  @sum_draws = BIGNUM
   #  @world.bodies.clear
-    create_walls
 
   #  #@world.bodies << create_circle([-3.5001, 1.5001], [0,   0], Gosu::Color::CYAN, 'CYAN')
     @bodies << create_rect(Vec2d.new(0,  1.001), Vec2d.new(-4, 0), 1.0, 10.0, Flaty::Colors::RED)
@@ -112,20 +108,13 @@ class Collisions < Flaty::GameWindow
 
   def update(delta)
     @bodies.each { |b| b.update(delta) }
-  #  super
-  #  return if paused?
-  #  restart if Gosu.button_down? Gosu::KB_R
   #  t = Benchmark.elapsed do
-  #    @camera.zoom(-1) if Gosu.button_down? Gosu::KB_NUMPAD_PLUS
-  #    @camera.zoom(1)  if Gosu.button_down? Gosu::KB_NUMPAD_MINUS
   #    @world.gravity.y += 0.1 if Gosu.button_down? Gosu::KB_DOWN
   #    @world.gravity.y += -0.1 if Gosu.button_down? Gosu::KB_UP
   #    generate_circle
 
   #    @world.update
   #  end
-  #  @frames += 1
-  #  @sum_frames += t
   end
 
   def draw(window, states)
@@ -139,7 +128,8 @@ class Collisions < Flaty::GameWindow
   end
 
   def draw_bodies
-    @bodies.each do |body|
+    visible_bodies = @bodies.select { |b| @camera.visible?(b) }
+    visible_bodies.each do |body|
       next if body.is_a? Flaty::CircleGameObject
 
       Flaty.draw_rect(body.x, body.y, body.width, body.height, body.color)
@@ -148,11 +138,14 @@ class Collisions < Flaty::GameWindow
       Flaty.draw_text_world(@font, mass, x, body.center.y, 20) if body.rigidbody
     end
 
-    @bodies.select { |b| b.is_a? Flaty::CircleGameObject }.each { |b| b.draw }
+    visible_bodies.select { |b| b.is_a?(Flaty::CircleGameObject) }.each { |b| b.draw }
   end
 
   def button_down(code)
     @camera.key_pressed(self, code)
+    case code
+    when .r? then restart
+    end
   end
 
   #def generate_circle

@@ -70,15 +70,15 @@ class Flaty::Camera
     look(@position.x, @position.y)
   end
 
-  #def visible?(obj)
-  #  rect = obj
-  #  rect = rect.collision_rect if obj.is_a? CircleGameObject
-  #  return false if rect.x > (@position.x + @width / 2.0)
-  #  return false if rect.x + rect.width < (@position.x - @width / 2.0)
-  #  return false if rect.y > (@position.y + @height / 2.0)
-  #  return false if rect.y + rect.height < (@position.y - @height / 2.0)
-  #  true
-  #end
+  def visible?(obj)
+    rect = obj
+    #rect = rect.collision_rect if obj.is_a? CircleGameObject
+    return false if rect.x > (@position.x + @width / 2.0)
+    return false if rect.x + rect.width < (@position.x - @width / 2.0)
+    return false if rect.y > (@position.y + @height / 2.0)
+    return false if rect.y + rect.height < (@position.y - @height / 2.0)
+    true
+  end
 
   def width_pixels
     @width * @scale
