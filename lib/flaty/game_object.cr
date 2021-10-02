@@ -1,6 +1,7 @@
 require "flaty"
 
 class Flaty::GameObject
+  include Collider
 
   property position : Vec2d
   property previous_position : Vec2d
@@ -12,6 +13,8 @@ class Flaty::GameObject
   property rect : Rect
   property color : SF::Color
   property rigidbody : Bool
+  property tag : Symbol
+  property debug : (SF::Color | Nil)
 
   alias GameObjectOpts = (Int32 | Vec2d | Rect | Float64 | Bool | SF::Color)
 
@@ -33,9 +36,9 @@ class Flaty::GameObject
       :angle => 0.0,
       :current => 0,
       :camera => true,
-      :debug => false,
+      :debug => nil,
       :rigidbody => false,
-      :color => Flaty::Colors::BLUE
+      :color => Flaty::Colors::BLUE,
     }.merge(opts)
 
     @position          = default[:position].as Vec2d
@@ -52,6 +55,8 @@ class Flaty::GameObject
     @width             = default[:width].as Float64
     @height            = default[:height].as Float64
     @rigidbody         = default[:rigidbody].as Bool
+    @debug             = default[:debug].as (SF::Color | Nil)
+    @tag               = default[:tag].as Symbol
   end
 
   def x; @position.x; end
@@ -110,11 +115,11 @@ class Flaty::GameObject
   #    end
   #  end
   #
-  #  def grounded
-  #  end
-  #
-  #  def ceil_hit
-  #  end
+    def grounded
+    end
+
+    def ceil_hit
+    end
   #
   #  def outside_window?
   #    return false unless @camera
@@ -130,19 +135,21 @@ end
 
 class Flaty::RectGameObject < Flaty::GameObject
   include Collider
-#
-#  def collisions(obj)
-#    case obj
-#    when CircleGameObject then Collision.detect_circle_rect(obj, @collision_rect)
-#    when RectGameObject   then Collision.detect_rect(self.collision_rect, obj)
-#    when Rect             then Collision.detect_rect(self.collision_rect, obj)
-#    else Collision::NONE
-#    end
-#  end
-#
+
+  def collisions(obj)
+    case obj
+      #    when CircleGameObject then Collision.detect_circle_rect(obj, @collision_rect)
+    when RectGameObject then Collision.detect_rect(self.collision_rect, obj)
+      #    when Rect             then Collision.detect_rect(self.collision_rect, obj)
+    else
+      puts "none #{obj.class}"
+      Collision::NONE
+    end
+  end
+
   def collision_rect
-    @rect.x = x
-    @rect.y = y
+    @rect.left = x
+    @rect.top = y
     @rect.width = @width
     @rect.height = @height
     @rect

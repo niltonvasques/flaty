@@ -19,46 +19,58 @@ module Physics
 #    #binding.pry if Gosu.milliseconds > 10000
 #  end
 #
-#  def self.basic_collisions(bodies, quad)
-#    total = 0
-#    bodies.each_index do |i|
-#      candidates = quad.query(bodies[i])
-#      candidates.each do |body|
-#        next if body == bodies[i]
-#        Physics.solve_collision(bodies[i], body)
-#        Physics.solve_collision(body, bodies[i])
-#        total += 1
-#      end
-#    end
-#    puts "#{total} total collisions procesing"
-#    #binding.pry if Gosu.milliseconds > 3000
-#  end
-#
-#  def self.elastic_collision(body1, body2)
-#    if body1.collisions(body2) != Collision::NONE and (body1.rigidbody or body2.rigidbody)
-#      Physics.solve_collision(body1, body2)
-#      Physics.solve_collision(body2, body1)
-#
-#      # https://gamedev.stackexchange.com/questions/104042/2d-multiple-circle-collision-response
+  #def self.basic_collisions(bodies, quad)
+  def self.basic_collisions(bodies)
+    total = 0
+    bodies.each_index do |i|
+      #candidates = quad.query(bodies[i])
+      #candidates.each do |body|
+      #  next if body == bodies[i]
+      #  Physics.solve_collision(bodies[i], body)
+      #  Physics.solve_collision(body, bodies[i])
+      #  total += 1
+      #end
+      (i+1).upto(bodies.size - 1) do |j|
+        Physics.basic_collision(bodies[i], bodies[j])
+        total += 1
+      end
+    end
+    puts "#{total} total collisions procesing"
+    #binding.pry if Gosu.milliseconds > 3000
+  end
+
+  # https://en.wikipedia.org/wiki/Elastic_collision#One-dimensional_Newtonian
+  def self.basic_collision(body1, body2)
+    if body1.collisions(body2) != Collision::NONE && (body1.rigidbody || body2.rigidbody)
+      Physics.solve_collision(body1, body2)
+      Physics.solve_collision(body2, body1)
+
+      m1 = body1.mass
+      m2 = body2.mass
+      u1 = body1.speed
+      u2 = body2.speed
+      v1 = body1.speed
+      v2 = body2.speed
+
+      v1 = ( u1*((m1-m2)/(m1+m2)) ) + ( u2*((2*m2)/(m1+m2)) )
+      v2 = ( u2*((m2-m1)/(m1+m2)) ) + ( u1*((2*m1)/(m1+m2)) )
+
+      body1.speed = v1
+      body2.speed = v2
+    end
+  end
+
+  def self.elastic_collision(body1, body2)
+    if body1.collisions(body2) != Collision::NONE && (body1.rigidbody || body2.rigidbody)
+      Physics.solve_collision(body1, body2)
+      Physics.solve_collision(body2, body1)
+
+      # https://gamedev.stackexchange.com/questions/104042/2d-multiple-circle-collision-response
 #      if body1.collisions(body2) != Collision::NONE
 #        #puts "# second iteration needed #{Gosu.milliseconds} #"
 #        Physics.solve_collision(body1, body2)
 #        Physics.solve_collision(body2, body1)
 #      end
-#
-#      # https://en.wikipedia.org/wiki/Elastic_collision#One-dimensional_Newtonian
-#      m1 = body1.mass
-#      m2 = body2.mass
-#      u1 = body1.speed
-#      u2 = body2.speed
-#      v1 = body1.speed
-#      v2 = body2.speed
-#
-#      #v1 = ( ((m1-m2)/(m1+m2))*u1 ) + ( ((2*m2)/(m1+m2))*u2 )
-#      #v2 = ( ((m2-m1)/(m1+m2))*u2 ) + ( ((2*m1)/(m1+m2))*u1 )
-#
-#      #body1.speed = v1
-#      #body2.speed = v2
 #
 #      # http://www.sciencecalculators.org/mechanics/collisions/
 #      # https://en.wikipedia.org/wiki/Elastic_collision#Two-Dimensional_Collision_With_Two_Moving_Objects
@@ -114,13 +126,13 @@ module Physics
 #      body2.speed.y *= body2.elasticity #if body1.tag == :floor
 #      body1.speed.x *= body1.damp if body2.tag == :floor
 #      body1.speed.y *= body1.elasticity #if body2.tag == :floor
-#    end
-#  end
-#
-#  def self.solve_collision(body1, body2)
-#    self.solve_collisions(body1, [body2])
-#  end
-#
+    end
+  end
+
+  def self.solve_collision(body1, body2)
+    self.solve_collisions(body1, [body2])
+  end
+
   def self.solve_collisions(body1, candidates)
     new_position = body1.position.dup
 
@@ -176,6 +188,8 @@ module Physics
       body1.ceil_hit if collision == Collision::NONE
     end
 
+    #puts "#{Collision.to_s(collision)} #{collision}"
+
     body1.reset if collision != Collision::NONE
 
     collided
@@ -209,7 +223,7 @@ module Physics
 #      @quadtree.clear
 #      update_quad_rect
 #      # collision after gravity are locking bodies X axis
-#      updatables = @bodies.select(&:rigidbody)
+      updatables = @bodies #.select { |b| b.rigidbody }
 #      updatables.each { |body| body.acceleration = @gravity.dup }
 #      collidables = @bodies.select { |body| body.is_a? Collider }
 #      collidables.each do |body|
@@ -217,12 +231,13 @@ module Physics
 #      end
 #      updatables.each(&:update)
 #
-#      case @collision_type
-#      when :basic
-#        Physics.basic_collisions(updatables, @quadtree)
+      case @collision_type
+      when :basic
+        #Physics.basic_collisions(updatables, @quadtree)
+        Physics.basic_collisions(updatables)
 #      when :elastic
 #        Physics.elastic_collisions(updatables, @quadtree)
-#      end
+      end
     end
 #
 #    def draw_quad

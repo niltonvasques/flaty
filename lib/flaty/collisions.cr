@@ -4,7 +4,7 @@ module Collider
   end
 
   def collisions(shape)
-    false
+    Collision::NONE
   end
 end
 

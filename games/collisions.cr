@@ -44,15 +44,15 @@ class Collisions < Flaty::GameWindow
   #  #@world.bodies << create_circle([-3.5001, 1.5001], [0,   0], Gosu::Color::CYAN, 'CYAN')
     @world.bodies << create_rect(Vec2d.new(0,  1.001), Vec2d.new(-4, 0), 1.0, 10.0, Flaty::Colors::RED)
     @world.bodies << create_rect(Vec2d.new(-6,  1.001), Vec2d.new(1, 0), 2.0, 100.0, Flaty::Colors::BLUE)
-    @world.bodies << create_circle([-3, 6], [5,   5])
-    @world.bodies << create_circle([-3, 2], [2,  -4])
-    @world.bodies << create_circle([-1, 4], [3,  -3])
-    @world.bodies << create_circle([0,  3], [0,   5])
-    @world.bodies << create_circle([1,  4], [-4, -1])
-    @world.bodies << create_circle([2,  4], [-4, -1])
-    @world.bodies << create_circle([3,  4], [-1, -1])
-    @world.bodies << create_circle([3,  5], [2,  -1])
-    @world.bodies << create_circle([3,  6], [4,  -1])
+    #@world.bodies << create_circle([-3, 6], [5,   5])
+    #@world.bodies << create_circle([-3, 2], [2,  -4])
+    #@world.bodies << create_circle([-1, 4], [3,  -3])
+    #@world.bodies << create_circle([0,  3], [0,   5])
+    #@world.bodies << create_circle([1,  4], [-4, -1])
+    #@world.bodies << create_circle([2,  4], [-4, -1])
+    #@world.bodies << create_circle([3,  4], [-1, -1])
+    #@world.bodies << create_circle([3,  5], [2,  -1])
+    #@world.bodies << create_circle([3,  6], [4,  -1])
   end
 
   def create_circle(xy, speed, tag = :circle)
@@ -71,7 +71,7 @@ class Collisions < Flaty::GameWindow
   def create_rect(xy, speed, size, mass,  c)
     opts = {
       :position => xy, :speed => speed, :width => size, :height => size, :color => c,
-      :mass => mass, :rigidbody => true, :elasticity => 0.6, :damp => 1.0
+      :mass => mass, :rigidbody => true, :elasticity => 0.6, :damp => 1.0, :tag => :block
     }
     Flaty::RectGameObject.new(opts)
   end
@@ -108,12 +108,16 @@ class Collisions < Flaty::GameWindow
 
   def update(delta)
     @world.bodies.each { |b| b.update(delta) }
+    #body1 = @world.bodies[@world.bodies.size - 2]
+    #body2 = @world.bodies.last
+    #Physics.solve_collision(body1, body2)
+    #Physics.solve_collision(body2, body1)
   #  t = Benchmark.elapsed do
   #    @world.gravity.y += 0.1 if Gosu.button_down? Gosu::KB_DOWN
   #    @world.gravity.y += -0.1 if Gosu.button_down? Gosu::KB_UP
   #    generate_circle
 
-  #    @world.update
+    @world.update
   #  end
   end
 
