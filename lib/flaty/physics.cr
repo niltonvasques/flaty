@@ -121,65 +121,65 @@ module Physics
 #    self.solve_collisions(body1, [body2])
 #  end
 #
-#  def self.solve_collisions(body1, candidates)
-#    new_position = body1.position.dup
-#
-#    collision = Collision::NONE
-#    candidates.each do |obj|
-#      obj.debug = Gosu::Color::CYAN
-#      collision |= body1.collisions(obj)
-#    end
-#
-#    collided = collision != Collision::NONE
-#
-#    if Collision.bottom?(collision)
-#      body1.position.y = body1.previous_position.y
-#
-#      collision = Collision::NONE
-#      candidates.each do |obj|
-#        obj.debug = Gosu::Color::CYAN
-#        collision |= body1.collisions(obj)
-#      end
-#      body1.grounded if collision == Collision::NONE
-#    end
-#
-#    if Collision.right?(collision)
-#      body1.position.y = new_position.y
-#      body1.position.x = body1.previous_position.x
-#
-#      collision = Collision::NONE
-#      candidates.each do |obj|
-#        obj.debug = Gosu::Color::CYAN
-#        collision |= body1.collisions(obj)
-#      end
-#    end
-#
-#    if Collision.left?(collision)
-#      body1.position.y = new_position.y
-#      body1.position.x = body1.previous_position.x
-#
-#      collision = Collision::NONE
-#      candidates.each do |obj|
-#        obj.debug = Gosu::Color::CYAN
-#        collision |= body1.collisions(obj)
-#      end
-#    end
-#
-#    if Collision.top?(collision)
-#      body1.position.y = body1.previous_position.y
-#
-#      collision = Collision::NONE
-#      candidates.each do |obj|
-#        obj.debug = Gosu::Color::CYAN
-#        collision |= body1.collisions(obj)
-#      end
-#      body1.ceil_hit if collision == Collision::NONE
-#    end
-#
-#    body1.reset if collision != Collision::NONE
-#
-#    collided
-#  end
+  def self.solve_collisions(body1, candidates)
+    new_position = body1.position.dup
+
+    collision = Collision::NONE
+    candidates.each do |obj|
+      obj.debug = Gosu::Color::CYAN
+      collision |= body1.collisions(obj)
+    end
+
+    collided = collision != Collision::NONE
+
+    if Collision.bottom?(collision)
+      body1.position.y = body1.previous_position.y
+
+      collision = Collision::NONE
+      candidates.each do |obj|
+        obj.debug = Gosu::Color::CYAN
+        collision |= body1.collisions(obj)
+      end
+      body1.grounded if collision == Collision::NONE
+    end
+
+    if Collision.right?(collision)
+      body1.position.y = new_position.y
+      body1.position.x = body1.previous_position.x
+
+      collision = Collision::NONE
+      candidates.each do |obj|
+        obj.debug = Gosu::Color::CYAN
+        collision |= body1.collisions(obj)
+      end
+    end
+
+    if Collision.left?(collision)
+      body1.position.y = new_position.y
+      body1.position.x = body1.previous_position.x
+
+      collision = Collision::NONE
+      candidates.each do |obj|
+        obj.debug = Gosu::Color::CYAN
+        collision |= body1.collisions(obj)
+      end
+    end
+
+    if Collision.top?(collision)
+      body1.position.y = body1.previous_position.y
+
+      collision = Collision::NONE
+      candidates.each do |obj|
+        obj.debug = Gosu::Color::CYAN
+        collision |= body1.collisions(obj)
+      end
+      body1.ceil_hit if collision == Collision::NONE
+    end
+
+    body1.reset if collision != Collision::NONE
+
+    collided
+  end
 #
 #  class World
 #    GRAVITY = Vector2d[0, -9.8].freeze # -9.8 m/s
