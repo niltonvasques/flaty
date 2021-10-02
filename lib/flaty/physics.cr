@@ -95,7 +95,7 @@ module Physics
       v2s = Math.sqrt(v2.x**2 + v2.y**2)
 
       pi_rad = 180 / Math::PI
-      puts "#{(theta1 * pi_rad).round} theta1 #{(theta2 * pi_rad).round} theta2 #{(phi * pi_rad).round} phi"
+      #puts "#{(theta1 * pi_rad).round} theta1 #{(theta2 * pi_rad).round} theta2 #{(phi * pi_rad).round} phi"
       #puts "#{v1s.round} v1s #{v2s.round} v2s #{v1.round} v1 #{v2.round} v2"
 
       v1x = (v1s * Math.cos(theta1-phi)*(m1-m2) + 2*m2*v2s*Math.cos(theta2-phi))
