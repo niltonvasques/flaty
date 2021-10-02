@@ -2,7 +2,6 @@ require "flaty"
 
 class Flaty::Camera
   NOT_BOUNDED = -1.0
-  #attr_accessor :width, :height, :position, :bounds
   property view
   property width
   property height
@@ -11,7 +10,6 @@ class Flaty::Camera
   property rect
   property bounds
 
-  #attr_reader :unit_x, :unit_y
   @bounds : Rect
   @rect : Rect
   @view : SF::View

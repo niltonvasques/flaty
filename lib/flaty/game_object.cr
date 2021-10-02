@@ -13,7 +13,9 @@ class Flaty::GameObject
   property color : SF::Color
   property rigidbody : Bool
 
-  def initialize(opts = {} of Symbol => (Int32 | Vec2d | Rect | Float64 | Bool | SF::Color))
+  alias GameObjectOpts = (Int32 | Vec2d | Rect | Float64 | Bool | SF::Color)
+
+  def initialize(opts = {} of Symbol => GameObjectOpts)
     default = {
       :position => Vec2d.new(0,0),
       :previous_position => Vec2d.new(0,0),
@@ -50,12 +52,7 @@ class Flaty::GameObject
     @width             = default[:width].as Float64
     @height            = default[:height].as Float64
     @rigidbody         = default[:rigidbody].as Bool
-
-    #    unless current_image.nil?
-    #      @width = GameWindow.camera.pixel_to_unit_x(current_image.width * @scale_x)
-    #      @height = GameWindow.camera.pixel_to_unit_y(current_image.height * @scale_y)
-    #    end
-end
+  end
 
   def x; @position.x; end
   def y; @position.y; end
@@ -132,7 +129,7 @@ end
 end
 
 class Flaty::RectGameObject < Flaty::GameObject
-#  include Collider
+  include Collider
 #
 #  def collisions(obj)
 #    case obj
@@ -153,8 +150,8 @@ class Flaty::RectGameObject < Flaty::GameObject
 end
 
 class Flaty::CircleGameObject < Flaty::GameObject
-#  include Collider
-#
+  include Collider
+
   def initialize(@radius : Float64, opts)
     super(opts)
     @width = @radius * 2.0
