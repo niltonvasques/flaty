@@ -142,7 +142,6 @@ class Flaty::RectGameObject < Flaty::GameObject
     when RectGameObject then Collision.detect_rect(self.collision_rect, obj)
     when Rect             then Collision.detect_rect(self.collision_rect, obj)
     else
-      puts "none #{obj.class}"
       Collision::NONE
     end
   end
