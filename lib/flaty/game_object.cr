@@ -168,11 +168,11 @@ class Flaty::CircleGameObject < Flaty::GameObject
   end
 
   def center
-    @position
+    @position + Vec2d.new(@radius, @radius)
   end
 
   def collision_rect
-    @rect.left = @x - @radius
+    @rect.left = @x
     @rect.top = @y - @radius
     @rect.width = @radius * 2
     @rect.height = @radius * 2
@@ -191,7 +191,7 @@ class Flaty::CircleGameObject < Flaty::GameObject
   def draw
 #    draw_debug
 #    return draw_image if current_image
-    Flaty.draw_circle(center.x, center.y, @radius, @color)
+    Flaty.draw_circle(@position.x, @position.y, @radius, @color)
   end
 #
 #  def draw_image

@@ -72,11 +72,15 @@ module Collision
     rect_half_width = rect.width / 2.0
     rect_half_height = rect.height / 2.0
 
-    rx = rect.x + rect_half_width
-    ry = rect.y + rect_half_height
+    #rx = rect.x + rect_half_width
+    #ry = rect.y + rect_half_height
+    rx = rect.center.x
+    ry = rect.center.y
 
-    a = (circle.x - rx).abs
-    b = (circle.y - ry).abs
+    a = (circle.center.x - rx).abs
+    b = (circle.center.y - ry).abs
+
+    puts "colliding #{rx} rx #{ry} ry #{circle.center.x} cx #{circle.center.y} cy"
 
     return Collision::NONE if a > rect_half_width + circle.radius
     return Collision::NONE if b > rect_half_height + circle.radius
