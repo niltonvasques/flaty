@@ -63,7 +63,7 @@ class Flaty::GameObject
   def y; @position.y; end
 
   def center
-    Vec2d.new(@position.x + @width/2.0, @position.y + @height/2.0)
+    @position + Vec2d.new(@width / 2.0, @height / 2.0)
   end
 
   def update(delta)
@@ -164,10 +164,6 @@ class Flaty::CircleGameObject < Flaty::GameObject
     super(opts)
     @width = @radius * 2.0
     @height = @radius * 2.0
-  end
-
-  def center
-    @position + Vec2d.new(@radius, @radius)
   end
 
   def collision_rect
