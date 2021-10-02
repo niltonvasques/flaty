@@ -172,8 +172,8 @@ class Flaty::CircleGameObject < Flaty::GameObject
   end
 
   def collision_rect
-    @rect.left = self.x - @radius
-    @rect.top = self.y - @radius
+    @rect.left = self.center.x - @radius
+    @rect.top = self.center.y - @radius
     @rect.width = @radius * 2
     @rect.height = @radius * 2
     @rect
