@@ -138,9 +138,9 @@ class Flaty::RectGameObject < Flaty::GameObject
 
   def collisions(obj)
     case obj
-      #    when CircleGameObject then Collision.detect_circle_rect(obj, @collision_rect)
+    when CircleGameObject then Collision.detect_circle_rect(obj, self.collision_rect)
     when RectGameObject then Collision.detect_rect(self.collision_rect, obj)
-      #    when Rect             then Collision.detect_rect(self.collision_rect, obj)
+    when Rect             then Collision.detect_rect(self.collision_rect, obj)
     else
       puts "none #{obj.class}"
       Collision::NONE
@@ -159,6 +159,8 @@ end
 class Flaty::CircleGameObject < Flaty::GameObject
   include Collider
 
+  property radius
+
   def initialize(@radius : Float64, opts)
     super(opts)
     @width = @radius * 2.0
@@ -169,23 +171,23 @@ class Flaty::CircleGameObject < Flaty::GameObject
     @position
   end
 
-#  def collision_rect
-#    @rect.x = self.x - @radius
-#    @rect.y = self.y - @radius
-#    @rect.width = @radius * 2
-#    @rect.height = @radius * 2
-#    @rect
-#  end
-#
-#  def collisions(obj)
-#    case obj
-#    when CircleGameObject then Collision.detect_circle(self, obj)
-#    when RectGameObject   then Collision.detect_circle_rect(self, obj)
-#    when Rect             then Collision.detect_circle_rect(self, obj)
-#    else Collision::NONE
-#    end
-#  end
-#
+  def collision_rect
+    @rect.left = self.x - @radius
+    @rect.top = self.y - @radius
+    @rect.width = @radius * 2
+    @rect.height = @radius * 2
+    @rect
+  end
+
+  def collisions(obj)
+    case obj
+    when CircleGameObject then Collision.detect_circle(self, obj)
+    when RectGameObject   then Collision.detect_circle_rect(self, obj)
+    when Rect             then Collision.detect_circle_rect(self, obj)
+    else Collision::NONE
+    end
+  end
+
   def draw
 #    draw_debug
 #    return draw_image if current_image
