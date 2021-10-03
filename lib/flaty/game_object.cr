@@ -211,23 +211,8 @@ class Flaty::CircleGameObject < Flaty::GameObject
 
   def draw_image
     Flaty.draw_sprite(@sprite.as SF::Sprite, @position.x, @position.y + @height)
-#    return if outside_window?
-#
-#    new_pos = @position
-#
-#    new_pos = GameWindow.camera.translate(@collision_rect) if @camera
-#
-#    draw_obj(new_pos.x, new_pos.y, z)
-#    if @debug and GameWindow.debug
-#      Gosu.draw_rect(new_pos.x, new_pos.y, width * GameWindow.camera.unit_x,
-#                     height * GameWindow.camera.unit_y, @debug, z = 100, mode = :add)
-#    end
   end
-#
-#  def draw_obj(x, y, z)
-#    current_image.draw(x, y, z, @scale_x, @scale_y, @color, :add)
-#  end
-#
+
   def draw_debug
     if GameWindow.debug?
       Flaty.draw_line(center.x, center.y, center.x + @speed.x, center.y + @speed.y, @color)
