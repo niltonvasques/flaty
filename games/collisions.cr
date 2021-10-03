@@ -107,18 +107,7 @@ class Collisions < Flaty::GameWindow
   end
 
   def update(delta)
-    @world.bodies.each { |b| b.update(delta) }
-    #body1 = @world.bodies[@world.bodies.size - 2]
-    #body2 = @world.bodies.last
-    #Physics.solve_collision(body1, body2)
-    #Physics.solve_collision(body2, body1)
-  #  t = Benchmark.elapsed do
-  #    @world.gravity.y += 0.1 if Gosu.button_down? Gosu::KB_DOWN
-  #    @world.gravity.y += -0.1 if Gosu.button_down? Gosu::KB_UP
-  #    generate_circle
-
-    @world.update
-  #  end
+    @world.update(delta)
   end
 
   def draw(window, states)

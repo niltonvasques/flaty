@@ -2,7 +2,6 @@ require "flaty"
 
 module Physics
   def self.elastic_collisions(bodies, quad)
-  #def self.elastic_collisions(bodies)
     total = 0
     bodies.each_index do |i|
       candidates = quad.query(bodies[i])
@@ -11,33 +10,21 @@ module Physics
         Physics.elastic_collision(bodies[i], body)
         total += 1
       end
-      #(i+1).upto(bodies.size - 1) do |j|
-      #  Physics.elastic_collision(bodies[i], bodies[j])
-      #  total += 1
-      #end
     end
     puts "#{total} total collisions procesing"
-    #binding.pry if Gosu.milliseconds > 10000
   end
 
-  #def self.basic_collisions(bodies, quad)
-  def self.basic_collisions(bodies)
+  def self.basic_collisions(bodies, quad)
     total = 0
     bodies.each_index do |i|
-      #candidates = quad.query(bodies[i])
-      #candidates.each do |body|
-      #  next if body == bodies[i]
-      #  Physics.solve_collision(bodies[i], body)
-      #  Physics.solve_collision(body, bodies[i])
-      #  total += 1
-      #end
-      (i+1).upto(bodies.size - 1) do |j|
-        Physics.basic_collision(bodies[i], bodies[j])
+      candidates = quad.query(bodies[i])
+      candidates.each do |body|
+        next if body == bodies[i]
+        Physics.basic_collision(bodies[i], body)
         total += 1
       end
     end
-    #puts "#{total} total collisions procesing"
-    #binding.pry if Gosu.milliseconds > 3000
+    puts "#{total} total collisions procesing"
   end
 
   # https://en.wikipedia.org/wiki/Elastic_collision#One-dimensional_Newtonian
@@ -225,7 +212,7 @@ module Physics
       @quadtree.size.y = @camera.rect.height
     end
 
-    def update
+    def update(delta)
       @quadtree.clear
       update_quad_rect
       # collision after gravity are locking bodies X axis
@@ -235,15 +222,13 @@ module Physics
       collidables.each do |body|
        @quadtree.insert(body) #unless body.outside_window?
       end
-      updatables.each(&:update)
+      updatables.each { |b| b.update(delta) }
 
       case @collision_type
       when :basic
-        #Physics.basic_collisions(updatables, @quadtree)
-        Physics.basic_collisions(updatables)
+        Physics.basic_collisions(updatables, @quadtree)
       when :elastic
         Physics.elastic_collisions(updatables, @quadtree)
-        #Physics.elastic_collisions(updatables)
       end
     end
 
@@ -256,9 +241,7 @@ module Physics
       quad.nodes.each do |node|
         x = node.xy.x
         y = node.xy.y
-        #puts "drawing #{x} #{y}"
 
-        #Flaty.draw_rect_empty(x, y, node.size.x, node.size.y, c, z = 200)
         Flaty.draw_rect_empty(x, y, node.size.x, node.size.y, c)
       end
       quad.nodes.each { |q| draw(q) }
