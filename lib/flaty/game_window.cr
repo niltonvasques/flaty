@@ -111,10 +111,7 @@ module Flaty
             @window.close()
           elsif event.is_a? SF::Event::KeyPressed
             @paused = !@paused if event.code.p?
-            if event.code.d?
-              puts "pressed d"
-              GameWindow.debug = !GameWindow.debug
-            end
+            GameWindow.debug = !GameWindow.debug if event.code.d?
             button_down(event.code)
           end
         end

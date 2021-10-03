@@ -32,6 +32,8 @@ class Collisions < Flaty::GameWindow
     @bodies = [] of Flaty::GameObject
     @world = Physics::World.new(@camera)
     @world.collision_type = :elastic
+    @world.gravity.y = 0
+
     restart
   end
 
@@ -109,8 +111,10 @@ class Collisions < Flaty::GameWindow
     Flaty.paint(Flaty::Colors::GRAY)
     draw_bodies
 
-    @camera_debug.draw
-    @world.draw_quad
+    if Flaty::GameWindow.debug?
+      @camera_debug.draw
+      @world.draw_quad
+    end
     @fps.draw(@delta)
   end
 
