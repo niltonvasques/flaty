@@ -145,6 +145,8 @@ class Collisions < Flaty::GameWindow
   def generate_circle
     cx = (rand * (CAMERA_WIDTH_UNITS - 3))-((CAMERA_WIDTH_UNITS - 3)/2.0)
     cy = CAMERA_HEIGHT_UNITS - 2
+    range = (CAMERA_WIDTH_UNITS / 2.0) - 2
+    cx = cx.clamp(-range, range)
     @world.bodies << create_circle([cx, cy], [-1, -6])
   end
 end
