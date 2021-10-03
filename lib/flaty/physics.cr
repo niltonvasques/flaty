@@ -16,7 +16,7 @@ module Physics
       #  total += 1
       #end
     end
-    #puts "#{total} total collisions procesing"
+    puts "#{total} total collisions procesing"
     #binding.pry if Gosu.milliseconds > 10000
   end
 
@@ -36,7 +36,7 @@ module Physics
         total += 1
       end
     end
-    puts "#{total} total collisions procesing"
+    #puts "#{total} total collisions procesing"
     #binding.pry if Gosu.milliseconds > 3000
   end
 
