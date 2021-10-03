@@ -186,7 +186,7 @@ class Flaty::CircleGameObject < Flaty::GameObject
   end
 
   def draw
-#    draw_debug
+    draw_debug
 #    return draw_image if current_image
     Flaty.draw_circle(@position.x, @position.y, @radius, @color)
   end
@@ -213,18 +213,18 @@ class Flaty::CircleGameObject < Flaty::GameObject
 #    current_image.draw(x, y, z, @scale_x, @scale_y, @color, :add)
 #  end
 #
-#  def draw_debug
-#    if GameWindow.debug
-#      Flaty.draw_line(@center.x, @center.y, @color, @center.x + @speed.x, @center.y + @speed.y, @color)
-#      if @theta
-#        msg = "#{@theta} #{@speed.round}"
-#        msg += " #{@phi}" if @phi
-#        Flaty.draw_text(Collisions.font, msg, @x, @y) if @theta
-#      end
-#      Flaty.draw_circle(@center, @radius, @color) unless current_image
-#    end
-#  end
-#
-#  def update_width_height
-#  end
+  def draw_debug
+    if GameWindow.debug?
+      Flaty.draw_line(center.x, center.y, center.x + @speed.x, center.y + @speed.y, @color)
+      #if @theta
+      #  msg = "#{@theta} #{@speed.round}"
+      #  msg += " #{@phi}" if @phi
+      #  Flaty.draw_text(Collisions.font, msg, @x, @y) if @theta
+      #end
+      #Flaty.draw_circle(@center, @radius, @color) unless current_image
+    end
+  end
+
+  def update_width_height
+  end
 end

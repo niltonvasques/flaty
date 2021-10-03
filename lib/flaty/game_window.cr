@@ -6,6 +6,9 @@ module Flaty
     CAMERA_HEIGHT_UNITS = 56.0
     SCALE               = 20.0
 
+    class_property debug : Bool
+    @@debug = false
+
     property camera
 
     def initialize(width = SCREEN_WIDTH, height = SCREEN_HEIGHT, scale = SCALE, title = "Window")
@@ -18,7 +21,6 @@ module Flaty
       # state
       @paused = false
       @paused_at = 0
-      @debug = false
 
       @scale = scale
 
@@ -48,7 +50,11 @@ module Flaty
     end
 
     def debug?
-      @debug
+      GameWindow.debug
+    end
+
+    def self.debug?
+      GameWindow.debug
     end
 
     def update_camera
@@ -105,7 +111,10 @@ module Flaty
             @window.close()
           elsif event.is_a? SF::Event::KeyPressed
             @paused = !@paused if event.code.p?
-            @debug = !@debug if event.code.d?
+            if event.code.d?
+              puts "pressed d"
+              GameWindow.debug = !GameWindow.debug
+            end
             button_down(event.code)
           end
         end
