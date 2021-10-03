@@ -32,11 +32,9 @@ class Collisions < Flaty::GameWindow
     @bodies = [] of Flaty::GameObject
     @world = Physics::World.new(@camera)
     @world.collision_type = :elastic
-    @world.gravity.y = 0
     restart
   end
 
-  #BIGNUM = (2**30).freeze
   def restart
     @world.bodies.clear
 
@@ -60,7 +58,7 @@ class Collisions < Flaty::GameWindow
     c = Flaty.random_color
     opts = {
       :position => xy, :speed => speed, :color => c, :tag => tag,
-      :mass => 10.0, :rigidbody => true, :elasticity => 0.99
+      :mass => 10.0, :rigidbody => true, :elasticity => 0.90
     }
     Flaty::CircleGameObject.new(0.5, opts)
   end

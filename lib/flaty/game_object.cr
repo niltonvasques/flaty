@@ -9,6 +9,8 @@ class Flaty::GameObject
   property height : Float64
   property speed : Vec2d
   property acceleration : Vec2d
+  property damp : Float64
+  property elasticity : Float64
   property mass : Float64
   property rect : Rect
   property color : SF::Color

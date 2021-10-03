@@ -11,7 +11,7 @@ module Physics
         total += 1
       end
     end
-    puts "#{total} total collisions procesing"
+    #puts "#{total} total collisions procesing"
   end
 
   def self.basic_collisions(bodies, quad)
@@ -24,7 +24,7 @@ module Physics
         total += 1
       end
     end
-    puts "#{total} total collisions procesing"
+    #puts "#{total} total collisions procesing"
   end
 
   # https://en.wikipedia.org/wiki/Elastic_collision#One-dimensional_Newtonian
@@ -116,10 +116,10 @@ module Physics
       #body1.phi = (phi * pi_rad).round
       #body2.phi = (phi * pi_rad).round
 
-#      body2.speed.x *= body2.damp if body1.tag == :floor
-#      body2.speed.y *= body2.elasticity #if body1.tag == :floor
-#      body1.speed.x *= body1.damp if body2.tag == :floor
-#      body1.speed.y *= body1.elasticity #if body2.tag == :floor
+      body2.speed.x = body2.speed.x * body2.damp if body1.tag == :floor
+      body2.speed.y = body2.speed.y * body2.elasticity #if body1.tag == :floor
+      body1.speed.x = body1.speed.x * body1.damp if body2.tag == :floor
+      body1.speed.y = body1.speed.y * body1.elasticity #if body2.tag == :floor
     end
   end
 
@@ -181,8 +181,6 @@ module Physics
       end
       body1.ceil_hit if collision == Collision::NONE
     end
-
-    #puts "#{Collision.to_s(collision)} #{collision}"
 
     body1.reset if collision != Collision::NONE
 
