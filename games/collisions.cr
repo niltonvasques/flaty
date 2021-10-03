@@ -123,11 +123,10 @@ class Collisions < Flaty::GameWindow
 
   def draw(window, states)
     Flaty.paint(Flaty::Colors::GRAY)
-    @world.draw_quad
-
     draw_bodies
 
     @camera_debug.draw
+    @world.draw_quad
     @fps.draw(@delta)
   end
 

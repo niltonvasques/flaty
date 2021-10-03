@@ -85,11 +85,10 @@ module Flaty
   end
 
   def self.draw_rect_empty(x = 0.0, y = 0.0, width = 1.0, height = 1.0, color = Flaty::Colors::RED)
-    connection = SF::RectangleShape.new({ width, height }).left_bottom_origin!
-    connection.position = SF::Vector2.new(x, -y)
-    connection.outline_color = color
-    connection.outline_thickness = 0.05
-    Flaty.window.draw connection, Flaty.states
+    self.draw_line(x, y, x + width, y, color)
+    self.draw_line(x, y + height, x + width, y + height, color)
+    self.draw_line(x, y, x, y + height, color)
+    self.draw_line(x + width, y, x + width, y + height, color)
   end
 
   def self.draw_line(x1 : Float64, y1 : Float64, x2 : Float64, y2 : Float64, color = Flaty::Colors::BLACK)

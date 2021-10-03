@@ -252,7 +252,7 @@ module Physics
     end
 
     def draw(quad)
-      c = Flaty::Colors::BLUE
+      c = Flaty::Colors::RED
       quad.nodes.each do |node|
         x = node.xy.x
         y = node.xy.y
