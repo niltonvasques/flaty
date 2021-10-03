@@ -229,13 +229,13 @@ module Physics
       @quadtree.clear
       update_quad_rect
       # collision after gravity are locking bodies X axis
-      updatables = @bodies #.select { |b| b.rigidbody }
-      updatables.select { |b| b.rigidbody }.each { |body| body.acceleration = @gravity.dup }
+      updatables = @bodies.select { |b| b.rigidbody }
+      updatables.each { |body| body.acceleration = @gravity.dup }
       collidables = @bodies.select { |body| body.is_a? Collider }
       collidables.each do |body|
        @quadtree.insert(body) #unless body.outside_window?
       end
-#      updatables.each(&:update)
+      updatables.each(&:update)
 
       case @collision_type
       when :basic
