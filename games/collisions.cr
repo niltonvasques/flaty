@@ -32,15 +32,15 @@ class Collisions < Flaty::GameWindow
     @bodies = [] of Flaty::GameObject
     @world = Physics::World.new(@camera)
     @world.collision_type = :elastic
-
-    create_walls
+    @world.gravity.y = 0
     restart
   end
 
   #BIGNUM = (2**30).freeze
   def restart
-  #  @world.bodies.clear
+    @world.bodies.clear
 
+    create_walls
     @world.bodies << create_rect(Vec2d.new(0,  1.001), Vec2d.new(-4, 0), 1.0, 10.0, Flaty::Colors::RED)
     @world.bodies << create_rect(Vec2d.new(-6,  1.001), Vec2d.new(1, 0), 2.0, 100.0, Flaty::Colors::BLUE)
     @world.bodies << create_circle([-3, 6], [5,   5])
@@ -58,8 +58,6 @@ class Collisions < Flaty::GameWindow
     xy = Vec2d.new(xy[0].to_f, xy[1].to_f)
     speed = Vec2d.new(speed[0].to_f, speed[1].to_f)
     c = Flaty.random_color
-  #  opts = { position: xy, speed: speed, radius: 0.5, color: c, mass: 10.0, elasticity: 0.99,
-  #           rigidbody: true, tag: tag, image: @circle_img }
     opts = {
       :position => xy, :speed => speed, :color => c, :tag => tag,
       :mass => 10.0, :rigidbody => true, :elasticity => 0.99
@@ -136,43 +134,16 @@ class Collisions < Flaty::GameWindow
     @camera.key_pressed(self, code)
     case code
     when .r? then restart
+    when .c? then generate_circle
     end
   end
 
-  #def generate_circle
-  #  if Gosu.button_down? Gosu::KB_C and @circle_up == 0
-  #    @circle_up = Gosu.milliseconds
-  #    cx = (rand * (CAMERA_WIDTH_UNITS - 3))-((CAMERA_WIDTH_UNITS - 3)/2.0)
-  #    cy = CAMERA_HEIGHT_UNITS - 2
-  #    @world.bodies << create_circle([cx, cy], [-1, -1])
-  #  elsif Gosu.milliseconds - @circle_up > 250
-  #    @circle_up = 0
-  #  end
-  #end
+  def generate_circle
+    cx = (rand * (CAMERA_WIDTH_UNITS - 3))-((CAMERA_WIDTH_UNITS - 3)/2.0)
+    cy = CAMERA_HEIGHT_UNITS - 2
+    @world.bodies << create_circle([cx, cy], [-1, -6])
+  end
 end
 
 game = Collisions.new
 game.loop
-
-#t = Quadtree(Rect).new(Vec2d.new(0,0), Vec2d.new(10, 10))
-#t.split
-#
-#puts t.nodes.map { |n| n.to_s }
-#puts t.size
-#puts t.xy
-##puts t.index(Rect.new(1,1,2,2))
-##puts t.index(Rect.new(6,1,2,2))
-##puts t.index(Rect.new(1,6,2,2))
-##puts t.index(Rect.new(6,6,2,2))
-##puts t.index(Rect.new(5,6,2,2))
-##
-##
-#t.insert(Rect.new(5,6,2,2))
-#t.insert(Rect.new(4,6,2,2))
-#t.insert(Rect.new(1,6,2,2))
-#
-##t.to_s.each_line { |s| puts s }
-##
-#q = Rect.new(4,5,4,4)
-#puts "...querying #{q.to_s}"
-#puts t.query(q)

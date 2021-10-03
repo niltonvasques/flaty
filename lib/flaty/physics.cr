@@ -192,7 +192,7 @@ module Physics
   class World
     GRAVITY = Vec2d.new(0, -9.8) # -9.8 m/s
 
-    property bodies, collision_type
+    property bodies, collision_type, gravity
 
     def initialize(@camera : Flaty::Camera)
       @bodies = [] of Flaty::GameObject
