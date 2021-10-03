@@ -70,6 +70,11 @@ module Flaty
     SF::Color.new(rand(128) + 128, rand(128) + 128, rand(128) + 128)
   end
 
+  def self.draw_sprite(sprite : SF::Sprite, x = 0.0, y = 0.0)
+    sprite.position = SF::Vector2.new(x, -y)
+    Flaty.window.draw sprite, Flaty.states
+  end
+
   def self.draw_circle(x = 0.0, y = 0.0, radius = 1.0, color = Flaty::Colors::RED)
     connection = SF::CircleShape.new(radius)
     connection.fill_color = color

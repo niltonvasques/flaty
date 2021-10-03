@@ -18,7 +18,9 @@ class Collisions < Flaty::GameWindow
     # assets
     @font      = SF::Font.from_file("assets/Cantarell-Regular.otf")
 
-  #  @circle_img = Gosu::Image.new('assets/metal_ball.png')
+    @circle_img = SF::Texture.from_file("assets/metal_ball.png")
+
+    puts @circle_img.size
 
     @camera.size(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
     @camera.look(0, HALF_HEIGHT)
@@ -32,7 +34,7 @@ class Collisions < Flaty::GameWindow
     @bodies = [] of Flaty::GameObject
     @world = Physics::World.new(@camera)
     @world.collision_type = :elastic
-    @world.gravity.y = 0
+    @world.gravity.y = -3
 
     restart
   end
@@ -60,7 +62,7 @@ class Collisions < Flaty::GameWindow
     c = Flaty.random_color
     opts = {
       :position => xy, :speed => speed, :color => c, :tag => tag,
-      :mass => 10.0, :rigidbody => true, :elasticity => 0.90
+      :mass => 10.0, :rigidbody => true, :elasticity => 0.90, :image => @circle_img
     }
     Flaty::CircleGameObject.new(0.5, opts)
   end

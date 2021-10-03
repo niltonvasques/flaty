@@ -17,6 +17,8 @@ class Flaty::GameObject
   property rigidbody : Bool
   property tag : Symbol
   property debug : (SF::Color | Nil)
+  property image : (SF::Texture | Nil)
+  property sprite : (SF::Sprite | Nil)
 
   alias GameObjectOpts = (Int32 | Vec2d | Rect | Float64 | Bool | SF::Color)
 
@@ -24,6 +26,7 @@ class Flaty::GameObject
     default = {
       :position => Vec2d.new(0,0),
       :previous_position => Vec2d.new(0,0),
+      :image => nil,
       :rect => Rect.xywh(0.0, 0.0, 0.0, 0.0),
       :mass => 1.0,
       :acceleration => Vec2d.new(0,0),
@@ -59,10 +62,23 @@ class Flaty::GameObject
     @rigidbody         = default[:rigidbody].as Bool
     @debug             = default[:debug].as (SF::Color | Nil)
     @tag               = default[:tag].as Symbol
+    @image             = default[:image].as (SF::Texture | Nil)
+    @sprite            = nil
+
+    setup_sprite
   end
 
   def x; @position.x; end
   def y; @position.y; end
+
+  def setup_sprite
+    if @image != nil
+      texture = @image.as SF::Texture
+      @sprite = SF::Sprite.new(texture)
+      scale = SF.vector2(@width / texture.size.x, @height / texture.size.x)
+      @sprite.as(SF::Sprite).scale = scale
+    end
+  end
 
   def center
     @position + Vec2d.new(@width / 2.0, @height / 2.0)
@@ -136,11 +152,11 @@ class Flaty::GameObject
   #    not GameWindow.camera.visible?(@
   #  end
   #
-  #  def current_image
-  #    return image if image
-  #    tiles[current] if tiles
-  #  end
-  #end
+  def current_image
+    return image if image
+    #    tiles[current] if tiles
+    #  end
+  end
 end
 
 class Flaty::RectGameObject < Flaty::GameObject
@@ -166,6 +182,8 @@ class Flaty::CircleGameObject < Flaty::GameObject
     super(opts)
     @width = @radius * 2.0
     @height = @radius * 2.0
+
+    setup_sprite
   end
 
   def collision_rect
@@ -187,15 +205,12 @@ class Flaty::CircleGameObject < Flaty::GameObject
 
   def draw
     draw_debug
-#    return draw_image if current_image
+    return draw_image if current_image
     Flaty.draw_circle(@position.x, @position.y, @radius, @color)
   end
-#
-#  def draw_image
-#    if current_image
-#      @scale_x = @width / GameWindow.camera.pixel_to_unit_x(current_image.width.to_f)
-#      @scale_y = @height / GameWindow.camera.pixel_to_unit_y(current_image.height.to_f)
-#    end
+
+  def draw_image
+    Flaty.draw_sprite(@sprite.as SF::Sprite, @position.x, @position.y + @height)
 #    return if outside_window?
 #
 #    new_pos = @position
@@ -207,7 +222,7 @@ class Flaty::CircleGameObject < Flaty::GameObject
 #      Gosu.draw_rect(new_pos.x, new_pos.y, width * GameWindow.camera.unit_x,
 #                     height * GameWindow.camera.unit_y, @debug, z = 100, mode = :add)
 #    end
-#  end
+  end
 #
 #  def draw_obj(x, y, z)
 #    current_image.draw(x, y, z, @scale_x, @scale_y, @color, :add)
