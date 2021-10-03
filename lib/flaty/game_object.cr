@@ -86,7 +86,7 @@ class Flaty::GameObject
     @position = @previous_position
   end
 
-    def draw
+  def draw
   #    unless current_image.nil?
   #      @width = GameWindow.camera.pixel_to_unit_x(current_image.width * @scale_x)
   #      @height = GameWindow.camera.pixel_to_unit_y(current_image.height * @scale_y)
@@ -102,7 +102,7 @@ class Flaty::GameObject
   #      Gosu.draw_rect(new_pos.x, new_pos.y, width * GameWindow.camera.unit_x,
   #                     height * GameWindow.camera.unit_y, @debug, z = 100, mode = :add)
   #    end
-    end
+  end
   #
   #  def draw_obj(x, y, z)
   #    current_image.draw(x, y, z, scale_x = @scale_x, scale_y = @scale_y)
@@ -115,11 +115,19 @@ class Flaty::GameObject
   #    end
   #  end
   #
-    def grounded
-    end
+  def grounded
+  end
 
-    def ceil_hit
-    end
+  def ceil_hit
+  end
+
+  def collision_rect
+    @rect.left = x
+    @rect.top = y
+    @rect.width = @width
+    @rect.height = @height
+    @rect
+  end
   #
   #  def outside_window?
   #    return false unless @camera
@@ -145,14 +153,6 @@ class Flaty::RectGameObject < Flaty::GameObject
       Collision::NONE
     end
   end
-
-  def collision_rect
-    @rect.left = x
-    @rect.top = y
-    @rect.width = @width
-    @rect.height = @height
-    @rect
-  end
 end
 
 class Flaty::CircleGameObject < Flaty::GameObject
@@ -167,8 +167,8 @@ class Flaty::CircleGameObject < Flaty::GameObject
   end
 
   def collision_rect
-    @rect.left = @x
-    @rect.top = @y - @radius
+    @rect.left = @position.x
+    @rect.top = @position.y - @radius
     @rect.width = @radius * 2
     @rect.height = @radius * 2
     @rect

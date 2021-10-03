@@ -30,7 +30,7 @@ class Collisions < Flaty::GameWindow
     @fps = Flaty::FPS.new(SCREEN_WIDTH, @font)
 
     @bodies = [] of Flaty::GameObject
-    @world = Physics::World.new
+    @world = Physics::World.new(@camera)
     @world.collision_type = :elastic
 
     create_walls
@@ -123,7 +123,7 @@ class Collisions < Flaty::GameWindow
 
   def draw(window, states)
     Flaty.paint(Flaty::Colors::GRAY)
-    # @world.draw_quad
+    @world.draw_quad
 
     draw_bodies
 
@@ -166,3 +166,26 @@ end
 
 game = Collisions.new
 game.loop
+
+#t = Quadtree(Rect).new(Vec2d.new(0,0), Vec2d.new(10, 10))
+#t.split
+#
+#puts t.nodes.map { |n| n.to_s }
+#puts t.size
+#puts t.xy
+##puts t.index(Rect.new(1,1,2,2))
+##puts t.index(Rect.new(6,1,2,2))
+##puts t.index(Rect.new(1,6,2,2))
+##puts t.index(Rect.new(6,6,2,2))
+##puts t.index(Rect.new(5,6,2,2))
+##
+##
+#t.insert(Rect.new(5,6,2,2))
+#t.insert(Rect.new(4,6,2,2))
+#t.insert(Rect.new(1,6,2,2))
+#
+##t.to_s.each_line { |s| puts s }
+##
+#q = Rect.new(4,5,4,4)
+#puts "...querying #{q.to_s}"
+#puts t.query(q)

@@ -5,6 +5,7 @@ require "flaty/game_window"
 require "flaty/camera"
 require "flaty/camera_debug"
 require "flaty/collisions"
+require "flaty/quadtree"
 require "flaty/physics"
 
 struct SF::Rect
@@ -80,6 +81,14 @@ module Flaty
     connection = SF::RectangleShape.new({ width, height }).left_bottom_origin!
     connection.fill_color = color
     connection.position = SF::Vector2.new(x, -y)
+    Flaty.window.draw connection, Flaty.states
+  end
+
+  def self.draw_rect_empty(x = 0.0, y = 0.0, width = 1.0, height = 1.0, color = Flaty::Colors::RED)
+    connection = SF::RectangleShape.new({ width, height }).left_bottom_origin!
+    connection.position = SF::Vector2.new(x, -y)
+    connection.outline_color = color
+    connection.outline_thickness = 0.05
     Flaty.window.draw connection, Flaty.states
   end
 

@@ -1,20 +1,20 @@
 require "flaty"
 
 module Physics
-  #def self.elastic_collisions(bodies, quad)
-  def self.elastic_collisions(bodies)
+  def self.elastic_collisions(bodies, quad)
+  #def self.elastic_collisions(bodies)
     total = 0
     bodies.each_index do |i|
-      #candidates = quad.query(bodies[i])
-      #candidates.each do |body|
-      #  next if body == bodies[i]
-      #  Physics.elastic_collision(bodies[i], body)
-      #  total += 1
-      #end
-      (i+1).upto(bodies.size - 1) do |j|
-        Physics.elastic_collision(bodies[i], bodies[j])
+      candidates = quad.query(bodies[i])
+      candidates.each do |body|
+        next if body == bodies[i]
+        Physics.elastic_collision(bodies[i], body)
         total += 1
       end
+      #(i+1).upto(bodies.size - 1) do |j|
+      #  Physics.elastic_collision(bodies[i], bodies[j])
+      #  total += 1
+      #end
     end
     #puts "#{total} total collisions procesing"
     #binding.pry if Gosu.milliseconds > 10000
@@ -207,35 +207,34 @@ module Physics
 
     property bodies, collision_type
 
-    def initialize
+    def initialize(@camera : Flaty::Camera)
       @bodies = [] of Flaty::GameObject
       @gravity = GRAVITY
-#      @camera = GameWindow.camera
-#      qx = @camera.rect.x
-#      qy = @camera.rect.y
-#      qw = @camera.rect.width
-#      qh = @camera.rect.height
-#      @quadtree = Quadtree.new(Vector2d[qx, qy], Vector2d[qw, qh])
+      qx = @camera.rect.x
+      qy = @camera.rect.y
+      qw = @camera.rect.width
+      qh = @camera.rect.height
+      @quadtree = Quadtree(Flaty::GameObject).new(Vec2d.new(qx, qy), Vec2d.new(qw, qh))
       @collision_type = :basic
     end
-#
-#    def update_quad_rect
-#      @quadtree.xy.x = @camera.rect.x
-#      @quadtree.xy.y = @camera.rect.y
-#      @quadtree.size.x = @camera.rect.width
-#      @quadtree.size.y = @camera.rect.height
-#    end
-#
+
+    def update_quad_rect
+      @quadtree.xy.x = @camera.rect.x
+      @quadtree.xy.y = @camera.rect.y
+      @quadtree.size.x = @camera.rect.width
+      @quadtree.size.y = @camera.rect.height
+    end
+
     def update
-#      @quadtree.clear
-#      update_quad_rect
-#      # collision after gravity are locking bodies X axis
+      @quadtree.clear
+      update_quad_rect
+      # collision after gravity are locking bodies X axis
       updatables = @bodies #.select { |b| b.rigidbody }
-      #updatables.select { |b| b.rigidbody }.each { |body| body.acceleration = @gravity.dup }
-#      collidables = @bodies.select { |body| body.is_a? Collider }
-#      collidables.each do |body|
-#       @quadtree.insert(body) unless body.outside_window?
-#      end
+      updatables.select { |b| b.rigidbody }.each { |body| body.acceleration = @gravity.dup }
+      collidables = @bodies.select { |body| body.is_a? Collider }
+      collidables.each do |body|
+       @quadtree.insert(body) #unless body.outside_window?
+      end
 #      updatables.each(&:update)
 
       case @collision_type
@@ -243,25 +242,26 @@ module Physics
         #Physics.basic_collisions(updatables, @quadtree)
         Physics.basic_collisions(updatables)
       when :elastic
-        #Physics.elastic_collisions(updatables, @quadtree)
-        Physics.elastic_collisions(updatables)
+        Physics.elastic_collisions(updatables, @quadtree)
+        #Physics.elastic_collisions(updatables)
       end
     end
-#
-#    def draw_quad
-#      draw(@quadtree)
-#    end
-#
-#    def draw(quad)
-#      c = Flaty::Colors::BLUE
-#      quad.nodes.each do |node|
-#        x = node.xy.x
-#        y = node.xy.y
-#        #puts "drawing #{x} #{y}"
-#
-#        Flaty.draw_rect_empty(x, y, node.size.x, node.size.y, c, z = 200)
-#      end
-#      quad.nodes.each { |q| draw(q) }
-#    end
+
+    def draw_quad
+      draw(@quadtree)
+    end
+
+    def draw(quad)
+      c = Flaty::Colors::BLUE
+      quad.nodes.each do |node|
+        x = node.xy.x
+        y = node.xy.y
+        #puts "drawing #{x} #{y}"
+
+        #Flaty.draw_rect_empty(x, y, node.size.x, node.size.y, c, z = 200)
+        Flaty.draw_rect_empty(x, y, node.size.x, node.size.y, c)
+      end
+      quad.nodes.each { |q| draw(q) }
+    end
   end
 end
