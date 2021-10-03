@@ -41,7 +41,6 @@ class Collisions < Flaty::GameWindow
   def restart
   #  @world.bodies.clear
 
-  #  #@world.bodies << create_circle([-3.5001, 1.5001], [0,   0], Gosu::Color::CYAN, 'CYAN')
     @world.bodies << create_rect(Vec2d.new(0,  1.001), Vec2d.new(-4, 0), 1.0, 10.0, Flaty::Colors::RED)
     @world.bodies << create_rect(Vec2d.new(-6,  1.001), Vec2d.new(1, 0), 2.0, 100.0, Flaty::Colors::BLUE)
     @world.bodies << create_circle([-3, 6], [5,   5])
