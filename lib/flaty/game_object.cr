@@ -27,6 +27,7 @@ class Flaty::GameObject
       :position => Vec2d.new(0,0),
       :previous_position => Vec2d.new(0,0),
       :image => nil,
+      :tiles => nil,
       :rect => Rect.xywh(0.0, 0.0, 0.0, 0.0),
       :mass => 1.0,
       :acceleration => Vec2d.new(0,0),
@@ -63,6 +64,7 @@ class Flaty::GameObject
     @debug             = default[:debug].as (SF::Color | Nil)
     @tag               = default[:tag].as Symbol
     @image             = default[:image].as (SF::Texture | Nil)
+    @tiles             = default[:tiles].as (Flaty::Tiles | Nil)
     @sprite            = nil
 
     setup_sprite
@@ -105,6 +107,9 @@ class Flaty::GameObject
   end
 
   def draw
+    sprite = current_sprite
+    return if sprite == nil
+    Flaty.draw_sprite(sprite.as(SF::Sprite), @position.x, @position.y + @height)
   #    unless current_image.nil?
   #      @width = GameWindow.camera.pixel_to_unit_x(current_image.width * @scale_x)
   #      @height = GameWindow.camera.pixel_to_unit_y(current_image.height * @scale_y)
@@ -121,7 +126,7 @@ class Flaty::GameObject
   #                     height * GameWindow.camera.unit_y, @debug, z = 100, mode = :add)
   #    end
   end
-  #
+
   #  def draw_obj(x, y, z)
   #    current_image.draw(x, y, z, scale_x = @scale_x, scale_y = @scale_y)
   #  end
@@ -152,10 +157,9 @@ class Flaty::GameObject
   #    not GameWindow.camera.visible?(@
   #  end
   #
-  def current_image
-    return image if image
-    #    tiles[current] if tiles
-    #  end
+  def current_sprite
+    return @sprite if @sprite
+    @tiles.as(Flaty::Tiles).at(@current) if @tiles
   end
 end
 

@@ -13,23 +13,16 @@ class Bird < Flaty::RectGameObject
   FRAME_FAST_DURATION = 80
 
   def initialize
-    #bird_tiles = Gosu::Image.load_tiles('assets/seagull_tiles.png', 32, 40)
-    @bird_tiles = SF::Texture.from_file("assets/seagull_tiles.png")
+    scale = SF.vector2(0.8 / 32, 1.0 / 40)
+    tiles = Flaty::Tiles.new("assets/seagull_tiles.png", 32, 40, scale)
     #@wings = Gosu::Sample.new('assets/sounds/dragonflap.mp3')
     #@beep = Gosu::Sample.new('assets/sounds/beep.wav')
     #play
 
     super({ :position => Vec2d.new(1.0, 14.0), :width => 0.8, :height => 1.0,
            :speed => IDLE_SPEED.dup, :max_speed => Vec2d.new(SPEED, SPEED), :damp => 0.8,
-           :score => 0, :tiles => @bird_tiles, :current => 0, :rigidbody => true,
+           :score => 0, :tiles => tiles, :current => 0, :rigidbody => true,
            :debug => Flaty::Colors::RED, :tag => :bird })
-
-    scale = SF.vector2(@width / 32, @height / 40)
-    @tiles = Flaty::Tiles.new("assets/seagull_tiles.png", 32, 40, scale)
-  end
-
-  def draw_image
-    Flaty.draw_sprite(@tiles.at(@current), @position.x, @position.y + @height)
   end
 
   def update(delta)

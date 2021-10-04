@@ -58,7 +58,7 @@ class Shooter < Flaty::GameWindow
   def draw(target, states)
   #  @world.draw
     @camera_debug.draw
-    @bird.draw_image
+    @bird.draw
   end
 
   #def play
