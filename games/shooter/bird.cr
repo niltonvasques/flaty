@@ -24,26 +24,12 @@ class Bird < Flaty::RectGameObject
            :score => 0, :tiles => @bird_tiles, :current => 0, :rigidbody => true,
            :debug => Flaty::Colors::RED, :tag => :bird })
 
-    tile_width = 32
-    tile_height = 40
-    tile_pos = 3
-    i = tile_pos % 2
-    j = (tile_pos / 2).to_i
-
-    @sprit = SF::Sprite.new(@bird_tiles)
-    #scale = SF.vector2(@width / texture.size.x, @height / texture.size.x)
-    scale = SF.vector2(@width / tile_width, @height / tile_height)
-    @sprit.scale = scale
-    @sprit.texture_rect = SF.int_rect(i * tile_width, j * tile_height, tile_width, tile_height)
+    scale = SF.vector2(@width / 32, @height / 40)
+    @tiles = Flaty::Tiles.new("assets/seagull_tiles.png", 32, 40, scale)
   end
 
   def draw_image
-    tile_width = 32
-    tile_height = 40
-    i = @current % 2
-    j = (@current / 2).to_i
-    @sprit.texture_rect = SF.int_rect(i * tile_width, j * tile_height, tile_width, tile_height)
-    Flaty.draw_sprite(@sprit, @position.x, @position.y + @height)
+    Flaty.draw_sprite(@tiles.at(@current), @position.x, @position.y + @height)
   end
 
   def update(delta)

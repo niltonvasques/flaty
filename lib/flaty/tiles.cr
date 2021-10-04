@@ -1,6 +1,6 @@
 class Flaty::Tiles
-  def initialize(@path, @width : Int32, @height : Int32, @scale : Vec2d)
-    @texture = SF::Texture.from_file(path)
+  def initialize(@path : String, @width : Int32, @height : Int32, @scale : Vec2d)
+    @texture = SF::Texture.from_file(@path)
     @sprite = SF::Sprite.new(@texture)
     @sprite.scale = @scale
   end
