@@ -40,7 +40,6 @@ class Shooter < Flaty::GameWindow
 
   def update(delta)
     @bird.update(delta)
-    puts "#{@bird.position} #{@bird.speed}"
   #  super
   #  return if paused?
 
@@ -59,6 +58,15 @@ class Shooter < Flaty::GameWindow
   #  @world.draw
     @camera_debug.draw
     @bird.draw
+  end
+
+  def button_down(code)
+    @camera.key_pressed(self, code)
+    @bird.button_down(code)
+  end
+
+  def button_up(code)
+    @bird.button_up(code)
   end
 
   #def play

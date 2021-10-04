@@ -108,20 +108,30 @@ module Flaty
     def button_down(code)
     end
 
+    def button_up(code)
+    end
+
     def loop
       while @window.open?
         @delta = @delta_clock.restart
+        pressed = false
         while event = @window.poll_event()
-          if (
-              event.is_a?(SF::Event::Closed) ||
-              (event.is_a?(SF::Event::KeyPressed) && event.code.escape?)
-          )
+          if (event.is_a?(SF::Event::Closed) ||
+              (event.is_a?(SF::Event::KeyPressed) && event.code.escape?))
             @window.close()
           elsif event.is_a? SF::Event::KeyPressed
+            pressed = true
             @paused = !@paused if event.code.p?
             GameWindow.debug = !GameWindow.debug if event.code.d?
             button_down(event.code)
+          elsif event.is_a? SF::Event::KeyReleased
+            button_up(event.code)
           end
+        end
+        if pressed
+          puts "pressed"
+        else
+          puts "nothing pressed"
         end
 
         update(@delta)

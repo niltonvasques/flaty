@@ -33,18 +33,26 @@ class Bird < Flaty::RectGameObject
     update_speed
 
     super
+    #puts "#{speed} s #{acceleration} a"
   end
 
   def update_speed
-  #  self.acceleration = Vec2d.new(0,  0)
-  #  self.acceleration += Vec2d.new(-ACCELERATION, 0) if Gosu.button_down? Gosu::KB_A
-  #  self.acceleration += Vec2d.new(ACCELERATION,  0) if Gosu.button_down? Gosu::KB_D
-  #  self.acceleration += Vec2d.new(0, ACCELERATION) if Gosu.button_down? Gosu::KB_W
-  #  self.acceleration += Vec2d.new(0, -ACCELERATION) if Gosu.button_down? Gosu::KB_S
-
     frame_duration = self.speed.x.abs <= IDLE ? FRAME_DURATION : FRAME_FAST_DURATION
     @current = (Flaty.elapsed_milis / frame_duration).to_i % FRAMES
     @current += LEFT_FRAMES_INDEX if turn_left?
+  end
+
+  def button_down(code)
+    case code
+    when .a? then self.acceleration += Vec2d.new(-ACCELERATION, 0)
+    when .d? then self.acceleration += Vec2d.new(ACCELERATION,  0)
+    when .w? then self.acceleration += Vec2d.new(0, ACCELERATION)
+    when .s? then self.acceleration += Vec2d.new(0, -ACCELERATION)
+    end
+  end
+
+  def button_up(code)
+    self.acceleration = Vec2d.new(0,  0) if code.a? || code.d? || code.w? || code.s?
   end
 
   #def collision_rect
