@@ -7,8 +7,10 @@ module Flaty
     SCALE               = 20.0
 
     class_property debug : Bool
+    class_property delta_seconds : Float32
     @@debug = false
     @@clock = SF::Clock.new
+    @@delta_seconds = 0.0
 
     property camera
 
@@ -85,10 +87,6 @@ module Flaty
       @@height
     end
 
-    def self.delta
-      @@delta_seconds
-    end
-
     def self.camera
       @@camera
     end
@@ -114,6 +112,7 @@ module Flaty
     def loop
       while @window.open?
         @delta = @delta_clock.restart
+        GameWindow.delta_seconds = @delta.as_seconds
         pressed = false
         while event = @window.poll_event()
           if (event.is_a?(SF::Event::Closed) ||
