@@ -7,6 +7,7 @@ require "flaty/camera_debug"
 require "flaty/collisions"
 require "flaty/quadtree"
 require "flaty/physics"
+require "flaty/game_object"
 
 struct SF::Rect
   def self.xywh(x, y, w, h)
@@ -64,6 +65,10 @@ module Flaty
     Flaty.window = window
     Flaty.states = states
     Flaty.camera = camera
+  end
+
+  def self.elapsed_milis
+    Flaty::GameWindow.elapsed_milis
   end
 
   def self.random_color()

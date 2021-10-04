@@ -1,6 +1,5 @@
 require "flaty"
-require "flaty/fps"
-require "flaty/math/calculus"
+require "./bird"
 
 class Shooter < Flaty::GameWindow
   SCREEN_WIDTH        = 2160
@@ -33,13 +32,15 @@ class Shooter < Flaty::GameWindow
     #@world = Physics::World.new
     #@background = Background.new
     #@bob = Bob.new
-    #@bird = Bird.new
+    @bird = Bird.new
     #@hud = HUD.new
     #@world.bodies << @bob
     #@world.bodies << @bird
   end
 
   def update(delta)
+    @bird.update(delta)
+    puts "#{@bird.position} #{@bird.speed}"
   #  super
   #  return if paused?
 
@@ -57,6 +58,7 @@ class Shooter < Flaty::GameWindow
   def draw(target, states)
   #  @world.draw
     @camera_debug.draw
+    @bird.draw_image
   end
 
   #def play

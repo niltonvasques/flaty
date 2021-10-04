@@ -8,6 +8,7 @@ module Flaty
 
     class_property debug : Bool
     @@debug = false
+    @@clock = SF::Clock.new
 
     property camera
 
@@ -24,7 +25,6 @@ module Flaty
 
       @scale = scale
 
-      @clock = SF::Clock.new
       @delta_clock = SF::Clock.new
       @delta = SF::Time.new()
 
@@ -62,11 +62,19 @@ module Flaty
     end
 
     def elapsed_time
-      @clock.elapsed_time.as_milliseconds
+      @@clock.elapsed_time.as_milliseconds
+    end
+
+    def self.elapsed_milis
+      @@clock.elapsed_time.as_milliseconds
+    end
+
+    def self.elapsed_seconds
+      @@clock.elapsed_time.as_seconds
     end
 
     def elapsed_seconds
-      @clock.elapsed_time.as_seconds
+      @@clock.elapsed_time.as_seconds
     end
 
     def self.width

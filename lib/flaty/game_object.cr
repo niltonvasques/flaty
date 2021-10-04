@@ -75,7 +75,7 @@ class Flaty::GameObject
     if @image != nil
       texture = @image.as SF::Texture
       @sprite = SF::Sprite.new(texture)
-      scale = SF.vector2(@width / texture.size.x, @height / texture.size.x)
+      scale = SF.vector2(@width / texture.size.x, @height / texture.size.y)
       @sprite.as(SF::Sprite).scale = scale
     end
   end
