@@ -1,4 +1,5 @@
 require "flaty"
+require "flaty/tiles"
 
 class Flaty::GameObject
   include Collider
@@ -209,12 +210,8 @@ class Flaty::CircleGameObject < Flaty::GameObject
 
   def draw
     draw_debug
-    return draw_image if current_image
+    return super if @sprite || @tiles
     Flaty.draw_circle(@position.x, @position.y, @radius, @color)
-  end
-
-  def draw_image
-    Flaty.draw_sprite(@sprite.as SF::Sprite, @position.x, @position.y + @height)
   end
 
   def draw_debug

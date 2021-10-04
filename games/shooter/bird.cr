@@ -1,5 +1,4 @@
 require "flaty"
-require "flaty/tiles"
 
 class Bird < Flaty::RectGameObject
   IDLE                = 2.0
