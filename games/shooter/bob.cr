@@ -1,8 +1,6 @@
 require "flaty"
 
 class Bob < Flaty::RectGameObject
-  SIZE              = 1.85 # 1.85 meters tall
-
   # velocity
   IDLE_SPEED        = Vec2d.new(0, 0)
   ACCELERATION      = 50.0 # 50 m/s
@@ -15,11 +13,12 @@ class Bob < Flaty::RectGameObject
   FPS_DURATION  = (1.0/60) # 110 m/s
 
   # animation frames
-  WIDTH               = SIZE
-  HEIGHT              = SIZE
-  TILE_WIDTH          = 130
-  TILE_HEIGHT         = 150
-  TILE_SCALE          = SF.vector2(WIDTH / TILE_WIDTH, HEIGHT / TILE_HEIGHT)
+  SIZE                   = 1.85 # 1.85 meters tall
+  WIDTH                  = SIZE
+  HEIGHT                 = SIZE
+  TILE_WIDTH             = 130
+  TILE_HEIGHT            = 150
+  TILE_SCALE             = SF.vector2(WIDTH / TILE_WIDTH, HEIGHT / TILE_HEIGHT)
   FRAMES                 = 10
   JUMP_FRAMES            = 7
   RIGHT_FRAMES_INDEX     = 12
