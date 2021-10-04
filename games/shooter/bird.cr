@@ -11,10 +11,14 @@ class Bird < Flaty::RectGameObject
   LEFT_FRAMES_INDEX   = 6
   FRAME_DURATION      = 220
   FRAME_FAST_DURATION = 80
+  WIDTH               = 2.0
+  HEIGHT              = 2.5
+  TILE_WIDTH          = 32
+  TILE_HEIGHT         = 40
+  TILE_SCALE          = SF.vector2(WIDTH / TILE_WIDTH, HEIGHT / TILE_HEIGHT)
 
   def initialize
-    scale = SF.vector2(0.8 / 32, 1.0 / 40)
-    tiles = Flaty::Tiles.new("assets/seagull_tiles.png", 32, 40, scale)
+    tiles = Flaty::Tiles.new("assets/seagull_tiles.png", TILE_WIDTH, TILE_HEIGHT, TILE_SCALE)
     #@wings = Gosu::Sample.new('assets/sounds/dragonflap.mp3')
     #@beep = Gosu::Sample.new('assets/sounds/beep.wav')
     #play
