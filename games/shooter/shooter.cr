@@ -1,5 +1,6 @@
 require "flaty"
 require "./bird"
+require "./bob"
 
 class Shooter < Flaty::GameWindow
   SCREEN_WIDTH        = 2160
@@ -31,7 +32,7 @@ class Shooter < Flaty::GameWindow
     # objects
     #@world = Physics::World.new
     #@background = Background.new
-    #@bob = Bob.new
+    @bob = Bob.new
     @bird = Bird.new
     #@hud = HUD.new
     #@world.bodies << @bob
@@ -40,6 +41,7 @@ class Shooter < Flaty::GameWindow
 
   def update(delta)
     @bird.update(delta)
+    @bob.update(delta)
   #  super
   #  return if paused?
 
@@ -58,15 +60,18 @@ class Shooter < Flaty::GameWindow
   #  @world.draw
     @camera_debug.draw
     @bird.draw
+    @bob.draw
   end
 
   def button_down(code)
     @camera.key_pressed(self, code)
     @bird.button_down(code)
+    @bob.button_down(code)
   end
 
   def button_up(code)
     @bird.button_up(code)
+    @bob.button_up(code)
   end
 
   #def play

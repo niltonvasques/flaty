@@ -128,11 +128,6 @@ module Flaty
             button_up(event.code)
           end
         end
-        if pressed
-          puts "pressed"
-        else
-          puts "nothing pressed"
-        end
 
         update(@delta)
 
