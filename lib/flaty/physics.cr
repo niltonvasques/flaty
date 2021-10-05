@@ -132,7 +132,7 @@ module Physics
 
     collision = Collision::NONE
     candidates.each do |obj|
-      obj.debug = Flaty::Colors::CYAN
+      obj.debug = Flaty::Colors::DEBUG
       collision |= body1.collisions(obj)
     end
 
@@ -143,7 +143,7 @@ module Physics
 
       collision = Collision::NONE
       candidates.each do |obj|
-        obj.debug = Flaty::Colors::CYAN
+        obj.debug = Flaty::Colors::DEBUG
         collision |= body1.collisions(obj)
       end
       body1.grounded if collision == Collision::NONE
@@ -155,7 +155,7 @@ module Physics
 
       collision = Collision::NONE
       candidates.each do |obj|
-        obj.debug = Flaty::Colors::CYAN
+        obj.debug = Flaty::Colors::DEBUG
         collision |= body1.collisions(obj)
       end
     end
@@ -166,7 +166,7 @@ module Physics
 
       collision = Collision::NONE
       candidates.each do |obj|
-        obj.debug = Flaty::Colors::CYAN
+        obj.debug = Flaty::Colors::DEBUG
         collision |= body1.collisions(obj)
       end
     end
@@ -176,7 +176,7 @@ module Physics
 
       collision = Collision::NONE
       candidates.each do |obj|
-        obj.debug = Flaty::Colors::CYAN
+        obj.debug = Flaty::Colors::DEBUG
         collision |= body1.collisions(obj)
       end
       body1.ceil_hit if collision == Collision::NONE

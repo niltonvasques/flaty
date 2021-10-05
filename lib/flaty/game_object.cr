@@ -123,10 +123,11 @@ class Flaty::GameObject
   #    new_pos = GameWindow.camera.translate(self) if @camera
   #
   #    draw_obj(new_pos.x, new_pos.y, z)
-  #    if @debug and GameWindow.debug
+      if @debug && GameWindow.debug?
+        Flaty.draw_rect(self.x, self.y, @width, @height, @debug.as(SF::Color))
   #      Gosu.draw_rect(new_pos.x, new_pos.y, width * GameWindow.camera.unit_x,
   #                     height * GameWindow.camera.unit_y, @debug, z = 100, mode = :add)
-  #    end
+      end
   end
 
   #  def draw_obj(x, y, z)

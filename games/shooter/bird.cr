@@ -22,7 +22,7 @@ class Bird < Flaty::RectGameObject
     #@beep = Gosu::Sample.new('assets/sounds/beep.wav')
     #play
 
-    super({ :position => Vec2d.new(1.0, 14.0), :width => 0.8, :height => 1.0,
+    super({ :position => Vec2d.new(1.0, 14.0), :width => WIDTH, :height => HEIGHT,
            :speed => IDLE_SPEED.dup, :max_speed => Vec2d.new(SPEED, SPEED), :damp => 0.8,
            :score => 0, :tiles => tiles, :current => 0, :rigidbody => true,
            :debug => Flaty::Colors::RED, :tag => :bird })
@@ -56,13 +56,13 @@ class Bird < Flaty::RectGameObject
     self.acceleration = Vec2d.new(0,  0) if code.a? || code.d? || code.w? || code.s?
   end
 
-  def collision_rect
-    @rect.left   = self.x
-    @rect.top    = self.y - 0.5
-    @rect.width  = @width + 1.0
-    @rect.height = @height + 0.2
-    @rect
-  end
+  #def collision_rect
+  #  @rect.left   = self.x
+  #  @rect.top    = self.y - 0.5
+  #  @rect.width  = @width + 1.0
+  #  @rect.height = @height + 0.2
+  #  @rect
+  #end
 
   #def collect_stars(stars)
   #  stars.reject! do |star|

@@ -173,5 +173,6 @@ module Flaty
     BLUE   = SF::Color.new(0,   0,   255)
     YELLOW = SF::Color.new(255, 255,   0)
     CYAN   = SF::Color.new(255, 255,   0)
+    DEBUG  = SF::Color.new(255, 255,   0, 128)
   end
 end
