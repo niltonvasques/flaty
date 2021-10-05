@@ -33,18 +33,21 @@ class Shooter < Flaty::GameWindow
     @camera_debug = Flaty::CameraDebug.new(@camera)
 
     # objects
-    #@world = Physics::World.new
+    @world = Physics::World.new(@camera)
+    @world.gravity.y = 0
     #@background = Background.new
     @bob = Bob.new
     @bird = Bird.new
     #@hud = HUD.new
-    #@world.bodies << @bob
-    #@world.bodies << @bird
+    @world.bodies << @bob
+    @world.bodies << @bird
+    @world.bodies += @level.tiles
   end
 
   def update(delta)
-    @bird.update(delta)
-    @bob.update(delta)
+    @world.update(delta)
+    #@bird.update(delta)
+    #@bob.update(delta)
   #  super
   #  return if paused?
 
@@ -62,7 +65,10 @@ class Shooter < Flaty::GameWindow
   def draw(target, states)
   #  @world.draw
     @level.tiles.each { |t| t.draw }
-    @camera_debug.draw if Flaty::GameWindow.debug?
+    if Flaty::GameWindow.debug?
+      @camera_debug.draw
+      @world.draw_quad
+    end
     @bird.draw
     @bob.draw
   end

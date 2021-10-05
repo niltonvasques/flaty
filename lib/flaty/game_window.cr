@@ -121,7 +121,7 @@ module Flaty
           elsif event.is_a? SF::Event::KeyPressed
             pressed = true
             @paused = !@paused if event.code.p?
-            GameWindow.debug = !GameWindow.debug if event.code.d?
+            GameWindow.debug = !GameWindow.debug if event.code.y?
             button_down(event.code)
           elsif event.is_a? SF::Event::KeyReleased
             button_up(event.code)

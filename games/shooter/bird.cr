@@ -37,6 +37,7 @@ class Bird < Flaty::RectGameObject
   end
 
   def update_speed
+    #self.acceleration.y = 0
     frame_duration = self.speed.x.abs <= IDLE ? FRAME_DURATION : FRAME_FAST_DURATION
     @current = (Flaty.elapsed_milis / frame_duration).to_i % FRAMES
     @current += LEFT_FRAMES_INDEX if turn_left?
@@ -55,13 +56,13 @@ class Bird < Flaty::RectGameObject
     self.acceleration = Vec2d.new(0,  0) if code.a? || code.d? || code.w? || code.s?
   end
 
-  #def collision_rect
-  #  self.rect.x = self.x
-  #  self.rect.y = self.y + 1
-  #  self.rect.width = self.width
-  #  self.rect.height = self.height - 2
-  #  self.rect
-  #end
+  def collision_rect
+    @rect.left   = self.x
+    @rect.top    = self.y - 0.5
+    @rect.width  = @width + 1.0
+    @rect.height = @height + 0.2
+    @rect
+  end
 
   #def collect_stars(stars)
   #  stars.reject! do |star|
