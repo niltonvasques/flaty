@@ -31,3 +31,10 @@ https://oprypin.github.io/crsfml/api/
 https://www.sfml-dev.org/documentation/2.5.1/
 
 https://www.sfml-dev.org/tutorials/2.5/
+
+## Libraries docs
+
+https://crystal-lang.org/api/1.1.1
+https://oprypin.github.io/crsfml/api/
+https://docs.leonrische.me/stumpy_png/index.html
+https://docs.leonrische.me/stumpy_core/StumpyCore/RGBA.html
