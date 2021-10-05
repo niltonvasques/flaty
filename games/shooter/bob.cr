@@ -54,7 +54,7 @@ class Bob < Flaty::RectGameObject
   end
 
   def update_speed
-  #  self.acceleration = GRAVITY.dup
+    self.acceleration = Vec2d.new(0, 0)
 
     update_movement
 
@@ -66,15 +66,15 @@ class Bob < Flaty::RectGameObject
   end
 
   def update_movement
-  #  if Gosu.button_down? Gosu::KB_LEFT
-  #    self.acceleration += Vec2d.new(-ACCELERATION, 0)
-  #    self.state = :walking if self.state != :jumping
-  #  end
+    if SF::Keyboard.key_pressed?(SF::Keyboard::Left)
+      self.acceleration += Vec2d.new(-ACCELERATION, 0)
+      @state = :walking if @state != :jumping
+    end
 
-  #  if Gosu.button_down? Gosu::KB_RIGHT
-  #    self.acceleration += Vec2d.new(ACCELERATION,  0)
-  #    self.state = :walking if self.state != :jumping
-  #  end
+    if SF::Keyboard.key_pressed?(SF::Keyboard::Right)
+      self.acceleration += Vec2d.new(ACCELERATION,  0)
+      @state = :walking if @state != :jumping
+    end
 
     @state = :idle if @state == :walking && self.speed.x.abs < 0.5
 
@@ -117,30 +117,30 @@ class Bob < Flaty::RectGameObject
   end
 
   def button_down(code)
-    case code
-    when .left?
-      self.acceleration -= Vec2d.new(ACCELERATION,  0)
-      puts @state
-      @state = :walking if @state != :jumping
-      puts @state
-    when .right?
-      self.acceleration += Vec2d.new(ACCELERATION,  0)
-      puts @state
-      @state = :walking if @state != :jumping
-      puts @state
-    when .space?
-      @jump_at = Flaty.elapsed_milis
-      @jumping = true
-      @state = :jumping
-      self.acceleration += JUMP_ACCELERATION * Flaty.delta
-    end
+    #case code
+    #when .left?
+    #  self.acceleration -= Vec2d.new(ACCELERATION,  0)
+    #  puts @state
+    #  @state = :walking if @state != :jumping
+    #  puts @state
+    #when .right?
+    #  self.acceleration += Vec2d.new(ACCELERATION,  0)
+    #  puts @state
+    #  @state = :walking if @state != :jumping
+    #  puts @state
+    #when .space?
+    #  @jump_at = Flaty.elapsed_milis
+    #  @jumping = true
+    #  @state = :jumping
+    #  self.acceleration += JUMP_ACCELERATION * Flaty.delta
+    #end
   end
 
   def button_up(code)
-    if code.up? || code.down? || code.left? || code.right? || code.space?
-      #@state = :idle
-      self.acceleration = Vec2d.new(0,  0)
-    end
+    #if code.up? || code.down? || code.left? || code.right? || code.space?
+    #  #@state = :idle
+    #  self.acceleration = Vec2d.new(0,  0)
+    #end
   end
 
   #def grounded
