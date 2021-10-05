@@ -62,7 +62,7 @@ class Shooter < Flaty::GameWindow
   def draw(target, states)
   #  @world.draw
     @level.tiles.each { |t| t.draw }
-    @camera_debug.draw
+    @camera_debug.draw if Flaty::GameWindow.debug?
     @bird.draw
     @bob.draw
   end
