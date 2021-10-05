@@ -2,6 +2,9 @@ name: flaty
 version: 0.1.0
 
 dependencies:
-  crsfml:
-    github: oprypin/crsfml
-    version: ~> 2.5.2
+  #crsfml:
+  #  github: oprypin/crsfml
+  #  version: ~> 2.5.2
+  stumpy_png:
+    github: stumpycr/stumpy_png
+    version: "~> 5.0"

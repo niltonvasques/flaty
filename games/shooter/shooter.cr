@@ -1,6 +1,7 @@
 require "flaty"
 require "./bird"
 require "./bob"
+require "./level_loader"
 
 class Shooter < Flaty::GameWindow
   SCREEN_WIDTH        = 2160
@@ -8,6 +9,8 @@ class Shooter < Flaty::GameWindow
   CAMERA_WIDTH_UNITS  = 50.0
   CAMERA_HEIGHT_UNITS = 28.0
   SCALE               = SCREEN_WIDTH / CAMERA_WIDTH_UNITS
+
+  @level : Level
 
   def initialize
     super(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS, SCALE, "Shooter")
@@ -18,7 +21,7 @@ class Shooter < Flaty::GameWindow
   #  @song.play
 
   #  @world = World.new
-  #  @level = LevelLoader.load_level
+    @level = LevelLoader.load_level
   #  @world.level = @level
   #  @frames = 0
   #  @sum_frames = 0
@@ -58,6 +61,7 @@ class Shooter < Flaty::GameWindow
 
   def draw(target, states)
   #  @world.draw
+    @level.tiles.each { |t| t.draw }
     @camera_debug.draw
     @bird.draw
     @bob.draw

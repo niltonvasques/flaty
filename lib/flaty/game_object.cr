@@ -28,6 +28,7 @@ class Flaty::GameObject
       :position => Vec2d.new(0,0),
       :previous_position => Vec2d.new(0,0),
       :image => nil,
+      :sprite => nil,
       :tiles => nil,
       :rect => Rect.xywh(0.0, 0.0, 0.0, 0.0),
       :mass => 1.0,
@@ -66,7 +67,7 @@ class Flaty::GameObject
     @tag               = default[:tag].as Symbol
     @image             = default[:image].as (SF::Texture | Nil)
     @tiles             = default[:tiles].as (Flaty::Tiles | Nil)
-    @sprite            = nil
+    @sprite            = default[:sprite].as (SF::Sprite | Nil)
 
     setup_sprite
   end
