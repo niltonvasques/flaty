@@ -76,7 +76,7 @@ class Bob < Flaty::RectGameObject
   #    self.state = :walking if self.state != :jumping
   #  end
 
-    @state = :idle if @state == :walking && self.speed.y <= -0.5
+    @state = :idle if @state == :walking && self.speed.x.abs < 0.5
 
   #  if Gosu.button_down? Gosu::KB_SPACE and self.state != :jumping
   #    @jump_at = Gosu.milliseconds
@@ -120,10 +120,14 @@ class Bob < Flaty::RectGameObject
     case code
     when .left?
       self.acceleration -= Vec2d.new(ACCELERATION,  0)
+      puts @state
       @state = :walking if @state != :jumping
+      puts @state
     when .right?
       self.acceleration += Vec2d.new(ACCELERATION,  0)
+      puts @state
       @state = :walking if @state != :jumping
+      puts @state
     when .space?
       @jump_at = Flaty.elapsed_milis
       @jumping = true
@@ -134,7 +138,7 @@ class Bob < Flaty::RectGameObject
 
   def button_up(code)
     if code.up? || code.down? || code.left? || code.right? || code.space?
-      @state = :idle
+      #@state = :idle
       self.acceleration = Vec2d.new(0,  0)
     end
   end

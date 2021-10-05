@@ -34,7 +34,7 @@ class Shooter < Flaty::GameWindow
 
     # objects
     @world = Physics::World.new(@camera)
-    @world.gravity.y = 0
+    #@world.gravity.y = 0
     #@background = Background.new
     @bob = Bob.new
     @bird = Bird.new

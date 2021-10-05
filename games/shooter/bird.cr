@@ -37,7 +37,7 @@ class Bird < Flaty::RectGameObject
   end
 
   def update_speed
-    #self.acceleration.y = 0
+    self.force.y = 0
     frame_duration = self.speed.x.abs <= IDLE ? FRAME_DURATION : FRAME_FAST_DURATION
     @current = (Flaty.elapsed_milis / frame_duration).to_i % FRAMES
     @current += LEFT_FRAMES_INDEX if turn_left?

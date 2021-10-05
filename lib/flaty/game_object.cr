@@ -10,6 +10,7 @@ class Flaty::GameObject
   property height : Float64
   property speed : Vec2d
   property acceleration : Vec2d
+  property force : Vec2d
   property damp : Float64
   property elasticity : Float64
   property mass : Float64
@@ -33,6 +34,7 @@ class Flaty::GameObject
       :rect => Rect.xywh(0.0, 0.0, 0.0, 0.0),
       :mass => 1.0,
       :acceleration => Vec2d.new(0,0),
+      :force => Vec2d.new(0,0),
       :speed => Vec2d.new(0,0),
       :max_speed => Vec2d.new(100,100),
       :damp => 1.0,
@@ -54,6 +56,7 @@ class Flaty::GameObject
     @mass              = default[:mass].as Float64
     @speed             = default[:speed].as Vec2d
     @acceleration      = default[:acceleration].as Vec2d
+    @force             = default[:force].as Vec2d
     @max_speed         = default[:max_speed].as Vec2d
     @elasticity        = default[:elasticity].as Float64
     @damp              = default[:damp].as Float64
@@ -92,13 +95,15 @@ class Flaty::GameObject
     #update_width_height
     @previous_position = @position
 
-    @speed += @acceleration * delta.as_seconds
+    forces = (@acceleration + @force)
+
+    @speed += forces * delta.as_seconds
     @speed.x = @max_speed.x if @speed.x > 0 && @speed.x.abs > @max_speed.x
     @speed.x = -@max_speed.x if @speed.x < 0 && @speed.x.abs > @max_speed.x
     @speed.y = @max_speed.y if @speed.y > 0 && @speed.y.abs > @max_speed.y
     @speed.y = -@max_speed.y if @speed.y < 0 && @speed.y.abs > @max_speed.y
-    @speed.y *= @damp if @acceleration.y == 0
-    @speed.x *= @damp if @acceleration.x == 0
+    @speed.y *= @damp if forces.y == 0
+    @speed.x *= @damp if forces.x == 0
     @speed.x = 0 if @speed.x.abs < 0.01
 
     @position += @speed * delta.as_seconds
