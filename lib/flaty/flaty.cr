@@ -75,6 +75,10 @@ module Flaty
     Flaty::GameWindow.delta_seconds
   end
 
+  def self.pressed?(code)
+    SF::Keyboard.key_pressed?(code)
+  end
+
   def self.random_color()
     SF::Color.new(rand(128) + 128, rand(128) + 128, rand(128) + 128)
   end
@@ -165,14 +169,15 @@ module Flaty
   end
 
   module Colors
-    BLACK  = SF::Color.new(0,   0,     0)
-    WHITE  = SF::Color.new(255, 255, 255)
-    GRAY   = SF::Color.new(128, 128, 128)
-    RED    = SF::Color.new(255, 0,     0)
-    GREEN  = SF::Color.new(0,   255,   0)
-    BLUE   = SF::Color.new(0,   0,   255)
-    YELLOW = SF::Color.new(255, 255,   0)
-    CYAN   = SF::Color.new(255, 255,   0)
-    DEBUG  = SF::Color.new(255, 255,   0, 128)
+    BLACK     = SF::Color.new(0,   0,     0)
+    WHITE     = SF::Color.new(255, 255, 255)
+    GRAY      = SF::Color.new(128, 128, 128)
+    RED       = SF::Color.new(255, 0,     0)
+    GREEN     = SF::Color.new(0,   255,   0)
+    BLUE      = SF::Color.new(0,   0,   255)
+    YELLOW    = SF::Color.new(255, 255,   0)
+    CYAN      = SF::Color.new(255, 255,   0)
+    DEBUG     = SF::Color.new(255, 255,   0, 128)
+    RED_ALPHA = SF::Color.new(255, 0,     0, 128)
   end
 end

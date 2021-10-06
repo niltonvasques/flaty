@@ -129,7 +129,8 @@ class Flaty::GameObject
   #
   #    draw_obj(new_pos.x, new_pos.y, z)
       if @debug && GameWindow.debug?
-        Flaty.draw_rect(self.x, self.y, @width, @height, @debug.as(SF::Color))
+        rect = self.collision_rect
+        Flaty.draw_rect(rect.x, rect.y, rect.width, rect.height, @debug.as(SF::Color))
   #      Gosu.draw_rect(new_pos.x, new_pos.y, width * GameWindow.camera.unit_x,
   #                     height * GameWindow.camera.unit_y, @debug, z = 100, mode = :add)
       end

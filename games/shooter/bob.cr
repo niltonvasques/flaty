@@ -41,22 +41,15 @@ class Bob < Flaty::RectGameObject
 
     super({ :position => Vec2d.new(0, 4), :width => WIDTH, :height => HEIGHT, :mass => 5.0,
            :speed => IDLE_SPEED.dup, :max_speed => Vec2d.new(SPEED, TERMINAL_SPEED), :damp => 0.8,
-           :score => 0, :tiles => tiles, :current => 0, :debug => Flaty::Colors::RED,
+           :score => 0, :tiles => tiles, :current => 0, :debug => Flaty::Colors::RED_ALPHA,
            :rigidbody => true, :tag => :bob })
   end
 
   def update(delta)
-    #  self.debug = Gosu::Color::RED
+    self.debug = Flaty::Colors::RED_ALPHA
     update_speed
 
     super
-
-    if @jumping
-      f = (@acceleration + @force)
-      puts "#{f} forces #{f * delta.as_seconds} dt #{delta.as_seconds} #{@speed} sp"
-    end
-
-    #  #puts "a: #{self.acceleration}, v: #{self.speed}, #{self.state}, #{self.position}"
   end
 
   def update_speed
@@ -72,19 +65,19 @@ class Bob < Flaty::RectGameObject
   end
 
   def update_movement
-    if SF::Keyboard.key_pressed?(SF::Keyboard::Left)
+    if Flaty.pressed?(SF::Keyboard::Left)
       self.acceleration += Vec2d.new(-ACCELERATION, 0)
       @state = :walking if @state != :jumping
     end
 
-    if SF::Keyboard.key_pressed?(SF::Keyboard::Right)
+    if Flaty.pressed?(SF::Keyboard::Right)
       self.acceleration += Vec2d.new(ACCELERATION,  0)
       @state = :walking if @state != :jumping
     end
 
     @state = :idle if @state == :walking && self.speed.x.abs < 0.5
 
-    if SF::Keyboard.key_pressed?(SF::Keyboard::Space) && @state != :jumping
+    if Flaty.pressed?(SF::Keyboard::Space) && @state != :jumping
       @jump_at = Flaty.elapsed_milis
       @jumping = true
       @state = :jumping
@@ -93,12 +86,18 @@ class Bob < Flaty::RectGameObject
     end
 
     if @jumping && (Flaty.elapsed_milis - @jump_at) > JUMP_DURATION
-      puts "#{(Flaty.elapsed_milis - @jump_at)} jumping stop"
       @jumping = false
     elsif @jumping
-      puts "#{(Flaty.elapsed_milis - @jump_at)} jumping"
       self.acceleration += JUMP_ACCELERATION * Flaty.delta
     end
+  end
+
+  def collision_rect
+    @rect.left = x + WIDTH / 4
+    @rect.top = y
+    @rect.width = @width - WIDTH / 2
+    @rect.height = @height
+    @rect
   end
 
   def update_direction
@@ -122,34 +121,6 @@ class Bob < Flaty::RectGameObject
     if @face == :right
       @current += RIGHT_FRAMES_INDEX
     end
-    #puts "#{@current} current"
-  end
-
-  def button_down(code)
-    #case code
-    #when .left?
-    #  self.acceleration -= Vec2d.new(ACCELERATION,  0)
-    #  puts @state
-    #  @state = :walking if @state != :jumping
-    #  puts @state
-    #when .right?
-    #  self.acceleration += Vec2d.new(ACCELERATION,  0)
-    #  puts @state
-    #  @state = :walking if @state != :jumping
-    #  puts @state
-    #when .space?
-    #  @jump_at = Flaty.elapsed_milis
-    #  @jumping = true
-    #  @state = :jumping
-    #  self.acceleration += JUMP_ACCELERATION * Flaty.delta
-    #end
-  end
-
-  def button_up(code)
-    #if code.up? || code.down? || code.left? || code.right? || code.space?
-    #  #@state = :idle
-    #  self.acceleration = Vec2d.new(0,  0)
-    #end
   end
 
   def grounded

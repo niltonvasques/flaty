@@ -25,35 +25,29 @@ class Bird < Flaty::RectGameObject
     super({ :position => Vec2d.new(1.0, 14.0), :width => WIDTH, :height => HEIGHT,
            :speed => IDLE_SPEED.dup, :max_speed => Vec2d.new(SPEED, SPEED), :damp => 0.8,
            :score => 0, :tiles => tiles, :current => 0, :rigidbody => true,
-           :debug => Flaty::Colors::RED, :tag => :bird })
+           :debug => Flaty::Colors::RED_ALPHA, :tag => :bird })
   end
 
   def update(delta)
-  #  self.debug = Gosu::Color::RED
+    self.debug = Flaty::Colors::RED_ALPHA
     update_speed
 
     super
-    #puts "#{speed} s #{acceleration} a"
   end
 
   def update_speed
-    self.force.y = 0
+    self.force.y = 0 # nullify gravity effects to fly
+
+    self.acceleration = Vec2d.new(0,  0)
+
+    self.acceleration += Vec2d.new(-ACCELERATION, 0) if Flaty.pressed?(SF::Keyboard::A)
+    self.acceleration += Vec2d.new(ACCELERATION,  0) if Flaty.pressed?(SF::Keyboard::D)
+    self.acceleration += Vec2d.new(0, ACCELERATION) if Flaty.pressed?(SF::Keyboard::W)
+    self.acceleration += Vec2d.new(0, -ACCELERATION) if Flaty.pressed?(SF::Keyboard::S)
+
     frame_duration = self.speed.x.abs <= IDLE ? FRAME_DURATION : FRAME_FAST_DURATION
     @current = (Flaty.elapsed_milis / frame_duration).to_i % FRAMES
     @current += LEFT_FRAMES_INDEX if turn_left?
-  end
-
-  def button_down(code)
-    case code
-    when .a? then self.acceleration += Vec2d.new(-ACCELERATION, 0)
-    when .d? then self.acceleration += Vec2d.new(ACCELERATION,  0)
-    when .w? then self.acceleration += Vec2d.new(0, ACCELERATION)
-    when .s? then self.acceleration += Vec2d.new(0, -ACCELERATION)
-    end
-  end
-
-  def button_up(code)
-    self.acceleration = Vec2d.new(0,  0) if code.a? || code.d? || code.w? || code.s?
   end
 
   #def collision_rect

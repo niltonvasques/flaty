@@ -45,28 +45,16 @@ class Shooter < Flaty::GameWindow
   end
 
   def update(delta)
+    return if paused?
+
     @level.tiles.each { |tile| tile.debug = nil } if Flaty::GameWindow.debug?
     @world.update(delta)
+
     @camera.look(@bob.x, @bob.y)
     update_camera
-    #@bird.update(delta)
-    #@bob.update(delta)
-  #  super
-  #  return if paused?
-
-  #  t = Benchmark.elapsed do
-  #    @world.update
-  #  end
-  #  @frames += 1
-  #  @sum_frames += t
   end
 
-  #def print_bench
-  #  puts "#{Benchmark::NANO/(@sum_frames/@frames)} UPS"
-  #end
-
   def draw(target, states)
-  #  @world.draw
     @level.tiles.each { |t| t.draw }
     if Flaty::GameWindow.debug?
       @camera_debug.draw
@@ -78,13 +66,6 @@ class Shooter < Flaty::GameWindow
 
   def button_down(code)
     @camera.key_pressed(self, code)
-    @bird.button_down(code)
-    @bob.button_down(code)
-  end
-
-  def button_up(code)
-    @bird.button_up(code)
-    @bob.button_up(code)
   end
 
   #def play
