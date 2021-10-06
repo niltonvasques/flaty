@@ -32,19 +32,6 @@ module Physics
     if body1.collisions(body2) != Collision::NONE && (body1.rigidbody || body2.rigidbody)
       Physics.solve_collision(body1, body2)
       Physics.solve_collision(body2, body1)
-
-      m1 = body1.mass
-      m2 = body2.mass
-      u1 = body1.speed
-      u2 = body2.speed
-      v1 = body1.speed
-      v2 = body2.speed
-
-      v1 = ( u1*((m1-m2)/(m1+m2)) ) + ( u2*((2*m2)/(m1+m2)) )
-      v2 = ( u2*((m2-m1)/(m1+m2)) ) + ( u1*((2*m1)/(m1+m2)) )
-
-      body1.speed = v1
-      body2.speed = v2
     end
   end
 

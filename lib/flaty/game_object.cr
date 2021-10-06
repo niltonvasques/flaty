@@ -97,7 +97,7 @@ class Flaty::GameObject
 
     forces = (@acceleration + @force)
 
-    @speed += forces * delta.as_seconds
+    @speed += forces * delta.as_seconds * @mass
     @speed.x = @max_speed.x if @speed.x > 0 && @speed.x.abs > @max_speed.x
     @speed.x = -@max_speed.x if @speed.x < 0 && @speed.x.abs > @max_speed.x
     @speed.y = @max_speed.y if @speed.y > 0 && @speed.y.abs > @max_speed.y

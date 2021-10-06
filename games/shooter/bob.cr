@@ -6,10 +6,10 @@ class Bob < Flaty::RectGameObject
   ACCELERATION      = 50.0 # 50 m/s
   GRAVITY           = Vec2d.new(0, -20) # -20 m/s = 72 km/h
   TERMINAL_SPEED    = 55.0 # 50 m/s = 200 km/h
-  JUMP_ACCELERATION = Vec2d.new(0, 150.0) # 110 m/s
+  JUMP_ACCELERATION = Vec2d.new(0, 10000.0) # 110 m/s
   SPEED             = 7.0 # 7 m/s = 25 km/h
 
-  JUMP_DURATION = 60 # 50 ms
+  JUMP_DURATION = 40 # 50 ms
   FPS_DURATION  = (1.0/60) # 110 m/s
 
   # animation frames
@@ -29,16 +29,17 @@ class Bob < Flaty::RectGameObject
   IDLE_FRAME_INDEX       = 10
 
   def initialize
-    tiles    = Flaty::Tiles.new("assets/bob2.png", TILE_WIDTH, TILE_HEIGHT, TILE_SCALE)
+    tiles     = Flaty::Tiles.new("assets/bob2.png", TILE_WIDTH, TILE_HEIGHT, TILE_SCALE)
   #  @steps = Gosu::Sample.new('assets/sounds/steps.wav')
   #  @beep = Gosu::Sample.new('assets/sounds/beep.wav')
-    @jump_at = -2000
-    @jumping = false
-    @state   = :idle
-    @face    = :right
+    @jump_at  = -2000
+    @jumping  = false
+    @grounded = false
+    @state    = :idle
+    @face     = :right
   #  play
 
-    super({ :position => Vec2d.new(0, 4), :width => WIDTH, :height => HEIGHT,
+    super({ :position => Vec2d.new(0, 4), :width => WIDTH, :height => HEIGHT, :mass => 5.0,
            :speed => IDLE_SPEED.dup, :max_speed => Vec2d.new(SPEED, TERMINAL_SPEED), :damp => 0.8,
            :score => 0, :tiles => tiles, :current => 0, :debug => Flaty::Colors::RED,
            :rigidbody => true, :tag => :bob })
@@ -49,6 +50,11 @@ class Bob < Flaty::RectGameObject
     update_speed
 
     super
+
+    if @jumping
+      f = (@acceleration + @force)
+      puts "#{f} forces #{f * delta.as_seconds} dt #{delta.as_seconds} #{@speed} sp"
+    end
 
     #  #puts "a: #{self.acceleration}, v: #{self.speed}, #{self.state}, #{self.position}"
   end
@@ -78,17 +84,20 @@ class Bob < Flaty::RectGameObject
 
     @state = :idle if @state == :walking && self.speed.x.abs < 0.5
 
-  #  if Gosu.button_down? Gosu::KB_SPACE and self.state != :jumping
-  #    @jump_at = Gosu.milliseconds
-  #    @jumping = true
-  #    self.state = :jumping
-  #    self.acceleration += JUMP_ACCELERATION * (FPS_DURATION / GameWindow.delta)
-  #  end
+    if SF::Keyboard.key_pressed?(SF::Keyboard::Space) && @state != :jumping
+      @jump_at = Flaty.elapsed_milis
+      @jumping = true
+      @state = :jumping
+      @grounded = false
+      self.acceleration += JUMP_ACCELERATION * Flaty.delta
+    end
 
-    if (Flaty.elapsed_milis - @jump_at) > JUMP_DURATION
+    if @jumping && (Flaty.elapsed_milis - @jump_at) > JUMP_DURATION
+      puts "#{(Flaty.elapsed_milis - @jump_at)} jumping stop"
       @jumping = false
-  #  else
-  #    self.acceleration += JUMP_ACCELERATION * (FPS_DURATION / GameWindow.delta)
+    elsif @jumping
+      puts "#{(Flaty.elapsed_milis - @jump_at)} jumping"
+      self.acceleration += JUMP_ACCELERATION * Flaty.delta
     end
   end
 
@@ -104,7 +113,7 @@ class Bob < Flaty::RectGameObject
       # pause
     when :jumping
       # pause
-      @current = (Flaty.elapsed_milis / JUMP_FRAMES).to_i % JUMP_FRAMES
+      @current = (Flaty.elapsed_milis / RUNNING_FRAME_DURATION).to_i % JUMP_FRAMES
       @current += JUMP_FRAMES_INDEX
     else
       @current = (Flaty.elapsed_milis / RUNNING_FRAME_DURATION).to_i % FRAMES
@@ -143,10 +152,11 @@ class Bob < Flaty::RectGameObject
     #end
   end
 
-  #def grounded
-  #  self.speed.y = 0
-  #  self.state = :idle
-  #end
+  def grounded
+    self.speed.y = 0
+    @state = :idle
+    @grounded = true
+  end
 
   #def ceil_hit
   #  self.speed.y = 0
