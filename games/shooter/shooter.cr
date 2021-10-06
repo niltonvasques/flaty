@@ -53,6 +53,8 @@ class Shooter < Flaty::GameWindow
 
     @camera.look(@bob.x, @bob.y)
     update_camera
+
+    @background.update(@bob.speed)
   end
 
   def draw(target, states)
