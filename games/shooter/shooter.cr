@@ -48,13 +48,15 @@ class Shooter < Flaty::GameWindow
   def update(delta)
     return if paused?
 
+    bob_x = @bob.x
     @level.tiles.each { |tile| tile.debug = nil } if Flaty::GameWindow.debug?
     @world.update(delta)
 
     @camera.look(@bob.x, @bob.y)
     update_camera
 
-    @background.update(@bob.speed)
+    # only move the parallax if bob horizontal position changed
+    @background.update(@bob.speed) if bob_x != @bob.x && @camera.position.x == @bob.x
   end
 
   def draw(target, states)
