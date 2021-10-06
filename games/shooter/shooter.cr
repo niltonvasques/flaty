@@ -60,8 +60,8 @@ class Shooter < Flaty::GameWindow
       @camera_debug.draw
       @world.draw_quad
     end
-    @bird.draw
     @bob.draw
+    @bird.draw
   end
 
   def button_down(code)

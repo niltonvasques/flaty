@@ -3,7 +3,7 @@ require "flaty"
 class Bob < Flaty::RectGameObject
   # velocity
   IDLE_SPEED        = Vec2d.new(0, 0)
-  ACCELERATION      = 50.0 # 50 m/s
+  ACCELERATION      = 2.5 # 50 m/s
   GRAVITY           = Vec2d.new(0, -20) # -20 m/s = 72 km/h
   TERMINAL_SPEED    = 55.0 # 50 m/s = 200 km/h
   JUMP_ACCELERATION = Vec2d.new(0, 10000.0) # 110 m/s

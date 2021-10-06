@@ -117,7 +117,6 @@ class LevelLoader
     tilemap = Flaty::Tiles.new("assets/tiles.png", Block::SIZE, Block::SIZE, Block::SCALE)
 #    star_anim = Gosu::Image.load_tiles("assets/star.png", 25, 25)
     level_tiles = self.load_tiles
-    puts "#{level_tiles.width} #{level_tiles.height}"
     level = Level.new(level_tiles.width, level_tiles.height)
 
     level_tiles.width.times do |x|

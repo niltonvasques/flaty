@@ -50,13 +50,13 @@ class Bird < Flaty::RectGameObject
     @current += LEFT_FRAMES_INDEX if turn_left?
   end
 
-  #def collision_rect
-  #  @rect.left   = self.x
-  #  @rect.top    = self.y - 0.5
-  #  @rect.width  = @width + 1.0
-  #  @rect.height = @height + 0.2
-  #  @rect
-  #end
+  def collision_rect
+    @rect.left   = self.x
+    @rect.top    = self.y + 0.9
+    @rect.width  = @width
+    @rect.height = @height - 2.0
+    @rect
+  end
 
   #def collect_stars(stars)
   #  stars.reject! do |star|
