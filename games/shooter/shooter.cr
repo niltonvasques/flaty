@@ -1,6 +1,7 @@
 require "flaty"
 require "./bird"
 require "./bob"
+require "./background"
 require "./level_loader"
 
 class Shooter < Flaty::GameWindow
@@ -35,7 +36,7 @@ class Shooter < Flaty::GameWindow
     # objects
     @world = Physics::World.new(@camera)
     #@world.gravity.y = 0
-    #@background = Background.new
+    @background = Background.new(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
     @bob = Bob.new
     @bird = Bird.new
     #@hud = HUD.new
@@ -55,6 +56,8 @@ class Shooter < Flaty::GameWindow
   end
 
   def draw(target, states)
+    @background.draw
+
     @level.tiles.each { |t| t.draw }
     if Flaty::GameWindow.debug?
       @camera_debug.draw

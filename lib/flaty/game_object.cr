@@ -66,6 +66,7 @@ class Flaty::GameObject
     @width             = default[:width].as Float64
     @height            = default[:height].as Float64
     @rigidbody         = default[:rigidbody].as Bool
+    @camera            = default[:camera].as Bool
     @debug             = default[:debug].as (SF::Color | Nil)
     @tag               = default[:tag].as Symbol
     @image             = default[:image].as (SF::Texture | Nil)
@@ -116,24 +117,19 @@ class Flaty::GameObject
   def draw
     sprite = current_sprite
     return if sprite == nil
-    Flaty.draw_sprite(sprite.as(SF::Sprite), @position.x, @position.y + @height)
-  #    unless current_image.nil?
-  #      @width = GameWindow.camera.pixel_to_unit_x(current_image.width * @scale_x)
-  #      @height = GameWindow.camera.pixel_to_unit_y(current_image.height * @scale_y)
-  #    end
-  #    return if outside_window?
-  #
-  #    new_pos = @position
-  #
-  #    new_pos = GameWindow.camera.translate(self) if @camera
-  #
-  #    draw_obj(new_pos.x, new_pos.y, z)
-      if @debug && GameWindow.debug?
-        rect = self.collision_rect
-        Flaty.draw_rect(rect.x, rect.y, rect.width, rect.height, @debug.as(SF::Color))
-  #      Gosu.draw_rect(new_pos.x, new_pos.y, width * GameWindow.camera.unit_x,
-  #                     height * GameWindow.camera.unit_y, @debug, z = 100, mode = :add)
-      end
+
+    x = @position.x
+    y = @position.y + @height
+    unless @camera
+      x = Flaty.camera.rect.x
+      y = Flaty.camera.rect.y + @height
+    end
+    Flaty.draw_sprite(sprite.as(SF::Sprite), x, y)
+
+    if @debug && GameWindow.debug?
+      rect = self.collision_rect
+      Flaty.draw_rect(rect.x, rect.y, rect.width, rect.height, @debug.as(SF::Color))
+    end
   end
 
   #  def draw_obj(x, y, z)
