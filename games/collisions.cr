@@ -60,7 +60,7 @@ class Collisions < Flaty::GameWindow
     c = Flaty.random_color
     opts = {
       :position => xy, :speed => speed, :color => c, :tag => tag,
-      :mass => 10.0, :rigidbody => true, :elasticity => 0.90, :image => @ball_texture
+      :mass => 2.0, :rigidbody => true, :elasticity => 0.90, :image => @ball_texture
     }
     Flaty::CircleGameObject.new(0.5, opts)
   end
