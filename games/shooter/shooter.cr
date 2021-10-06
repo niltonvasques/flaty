@@ -47,6 +47,8 @@ class Shooter < Flaty::GameWindow
   def update(delta)
     @level.tiles.each { |tile| tile.debug = nil } if Flaty::GameWindow.debug?
     @world.update(delta)
+    @camera.look(@bob.x, @bob.y)
+    update_camera
     #@bird.update(delta)
     #@bob.update(delta)
   #  super
