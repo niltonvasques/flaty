@@ -40,16 +40,18 @@ module Collision
   end
 
   def self.detect_rect(obj1, obj2)
-    return Collision::NONE if obj1.x + obj1.width < obj2.x
-    return Collision::NONE if obj1.x > obj2.x + obj2.width
-    return Collision::NONE if obj1.y + obj1.height < obj2.y
-    return Collision::NONE if obj1.y > obj2.y + obj2.height
+    r1 = obj1.collision_rect
+    r2 = obj2.collision_rect
+    return Collision::NONE if r1.x + r1.width < r2.x
+    return Collision::NONE if r1.x > r2.x + r2.width
+    return Collision::NONE if r1.y + r1.height < r2.y
+    return Collision::NONE if r1.y > r2.y + r2.height
 
     collision = Collision::NONE
-    collision |= Collision::RIGHT if obj1.x < obj2.x && (obj1.x + obj1.width) > obj2.x && (obj1.x + obj1.width) < (obj2.x + obj2.width)
-    collision |= Collision::LEFT if obj1.x > obj2.x && (obj1.x + obj1.width) > (obj2.x + obj2.width) && obj1.x < (obj2.x + obj2.width)
-    collision |= Collision::BOTTOM if obj1.y > obj2.y
-    collision |= Collision::TOP if obj1.y < obj2.y
+    collision |= Collision::RIGHT if r1.x < r2.x && (r1.x + r1.width) > r2.x && (r1.x + r1.width) < (r2.x + r2.width)
+    collision |= Collision::LEFT if r1.x > r2.x && (r1.x + r1.width) > (r2.x + r2.width) && r1.x < (r2.x + r2.width)
+    collision |= Collision::BOTTOM if r1.y > r2.y
+    collision |= Collision::TOP if r1.y < r2.y
 
     collision
   end

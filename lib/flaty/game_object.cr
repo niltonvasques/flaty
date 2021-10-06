@@ -177,9 +177,9 @@ class Flaty::RectGameObject < Flaty::GameObject
 
   def collisions(obj)
     case obj
-    when CircleGameObject then Collision.detect_circle_rect(obj, self.collision_rect)
-    when RectGameObject then Collision.detect_rect(self.collision_rect, obj)
-    when Rect             then Collision.detect_rect(self.collision_rect, obj)
+    when CircleGameObject then Collision.detect_circle_rect(obj, self)
+    when RectGameObject then Collision.detect_rect(self, obj)
+    when Rect             then Collision.detect_rect(self, obj)
     else
       Collision::NONE
     end
