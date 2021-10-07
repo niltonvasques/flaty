@@ -71,6 +71,10 @@ module Flaty
     Flaty::GameWindow.elapsed_milis
   end
 
+  def self.elapsed_seconds
+    Flaty::GameWindow.elapsed_seconds
+  end
+
   def self.delta
     Flaty::GameWindow.delta_seconds
   end

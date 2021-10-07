@@ -34,13 +34,16 @@ class Shooter < Flaty::GameWindow
     # objects
     @fps = Flaty::FPS.new(SCREEN_WIDTH, @font)
     @world = Physics::World.new(@camera)
+    @world.collision_type = :normal
     @level = LevelLoader.load_level
     @background = Background.new(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
     @bob = Bob.new
     @bird = Bird.new
-    @world.bodies << @bob
+    #@world.bodies << @bob
     @world.bodies << @bird
     @world.bodies += @level.tiles
+
+    @rays = false
   end
 
   def update(delta)
@@ -59,6 +62,7 @@ class Shooter < Flaty::GameWindow
     @background.update(@bob.speed) if bob_x != @bob.x && @camera.position.x == @bob.x
   end
 
+  RAD = Math::PI / 180
   def draw(target, states)
     @background.draw
 
@@ -68,12 +72,75 @@ class Shooter < Flaty::GameWindow
     @bob.draw
     @bird.draw
 
+    if @rays
+      draw_ray_traces(@bird)
+      draw_ray_trace_normal(@bird)
+    end
+
     if Flaty::GameWindow.debug?
       @camera_debug.draw
       @world.draw_quad
     end
 
     draw_hud
+  end
+
+  def draw_ray_trace_normal(body)
+    c = origin = body.center
+
+    rect = body.collision_rect
+    start = rect.x
+    while start < rect.x + rect.width
+      c = Vec2d.new(start, origin.y) + Vec2d.new(0, body.speed.y)
+      Flaty.draw_line(start, origin.y, c.x, c.y, Flaty::Colors::RED)
+      start += 0.1
+    end
+
+    start = rect.y
+    while start < rect.y + rect.height
+      c = Vec2d.new(origin.x, start) + Vec2d.new(body.speed.x, 0)
+      Flaty.draw_line(origin.x, start, c.x, c.y, Flaty::Colors::RED)
+      start += 0.1
+    end
+  end
+
+  def draw_ray_trace(body)
+    origin = body.center
+    #origin.x = origin.x + body.collision_rect.width / 2 if body.speed.x > 0
+    #origin.x = origin.x - body.collision_rect.width / 2 if body.speed.x < 0
+    #origin.y = origin.y + body.collision_rect.height / 2 if body.speed.y > 0
+    #origin.y = origin.y - body.collision_rect.height / 2 if body.speed.y < 0
+
+    c = body.center + body.speed
+    Flaty.draw_line(origin.x, origin.y, c.x, c.y, Flaty::Colors::RED)
+
+    -10.upto(10) do |angle|
+      vx = body.speed.x * Math.cos(angle * RAD) - body.speed.y * Math.sin(angle * RAD)
+      vy = body.speed.x * Math.sin(angle * RAD) + body.speed.y * Math.cos(angle * RAD)
+      c = origin + Vec2d.new(vx, vy)
+      Flaty.draw_line(origin.x, origin.y, c.x, c.y, Flaty::Colors::RED)
+    end
+  end
+
+  def draw_ray_traces(body)
+    origin = body.center
+    c = body.center + body.speed
+    Flaty.draw_line(origin.x, origin.y, c.x, c.y, Flaty::Colors::BLUE)
+
+    rect = body.collision_rect
+    start = rect.x
+    while start < rect.x + rect.width
+      c = Vec2d.new(start, origin.y) + body.speed
+      Flaty.draw_line(start, origin.y, c.x, c.y, Flaty::Colors::BLUE)
+      start += 0.1
+    end
+
+    start = rect.y
+    while start < rect.y + rect.height
+      c = Vec2d.new(origin.x, start) + body.speed
+      Flaty.draw_line(origin.x, start, c.x, c.y, Flaty::Colors::BLUE)
+      start += 0.1
+    end
   end
 
   def draw_hud
@@ -88,6 +155,7 @@ class Shooter < Flaty::GameWindow
 
   def button_down(code)
     @camera.key_pressed(self, code)
+    @rays = !@rays if code.r?
   end
 
   def play

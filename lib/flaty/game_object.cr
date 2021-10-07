@@ -92,6 +92,10 @@ class Flaty::GameObject
     @position + Vec2d.new(@width / 2.0, @height / 2.0)
   end
 
+  def previous_center
+    @previous_position + Vec2d.new(@width / 2.0, @height / 2.0)
+  end
+
   def update(delta)
     #update_width_height
     @previous_position = @position

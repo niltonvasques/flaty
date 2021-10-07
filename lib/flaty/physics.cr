@@ -27,11 +27,65 @@ module Physics
     #puts "#{total} total collisions procesing"
   end
 
+  def self.normal_collisions(bodies, quad)
+    total = 0
+    bodies.each_index do |i|
+      candidates = quad.query(bodies[i])
+      candidates.each do |body|
+        next if body == bodies[i]
+        Physics.normal_collision(bodies[i], body)
+        total += 1
+      end
+    end
+    #puts "#{total} total collisions procesing"
+  end
+
   # https://en.wikipedia.org/wiki/Elastic_collision#One-dimensional_Newtonian
   def self.basic_collision(body1, body2)
     if body1.collisions(body2) != Collision::NONE && (body1.rigidbody || body2.rigidbody)
       Physics.solve_collision(body1, body2)
       Physics.solve_collision(body2, body1)
+    end
+  end
+
+  RAD     = Math::PI / 180
+  RAD_0   = 0
+  RAD_180 = Math::PI
+  RAD_90  = RAD_180 / 2
+  RAD_45  = RAD_90 / 2
+  RAD_135 = RAD_180 - RAD_45
+  RAD_270 = -RAD_90
+
+  def self.normal_collision(body1, body2)
+
+    if body1.collisions(body2) != Collision::NONE && (body1.rigidbody || body2.rigidbody)
+      body1.debug = Flaty::Colors::DEBUG
+      body2.debug = Flaty::Colors::DEBUG
+    end
+    iterations = 0
+    while body1.collisions(body2) != Collision::NONE && (body1.rigidbody || body2.rigidbody) &&
+        iterations < 100
+      cx = (body1.previous_center.x - body2.previous_center.x)
+      cy = (body1.previous_center.y - body2.previous_center.y)
+      v1 = body1.speed
+      #phi = Math.atan2(cy, cx)
+      phi = Math.atan2(v1.y, v1.x)
+      add = Vec2d.new(0, 0)
+      add.x = -0.01 if phi < RAD * 25 && phi > -RAD * 25
+      add.x = 0.01 if ( phi < RAD_180 && phi > RAD * 155 ) || (phi >= -RAD_180 && phi <= -RAD * 155)
+      add.y = -0.01 if phi >= RAD * 25 && phi <= RAD * 155
+      add.y = 0.01 if phi <= -RAD * 25 && phi > -RAD * 155
+      #add.y = -0.01 if phi < Math::PI && phi > (Math::PI - Math::PI/4)
+      puts "colliding #{phi / RAD} phi #{Flaty.elapsed_seconds} #{body1.tag} #{body2.tag}"
+      if body1.rigidbody
+        body1.position = body1.position + add
+        body1.grounded if add.y > 0
+      end
+      if body2.rigidbody
+        body2.position = body2.position - add
+        body2.grounded if add.y < 0
+      end
+      iterations += 1
     end
   end
 
@@ -212,6 +266,8 @@ module Physics
       case @collision_type
       when :basic
         Physics.basic_collisions(updatables, @quadtree)
+      when :normal
+        Physics.normal_collisions(updatables, @quadtree)
       when :elastic
         Physics.elastic_collisions(updatables, @quadtree)
       end
