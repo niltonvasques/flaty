@@ -66,6 +66,14 @@ class Bird < Flaty::RectGameObject
     @rect
   end
 
+  def previous_collision_rect
+    @rect.left = @previous_position.x
+    @rect.top = @previous_position.y + 0.9
+    @rect.width = @width
+    @rect.height = @height - 2.0
+    @rect
+  end
+
   def pause
     return unless Flaty.playing?(@wings)
     @wings.pause

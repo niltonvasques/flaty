@@ -39,6 +39,41 @@ module Collision
     self.bottom?(collision) || self.top?(collision)
   end
 
+  def self.detect_line_rect(p1 : Vec2d, p2 : Vec2d, r : Rect)
+    # (x, y)        → (x+width, y)        # top
+    q1 = Vec2d.new(r.x, r.y)
+    q2 = Vec2d.new(r.x + r.width, r.y)
+    return true if line_intersect(p1, p2, q1, q2)
+    # (x+width, y)  → (x+width, y+height) # right
+    q1 = Vec2d.new(r.x + r.width, r.y)
+    q2 = Vec2d.new(r.x + r.width, r.y + r.height)
+    return true if line_intersect(p1, p2, q1, q2)
+    # (x, y+height) → (x+width, y+height) # bottom
+    q1 = Vec2d.new(r.x, r.y + r.height)
+    q2 = Vec2d.new(r.x + r.width, r.y + r.height)
+    return true if line_intersect(p1, p2, q1, q2)
+    # (x, y)        → (x, y+height)       # left
+    q1 = Vec2d.new(r.x, r.y)
+    q2 = Vec2d.new(r.x, r.y + r.height)
+    line_intersect(p1, p2, q1, q2)
+  end
+
+  def self.line_intersect(p1 : Vec2d, q1 : Vec2d, p2 : Vec2d, q2 : Vec2d)
+    o1 = triplet_direction(p1, q1, p2)
+    o2 = triplet_direction(p1, q1, q2)
+    o3 = triplet_direction(p2, q2, p1)
+    o4 = triplet_direction(p2, q2, q1)
+
+    o1 != o2 && o3 != o4
+  end
+
+  def self.triplet_direction(p : Vec2d, q : Vec2d, r : Vec2d)
+    val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y)
+    return :colinear if val == 0
+    return :clokwise if val > 0
+    :counter_clockwise
+  end
+
   def self.detect_rect(obj1, obj2)
     r1 = obj1.collision_rect
     r2 = obj2.collision_rect

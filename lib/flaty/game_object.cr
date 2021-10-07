@@ -153,6 +153,14 @@ class Flaty::GameObject
   def ceil_hit
   end
 
+  def previous_collision_rect
+    @rect.left = @previous_position.x
+    @rect.top = @previous_position.y
+    @rect.width = @width
+    @rect.height = @height
+    @rect
+  end
+
   def collision_rect
     @rect.left = x
     @rect.top = y
@@ -169,6 +177,15 @@ class Flaty::GameObject
   def current_sprite
     return @sprite if @sprite
     @tiles.as(Flaty::Tiles).at(@current) if @tiles
+  end
+
+  def normal_rays
+    left_rays  = [] of Tuple(Vec2d, Vec2d)
+    right_rays = [] of Tuple(Vec2d, Vec2d)
+    up_rays    = [] of Tuple(Vec2d, Vec2d)
+    down_rays  = [] of Tuple(Vec2d, Vec2d)
+
+    {left_rays, right_rays, up_rays, down_rays}
   end
 end
 
@@ -205,7 +222,7 @@ class Flaty::RectGameObject < Flaty::GameObject
     up_rays    = [] of Tuple(Vec2d, Vec2d)
     down_rays  = [] of Tuple(Vec2d, Vec2d)
 
-    rect = body.collision_rect
+    rect = body.previous_collision_rect
     start = rect.x + 0.1
     while start < rect.x + rect.width - 0.1
       y = rect.y + rect.height

@@ -113,6 +113,14 @@ class Bob < Flaty::RectGameObject
     @rect
   end
 
+  def previous_collision_rect
+    @rect.left = @previous_position.x + WIDTH / 4
+    @rect.top = @previous_position.y
+    @rect.width = @width - WIDTH / 2
+    @rect.height = @height
+    @rect
+  end
+
   def update_direction
     @face = :right if self.acceleration.x > 0
     @face = :left if self.acceleration.x < 0
@@ -142,9 +150,9 @@ class Bob < Flaty::RectGameObject
     @grounded = true
   end
 
-  #def ceil_hit
-  #  self.speed.y = 0
-  #end
+  def ceil_hit
+    self.speed.y = 0
+  end
 
   def collect_stars(stars : Array(Star))
     stars.reject! do |star|

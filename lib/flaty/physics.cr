@@ -57,33 +57,57 @@ module Physics
   RAD_270 = -RAD_90
 
   def self.normal_collision(body1, body2)
-
     if body1.collisions(body2) != Collision::NONE && (body1.rigidbody || body2.rigidbody)
       body1.debug = Flaty::Colors::DEBUG
       body2.debug = Flaty::Colors::DEBUG
     end
     iterations = 0
     while body1.collisions(body2) != Collision::NONE && (body1.rigidbody || body2.rigidbody) &&
-        iterations < 100
-      cx = (body1.previous_center.x - body2.previous_center.x)
-      cy = (body1.previous_center.y - body2.previous_center.y)
-      v1 = body1.speed
-      #phi = Math.atan2(cy, cx)
-      phi = Math.atan2(v1.y, v1.x)
-      add = Vec2d.new(0, 0)
-      add.x = -0.01 if phi < RAD * 25 && phi > -RAD * 25
-      add.x = 0.01 if ( phi < RAD_180 && phi > RAD * 155 ) || (phi >= -RAD_180 && phi <= -RAD * 155)
-      add.y = -0.01 if phi >= RAD * 25 && phi <= RAD * 155
-      add.y = 0.01 if phi <= -RAD * 25 && phi > -RAD * 155
-      #add.y = -0.01 if phi < Math::PI && phi > (Math::PI - Math::PI/4)
-      puts "colliding #{phi / RAD} phi #{Flaty.elapsed_seconds} #{body1.tag} #{body2.tag}"
-      if body1.rigidbody
-        body1.position = body1.position + add
-        body1.grounded if add.y > 0
+        iterations < 50
+      rigid = body1
+      other = body2
+      unless body1.rigidbody
+        rigid = body2
+        other = body1
       end
-      if body2.rigidbody
-        body2.position = body2.position - add
-        body2.grounded if add.y < 0
+      left, right, up, down = rigid.normal_rays
+      left_counts = 0
+      left.each do |p1, p2|
+        left_counts += 1 if Collision.detect_line_rect(p1, p2, other.collision_rect)
+      end
+      right_counts = 0
+      right.each do |p1, p2|
+        right_counts += 1 if Collision.detect_line_rect(p1, p2, other.collision_rect)
+      end
+      up_counts = 0
+      up.each do |p1, p2|
+        up_counts += 1 if Collision.detect_line_rect(p1, p2, other.collision_rect)
+      end
+      down_counts = 0
+      down.each do |p1, p2|
+        down_counts += 1 if Collision.detect_line_rect(p1, p2, other.collision_rect)
+      end
+      puts "#{left_counts} left #{right_counts} right #{up_counts} up #{down_counts} down #{Flaty.elapsed_seconds}"
+
+      if left_counts > 0
+        rigid.position += Vec2d.new(0.01, 0.0)
+        iterations += 1
+        next
+      end
+      if right_counts > 0
+        rigid.position -= Vec2d.new(0.01, 0.0)
+        iterations += 1
+        next
+      end
+      if down_counts > 0
+        rigid.position += Vec2d.new(0.0, 0.01)
+        rigid.grounded
+        iterations += 1
+        next
+      end
+      if up_counts > 0
+        rigid.position -= Vec2d.new(0.0, 0.01)
+        rigid.ceil_hit
       end
       iterations += 1
     end

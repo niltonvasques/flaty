@@ -35,7 +35,7 @@ class Shooter < Flaty::GameWindow
     @fps = Flaty::FPS.new(SCREEN_WIDTH, @font)
     @world = Physics::World.new(@camera)
     @world.collision_type = :normal
-    @world.collision_type = :basic
+    #@world.collision_type = :basic
     @level = LevelLoader.load_level
     @background = Background.new(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
     @bob = Bob.new
