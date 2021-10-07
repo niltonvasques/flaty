@@ -63,7 +63,6 @@ class Shooter < Flaty::GameWindow
     @background.update(@bob.speed) if bob_x != @bob.x && @camera.position.x == @bob.x
   end
 
-  RAD = Math::PI / 180
   def draw(target, states)
     @background.draw
 

@@ -43,6 +43,7 @@ class SF::Transformable
   end
 end
 
+RAD = Math::PI / 180
 alias Vec2d = SF::Vector2(Float64)
 alias Vec2i = SF::Vector2(Int32)
 alias Rect  = SF::Rect(Float64)

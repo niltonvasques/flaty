@@ -203,6 +203,7 @@ class Flaty::RectGameObject < Flaty::GameObject
   end
 
   def draw_rays
+    #draw_ray_trace
     #draw_ray_traces
     draw_ray_trace_normal
   end
