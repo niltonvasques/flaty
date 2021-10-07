@@ -1,4 +1,5 @@
 require "flaty"
+require "flaty/fps"
 require "./bird"
 require "./bob"
 require "./background"
@@ -17,9 +18,10 @@ class Shooter < Flaty::GameWindow
     super(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS, SCALE, "Shooter")
 
     # assets
-    @song = SF::Music.from_file("assets/sounds/dusk_theme.ogg")
-    @song.play
+    @font        = SF::Font.from_file("assets/Cantarell-Regular.otf")
+    @song        = SF::Music.from_file("assets/sounds/dusk_theme.ogg")
     @song.volume = 5
+    @song.play
 
     @camera.size(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
     @camera.bounds.left = CAMERA_WIDTH_UNITS / 2.0
@@ -29,6 +31,7 @@ class Shooter < Flaty::GameWindow
     @camera_debug = Flaty::CameraDebug.new(@camera)
 
     # objects
+    @fps = Flaty::FPS.new(SCREEN_WIDTH, @font)
     @world = Physics::World.new(@camera)
     @level = LevelLoader.load_level
     @background = Background.new(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
@@ -45,7 +48,9 @@ class Shooter < Flaty::GameWindow
 
     bob_x = @bob.x
     @level.tiles.each { |tile| tile.debug = nil } if Flaty::GameWindow.debug?
+    @level.stars.each { |t| t.update }
     @world.update(delta)
+    @bob.collect_stars(@level.stars)
 
     @camera.look(@bob.x, @bob.y)
     update_camera
@@ -58,12 +63,14 @@ class Shooter < Flaty::GameWindow
     @background.draw
 
     @level.tiles.each { |t| t.draw }
+    @level.stars.each { |t| t.draw }
     if Flaty::GameWindow.debug?
       @camera_debug.draw
       @world.draw_quad
     end
     @bob.draw
     @bird.draw
+    @fps.draw(@delta)
   end
 
   def button_down(code)

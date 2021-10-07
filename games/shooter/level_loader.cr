@@ -1,5 +1,6 @@
 require "flaty"
 require "stumpy_png"
+require "./star"
 
 class Block < Flaty::RectGameObject
 #  SCREEN_WIDTH   = 1280
@@ -44,7 +45,7 @@ class Level
 
   def initialize(@width : Int32, @height : Int32)
     @tilesmap = { } of Int32 => Block
-    @stars = [] of Int32
+    @stars = [] of Star
   end
 
   def add_tile(tile)
@@ -115,7 +116,8 @@ class LevelLoader
 
   def self.load_level
     tilemap = Flaty::Tiles.new("assets/tiles.png", Block::SIZE, Block::SIZE, Block::SCALE)
-#    star_anim = Gosu::Image.load_tiles("assets/star.png", 25, 25)
+    star_scale = SF.vector2(1.0 / 25, 1.0 / 25)
+    star_anim     = Flaty::Tiles.new("assets/star.png", 25, 25, star_scale)
     level_tiles = self.load_tiles
     level = Level.new(level_tiles.width, level_tiles.height)
 
@@ -133,7 +135,9 @@ class LevelLoader
           level.add_tile(block)
         end
         if tile == Block::STAR
-#          level.stars.push(Star.new(star_anim, position: Vec2d.new(x, new_y)))
+          star = Star.new({ :tiles => star_anim, :position => Vec2d.new(x.to_f, new_y.to_f),
+                           :width => 1.0, :height => 1.0, :tag => :star })
+          level.stars << star
         end
       end
     end

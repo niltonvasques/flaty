@@ -1,4 +1,5 @@
 require "flaty"
+require "./star"
 
 class Bob < Flaty::RectGameObject
   # velocity
@@ -29,17 +30,21 @@ class Bob < Flaty::RectGameObject
   IDLE_FRAME_INDEX       = 10
 
   def initialize
-    tiles     = Flaty::Tiles.new("assets/bob2.png", TILE_WIDTH, TILE_HEIGHT, TILE_SCALE)
+    tiles        = Flaty::Tiles.new("assets/bob2.png", TILE_WIDTH, TILE_HEIGHT, TILE_SCALE)
     steps_buffer = SF::SoundBuffer.from_file("assets/sounds/steps.wav")
+    beep_buffer  = SF::SoundBuffer.from_file("assets/sounds/beep.wav")
     @steps       = SF::Sound.new(steps_buffer)
-    @steps.loop = true
+    @beep        = SF::Sound.new(beep_buffer)
+    @steps.loop  = true
     @steps.pitch = 1.5
-  #  @beep = Gosu::Sample.new('assets/sounds/beep.wav')
-    @jump_at  = -2000
-    @jumping  = false
-    @grounded = false
-    @state    = :idle
-    @face     = :right
+    @beep.volume = 10
+
+    @jump_at     = -2000
+    @jumping     = false
+    @grounded    = false
+    @state       = :idle
+    @face        = :right
+    @score       = 0
 
     super({ :position => Vec2d.new(0, 4), :width => WIDTH, :height => HEIGHT, :mass => 5.0,
            :speed => IDLE_SPEED.dup, :max_speed => Vec2d.new(SPEED, TERMINAL_SPEED), :damp => 0.8,
@@ -139,18 +144,18 @@ class Bob < Flaty::RectGameObject
   #  self.speed.y = 0
   #end
 
-  #def collect_stars(stars)
-  #  stars.reject! do |star|
+  def collect_stars(stars : Array(Star))
+    stars.reject! do |star|
   #    #if Gosu.distance(self.x + self.width / 2, self.y + self.height / 2, star.x, star.y) < 1
-  #    if Collision.detect_rect(collision_rect, star) != Collision::NONE
-  #      self.score += 10
-  #      @beep.play(0.2)
-  #      true
-  #    else
-  #      false
-  #    end
-  #  end
-  #end
+      if Collision.detect_rect(self, star) != Collision::NONE
+        @score += 10
+        @beep.play
+        true
+      else
+        false
+      end
+    end
+  end
 
   def pause
     return unless Flaty.playing?(@steps)
