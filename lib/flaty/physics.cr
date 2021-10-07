@@ -57,13 +57,14 @@ module Physics
   RAD_270 = -RAD_90
 
   def self.normal_collision(body1, body2)
-    if body1.collisions(body2) != Collision::NONE && (body1.rigidbody || body2.rigidbody)
+    return if !body1.rigidbody && body2.rigidbody
+
+    if body1.collisions(body2) != Collision::NONE
       body1.debug = Flaty::Colors::DEBUG
       body2.debug = Flaty::Colors::DEBUG
     end
     iterations = 0
-    while body1.collisions(body2) != Collision::NONE && (body1.rigidbody || body2.rigidbody) &&
-        iterations < 50
+    while body1.collisions(body2) != Collision::NONE && iterations < 50
       rigid = body1
       other = body2
       unless body1.rigidbody
@@ -87,7 +88,7 @@ module Physics
       down.each do |p1, p2|
         down_counts += 1 if Collision.detect_line_rect(p1, p2, other.collision_rect)
       end
-      puts "#{left_counts} left #{right_counts} right #{up_counts} up #{down_counts} down #{Flaty.elapsed_seconds}"
+      #puts "#{left_counts} left #{right_counts} right #{up_counts} up #{down_counts} down #{Flaty.elapsed_seconds}"
 
       if left_counts > 0
         rigid.position += Vec2d.new(0.01, 0.0)
