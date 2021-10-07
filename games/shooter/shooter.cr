@@ -71,6 +71,7 @@ class Shooter < Flaty::GameWindow
     @bob.draw
     @bird.draw
     @fps.draw(@delta)
+    Flaty.draw_text_in_pixels(@font, "Score: #{@bob.score}", 9, 9)
   end
 
   def button_down(code)

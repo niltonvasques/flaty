@@ -29,6 +29,8 @@ class Bob < Flaty::RectGameObject
   FRAME_FAST_DURATION    = 80
   IDLE_FRAME_INDEX       = 10
 
+  property score
+
   def initialize
     tiles        = Flaty::Tiles.new("assets/bob2.png", TILE_WIDTH, TILE_HEIGHT, TILE_SCALE)
     steps_buffer = SF::SoundBuffer.from_file("assets/sounds/steps.wav")
