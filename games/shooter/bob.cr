@@ -30,14 +30,16 @@ class Bob < Flaty::RectGameObject
 
   def initialize
     tiles     = Flaty::Tiles.new("assets/bob2.png", TILE_WIDTH, TILE_HEIGHT, TILE_SCALE)
-  #  @steps = Gosu::Sample.new('assets/sounds/steps.wav')
+    steps_buffer = SF::SoundBuffer.from_file("assets/sounds/steps.wav")
+    @steps       = SF::Sound.new(steps_buffer)
+    @steps.loop = true
+    @steps.pitch = 1.5
   #  @beep = Gosu::Sample.new('assets/sounds/beep.wav')
     @jump_at  = -2000
     @jumping  = false
     @grounded = false
     @state    = :idle
     @face     = :right
-  #  play
 
     super({ :position => Vec2d.new(0, 4), :width => WIDTH, :height => HEIGHT, :mass => 5.0,
            :speed => IDLE_SPEED.dup, :max_speed => Vec2d.new(SPEED, TERMINAL_SPEED), :damp => 0.8,
@@ -61,7 +63,11 @@ class Bob < Flaty::RectGameObject
 
     update_animation
 
-  #  play if self.state == :walking
+    if @state == :walking
+      play
+    else
+      pause
+    end
   end
 
   def update_movement
@@ -146,21 +152,15 @@ class Bob < Flaty::RectGameObject
   #  end
   #end
 
-  #def pause
-  #  if !@steps_playing.nil? and !@steps_playing.paused?
-  #    @steps_playing.pause
-  #  end
-  #end
+  def pause
+    return unless Flaty.playing?(@steps)
+    @steps.stop
+  end
 
-  #def play
-  #  if @steps_playing.nil? or @steps_playing.paused?
-  #    return @steps_playing.resume if @steps_playing
-  #    volume  = 2
-  #    speed   = 1.5
-  #    looping = true
-  #    @steps_playing = @steps.play(volume, speed, looping)
-  #  end
-  #end
+  def play
+    return if Flaty.playing?(@steps)
+    @steps.play
+  end
 
   def turn_left?
     self.speed.x < 0

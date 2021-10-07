@@ -168,6 +168,10 @@ module Flaty
     SF::Color.new(r, g, b)
   end
 
+  def self.playing?(sound : SF::Sound)
+    sound.status == SF::SoundSource::Status::Playing
+  end
+
   module Colors
     BLACK     = SF::Color.new(0,   0,     0)
     WHITE     = SF::Color.new(255, 255, 255)
