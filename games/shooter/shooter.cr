@@ -16,16 +16,11 @@ class Shooter < Flaty::GameWindow
   def initialize
     super(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS, SCALE, "Shooter")
 
-  #  # assets
-  #  @song = Gosu::Song.new('assets/sounds/dusk_theme.mp3')
-  #  @song.volume = 0.2
-  #  @song.play
+    # assets
+    @song = SF::Music.from_file("assets/sounds/dusk_theme.ogg")
+    @song.play
+    @song.volume = 5
 
-  #  @world = World.new
-    @level = LevelLoader.load_level
-  #  @world.level = @level
-  #  @frames = 0
-  #  @sum_frames = 0
     @camera.size(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
     @camera.bounds.left = CAMERA_WIDTH_UNITS / 2.0
     @camera.bounds.top = CAMERA_HEIGHT_UNITS / 2.0
@@ -35,7 +30,7 @@ class Shooter < Flaty::GameWindow
 
     # objects
     @world = Physics::World.new(@camera)
-    #@world.gravity.y = 0
+    @level = LevelLoader.load_level
     @background = Background.new(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
     @bob = Bob.new
     @bird = Bird.new

@@ -18,9 +18,12 @@ class Bird < Flaty::RectGameObject
 
   def initialize
     tiles = Flaty::Tiles.new("assets/seagull_tiles.png", TILE_WIDTH, TILE_HEIGHT, TILE_SCALE)
-    #@wings = Gosu::Sample.new('assets/sounds/dragonflap.mp3')
-    #@beep = Gosu::Sample.new('assets/sounds/beep.wav')
-    #play
+    wings_buffer = SF::SoundBuffer.from_file("assets/sounds/dragonflap.wav")
+    @wings       = SF::Sound.new(wings_buffer)
+    @wings.loop = true
+    @wings.pitch = 2.5
+    @wings.volume = 10
+    play
 
     super({ :position => Vec2d.new(1.0, 14.0), :width => WIDTH, :height => HEIGHT,
            :speed => IDLE_SPEED.dup, :max_speed => Vec2d.new(SPEED, SPEED), :damp => 0.8,
@@ -33,6 +36,11 @@ class Bird < Flaty::RectGameObject
     update_speed
 
     super
+    if self.acceleration.x.abs != 0
+      @wings.pitch = 5
+    else
+      @wings.pitch = 2.5
+    end
   end
 
   def update_speed
@@ -74,12 +82,10 @@ class Bird < Flaty::RectGameObject
   #  @wings_playing.pause
   #end
 
-  #def play
-  #  volume  = 2
-  #  speed   = 2
-  #  looping = true
-  #  @wings_playing = @wings.play(volume, speed, looping)
-  #end
+  def play
+    return if Flaty.playing?(@wings)
+    @wings.play
+  end
 
   def turn_left?
     self.speed.x < 0
