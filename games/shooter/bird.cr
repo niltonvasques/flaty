@@ -66,21 +66,10 @@ class Bird < Flaty::RectGameObject
     @rect
   end
 
-  #def collect_stars(stars)
-  #  stars.reject! do |star|
-  #    if Collision.detect(collision_rect, star) != Collision::NONE
-  #      self.score += 10
-  #      @beep.play
-  #      true
-  #    else
-  #      false
-  #    end
-  #  end
-  #end
-
-  #def pause
-  #  @wings_playing.pause
-  #end
+  def pause
+    return unless Flaty.playing?(@wings)
+    @wings.pause
+  end
 
   def play
     return if Flaty.playing?(@wings)

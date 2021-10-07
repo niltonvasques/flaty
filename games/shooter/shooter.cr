@@ -8,6 +8,7 @@ require "./level_loader"
 class Shooter < Flaty::GameWindow
   SCREEN_WIDTH        = 2160
   SCREEN_HEIGHT       = 1214
+  SCREEN_CENTER       = Vec2i.new((SCREEN_WIDTH / 2).to_i, (SCREEN_HEIGHT / 2).to_i)
   CAMERA_WIDTH_UNITS  = 50.0
   CAMERA_HEIGHT_UNITS = 28.0
   SCALE               = SCREEN_WIDTH / CAMERA_WIDTH_UNITS
@@ -64,29 +65,41 @@ class Shooter < Flaty::GameWindow
 
     @level.tiles.each { |t| t.draw }
     @level.stars.each { |t| t.draw }
+
+    @bob.draw
+    @bird.draw
+
     if Flaty::GameWindow.debug?
       @camera_debug.draw
       @world.draw_quad
     end
-    @bob.draw
-    @bird.draw
+
+    draw_hud
+  end
+
+  def draw_hud
     @fps.draw(@delta)
     Flaty.draw_text_in_pixels(@font, "Score: #{@bob.score}", 9, 9)
+    if paused?
+      size = 100
+      x = SCREEN_CENTER.x - 200
+      Flaty.draw_text_in_pixels(@font, "PAUSED", x, SCREEN_CENTER.y, 100, Flaty::Colors::WHITE)
+    end
   end
 
   def button_down(code)
     @camera.key_pressed(self, code)
   end
 
-  #def play
-  #  @song.play
-  #  @world.play
-  #end
+  def play
+    @song.play
+    @bird.play
+  end
 
-  #def paused
-  #  @song.pause
-  #  @world.pause
-  #end
+  def paused
+    @bird.pause
+    @song.pause
+  end
 end
 
 game = Shooter.new

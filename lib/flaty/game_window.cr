@@ -103,6 +103,12 @@ module Flaty
       @paused
     end
 
+    def play
+    end
+
+    def paused
+    end
+
     def button_down(code)
     end
 
@@ -120,7 +126,14 @@ module Flaty
             @window.close()
           elsif event.is_a? SF::Event::KeyPressed
             pressed = true
-            @paused = !@paused if event.code.p?
+            if event.code.p?
+              @paused = !@paused
+              if @paused
+                paused
+              else
+                play
+              end
+            end
             GameWindow.debug = !GameWindow.debug if event.code.y?
             button_down(event.code)
           elsif event.is_a? SF::Event::KeyReleased
