@@ -38,7 +38,6 @@ class Shooter < Flaty::GameWindow
     @background = Background.new(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
     @bob = Bob.new
     @bird = Bird.new
-    #@hud = HUD.new
     @world.bodies << @bob
     @world.bodies << @bird
     @world.bodies += @level.tiles

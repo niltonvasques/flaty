@@ -7,7 +7,7 @@ class Bob < Flaty::RectGameObject
   ACCELERATION      = 2.5 # 50 m/s
   GRAVITY           = Vec2d.new(0, -20) # -20 m/s = 72 km/h
   TERMINAL_SPEED    = 55.0 # 50 m/s = 200 km/h
-  JUMP_ACCELERATION = Vec2d.new(0, 10000.0) # 110 m/s
+  JUMP_ACCELERATION = Vec2d.new(0, 90.0) # 110 m/s
   SPEED             = 7.0 # 7 m/s = 25 km/h
 
   JUMP_DURATION = 40 # 50 ms
@@ -95,13 +95,13 @@ class Bob < Flaty::RectGameObject
       @jumping = true
       @state = :jumping
       @grounded = false
-      self.acceleration += JUMP_ACCELERATION * Flaty.delta
+      self.acceleration += JUMP_ACCELERATION
     end
 
     if @jumping && (Flaty.elapsed_milis - @jump_at) > JUMP_DURATION
       @jumping = false
     elsif @jumping
-      self.acceleration += JUMP_ACCELERATION * Flaty.delta
+      self.acceleration += JUMP_ACCELERATION
     end
   end
 
