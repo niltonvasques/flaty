@@ -184,6 +184,77 @@ class Flaty::RectGameObject < Flaty::GameObject
       Collision::NONE
     end
   end
+
+  def draw_rays
+    #draw_ray_traces
+    draw_ray_trace_normal
+  end
+
+  def draw_ray_trace_normal
+    body = self
+    c = origin = body.center
+
+    rect = body.collision_rect
+    start = rect.x
+    while start < rect.x + rect.width
+      y = rect.y
+      y = rect.y + rect.height if body.speed.y > 0
+      c = Vec2d.new(start, y) + Vec2d.new(0, body.speed.y)
+      Flaty.draw_line(start, y, c.x, c.y, Flaty::Colors::RED)
+      start += 0.1
+    end
+
+    start = rect.y
+    while start < rect.y + rect.height
+      x = rect.x
+      x = rect.x + rect.width if body.speed.x > 0
+      c = Vec2d.new(x, start) + Vec2d.new(body.speed.x, 0)
+      Flaty.draw_line(x, start, c.x, c.y, Flaty::Colors::RED)
+      start += 0.1
+    end
+  end
+
+  def draw_ray_trace
+    body = self
+    origin = body.center
+    #origin.x = origin.x + body.collision_rect.width / 2 if body.speed.x > 0
+    #origin.x = origin.x - body.collision_rect.width / 2 if body.speed.x < 0
+    #origin.y = origin.y + body.collision_rect.height / 2 if body.speed.y > 0
+    #origin.y = origin.y - body.collision_rect.height / 2 if body.speed.y < 0
+
+    c = body.center + body.speed
+    Flaty.draw_line(origin.x, origin.y, c.x, c.y, Flaty::Colors::RED)
+
+    -10.upto(10) do |angle|
+      vx = body.speed.x * Math.cos(angle * RAD) - body.speed.y * Math.sin(angle * RAD)
+      vy = body.speed.x * Math.sin(angle * RAD) + body.speed.y * Math.cos(angle * RAD)
+      c = origin + Vec2d.new(vx, vy)
+      Flaty.draw_line(origin.x, origin.y, c.x, c.y, Flaty::Colors::RED)
+    end
+  end
+
+  def draw_ray_traces
+    body = self
+    origin = body.center
+    c = body.center + body.speed
+    Flaty.draw_line(origin.x, origin.y, c.x, c.y, Flaty::Colors::BLUE)
+
+    rect = body.collision_rect
+    start = rect.x
+    while start < rect.x + rect.width
+      c = Vec2d.new(start, origin.y) + body.speed
+      Flaty.draw_line(start, origin.y, c.x, c.y, Flaty::Colors::BLUE)
+      start += 0.1
+    end
+
+    start = rect.y
+    while start < rect.y + rect.height
+      c = Vec2d.new(origin.x, start) + body.speed
+      Flaty.draw_line(origin.x, start, c.x, c.y, Flaty::Colors::BLUE)
+      start += 0.1
+    end
+  end
+
 end
 
 class Flaty::CircleGameObject < Flaty::GameObject
