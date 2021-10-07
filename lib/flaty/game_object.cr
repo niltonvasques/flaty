@@ -224,25 +224,23 @@ class Flaty::RectGameObject < Flaty::GameObject
 
     rect = body.previous_collision_rect
     start = rect.x + 0.1
+    y = body.previous_center.y
     while start < rect.x + rect.width - 0.1
-      y = rect.y + rect.height
-      c = Vec2d.new(start, y) + Vec2d.new(0, 1)
+      c = Vec2d.new(start, y) + Vec2d.new(0, 2)
       up_rays << {Vec2d.new(start, y), Vec2d.new(c.x, c.y)}
 
-      y = rect.y
-      c = Vec2d.new(start, y) + Vec2d.new(0, -1)
+      c = Vec2d.new(start, y) + Vec2d.new(0, -2)
       down_rays << {Vec2d.new(start, y), Vec2d.new(c.x, c.y)}
       start += 0.1
     end
 
     start = rect.y + 0.1
+    x = body.previous_center.x
     while start < rect.y + rect.height - 0.1
-      x = rect.x + rect.width
-      c = Vec2d.new(x, start) + Vec2d.new(1, 0)
+      c = Vec2d.new(x, start) + Vec2d.new(2, 0)
       right_rays << {Vec2d.new(x, start), Vec2d.new(c.x, c.y)}
 
-      x = rect.x
-      c = Vec2d.new(x, start) + Vec2d.new(-1, 0)
+      c = Vec2d.new(x, start) + Vec2d.new(-2, 0)
       left_rays << {Vec2d.new(x, start), Vec2d.new(c.x, c.y)}
       start += 0.1
     end

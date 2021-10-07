@@ -91,22 +91,26 @@ module Physics
 
       if left_counts > 0
         rigid.position += Vec2d.new(0.01, 0.0)
+        other.position -= Vec2d.new(0.01, 0.0) if other.rigidbody
         iterations += 1
         next
       end
       if right_counts > 0
         rigid.position -= Vec2d.new(0.01, 0.0)
+        other.position += Vec2d.new(0.01, 0.0) if other.rigidbody
         iterations += 1
         next
       end
       if down_counts > 0
         rigid.position += Vec2d.new(0.0, 0.01)
+        other.position -= Vec2d.new(0.0, 0.01) if other.rigidbody
         rigid.grounded
         iterations += 1
         next
       end
       if up_counts > 0
         rigid.position -= Vec2d.new(0.0, 0.01)
+        other.position += Vec2d.new(0.0, 0.01) if other.rigidbody
         rigid.ceil_hit
       end
       iterations += 1
