@@ -191,36 +191,51 @@ class Flaty::RectGameObject < Flaty::GameObject
   end
 
   def draw_ray_trace_normal
+    normal_rays.each do |rays|
+      rays.each { |r| Flaty.draw_line(r[0].x, r[0].y, r[1].x, r[1].y, Flaty::Colors::RED) }
+    end
+  end
+
+  def normal_rays
     body = self
     c = origin = body.center
 
+    left_rays  = [] of Tuple(Vec2d, Vec2d)
+    right_rays = [] of Tuple(Vec2d, Vec2d)
+    up_rays    = [] of Tuple(Vec2d, Vec2d)
+    down_rays  = [] of Tuple(Vec2d, Vec2d)
+
     rect = body.collision_rect
-    start = rect.x
-    while start < rect.x + rect.width
+    start = rect.x + 0.1
+    while start < rect.x + rect.width - 0.1
+      y = rect.y + rect.height
+      c = Vec2d.new(start, y) + Vec2d.new(0, 1)
+      up_rays << {Vec2d.new(start, y), Vec2d.new(c.x, c.y)}
+
       y = rect.y
-      y = rect.y + rect.height if body.speed.y > 0
-      c = Vec2d.new(start, y) + Vec2d.new(0, body.speed.y)
-      Flaty.draw_line(start, y, c.x, c.y, Flaty::Colors::RED)
+      c = Vec2d.new(start, y) + Vec2d.new(0, -1)
+      down_rays << {Vec2d.new(start, y), Vec2d.new(c.x, c.y)}
       start += 0.1
     end
 
-    start = rect.y
-    while start < rect.y + rect.height
+    start = rect.y + 0.1
+    while start < rect.y + rect.height - 0.1
+      x = rect.x + rect.width
+      c = Vec2d.new(x, start) + Vec2d.new(1, 0)
+      right_rays << {Vec2d.new(x, start), Vec2d.new(c.x, c.y)}
+
       x = rect.x
-      x = rect.x + rect.width if body.speed.x > 0
-      c = Vec2d.new(x, start) + Vec2d.new(body.speed.x, 0)
-      Flaty.draw_line(x, start, c.x, c.y, Flaty::Colors::RED)
+      c = Vec2d.new(x, start) + Vec2d.new(-1, 0)
+      left_rays << {Vec2d.new(x, start), Vec2d.new(c.x, c.y)}
       start += 0.1
     end
+
+    {left_rays, right_rays, up_rays, down_rays}
   end
 
   def draw_ray_trace
     body = self
     origin = body.center
-    #origin.x = origin.x + body.collision_rect.width / 2 if body.speed.x > 0
-    #origin.x = origin.x - body.collision_rect.width / 2 if body.speed.x < 0
-    #origin.y = origin.y + body.collision_rect.height / 2 if body.speed.y > 0
-    #origin.y = origin.y - body.collision_rect.height / 2 if body.speed.y < 0
 
     c = body.center + body.speed
     Flaty.draw_line(origin.x, origin.y, c.x, c.y, Flaty::Colors::RED)
