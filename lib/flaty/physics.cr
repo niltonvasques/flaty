@@ -73,6 +73,7 @@ module Physics
       end
       left, right, up, down = rigid.normal_rays
       left_counts = 0
+      # we can abort soon as we detect one collision in one direction
       left.each do |p1, p2|
         left_counts += 1 if Collision.detect_line_rect(p1, p2, other.collision_rect)
       end
