@@ -46,8 +46,14 @@ class RayCast < Flaty::GameWindow
     @player.y += 0.01 if Flaty.pressed?(SF::Keyboard::W)
     @player.y -= 0.01 if Flaty.pressed?(SF::Keyboard::S)
 
-    @angle -= 1 if Flaty.pressed?(SF::Keyboard::Left)
-    @angle += 1 if Flaty.pressed?(SF::Keyboard::Right)
+    if Flaty.pressed?(SF::Keyboard::Left)
+      @angle += 0.01
+      @angle -= 2 * Math::PI if @angle > 2 * Math::PI
+    end
+    if Flaty.pressed?(SF::Keyboard::Right)
+      @angle -= 0.01
+      @angle += 2 * Math::PI if @angle < 0
+    end
   end
 
   RAD = Math::PI / 180
@@ -56,19 +62,129 @@ class RayCast < Flaty::GameWindow
 
     draw_map
     draw_player
+    draw_rays
     draw_hud
 
     @camera_debug.draw if debug?
   end
 
+  def dist(x1, y1, x2, y2)
+    Math.sqrt((x1-x2) * (x1-x2) + (y1-y2) * (y1-y2))
+  end
+
+  def draw_rays
+    ray_angle = @angle
+    dist_h = 10000000000.0
+    hx = @player.x
+    hy = @player.y
+    rx = 0.0
+    ry = 0.0
+    y0 = 0
+    x0 = 0
+    pdx = 0.5 * Math.cos(@angle)
+    pdy = 0.5 * Math.sin(@angle)
+    0.upto(1) do |r|
+      dof = 0.0
+      atan = -1 / Math.tan(ray_angle)
+
+      if (ray_angle > 0 && ray_angle < Math::PI)
+        ry = @player.y.floor
+        rx = (@player.y - ry) * atan + @player.x
+        y0 = 1
+        x0 = -y0 * atan
+      else
+        ry = @player.y.floor - 0.0001
+        rx = (@player.y - ry) * atan + @player.x
+        y0 = -1
+        x0 = -y0 * atan
+      end
+      if ray_angle == 0 || ray_angle == Math::PI
+        rx = @player.x + pdx
+        ry = @player.y + pdy
+        y0 = -1
+        x0 = -y0 * atan
+        dof = 8
+      end
+
+      while dof < 8
+        puts rx
+        mx = rx.to_i64
+        my = ry.to_i64
+        if my < 8 && my >= 0 && mx < 8 && mx >= 0 && MAP[8 - my - 1][mx] == 1
+          dof = 8
+          hx = rx
+          hy = ry
+          dist_h = dist(@player.x, @player.y, hx, hy)
+        else
+          rx += x0
+          ry += y0
+          dof += 1
+        end
+      end
+      Flaty.draw_line(@player.x + pdx, @player.y + pdy, rx, ry, Flaty::Colors::RED)
+    end
+
+    dist_v = 10000000000.0
+    vx = @player.x
+    vy = @player.y
+    0.upto(1) do |r|
+      dof = 0.0
+      atan = -Math.tan(ray_angle)
+
+      if (ray_angle > Math::PI/2 && ray_angle < Math::PI + Math::PI/2)
+        rx = @player.x.floor - 0.0001
+        ry = (@player.x - rx) * atan + @player.y
+        x0 = -1
+        y0 = -x0 * atan
+      else
+        rx = @player.x.floor
+        ry = (@player.x - rx) * atan + @player.y
+        x0 = 1
+        y0 = -x0 * atan
+      end
+      if ray_angle == 0 || ray_angle == Math::PI
+        rx = @player.x + pdx
+        ry = @player.y + pdy
+        dof = 8
+      end
+
+      rrx = rx
+      rry = ry
+      while dof < 8
+        puts rx
+        mx = rx.to_i64
+        my = ry.to_i64
+        if my < 8 && my >= 0 && mx < 8 && mx >= 0 && MAP[8 - my - 1][mx] == 1
+          dof = 8
+          vx = rx
+          vy = ry
+          dist_v = dist(@player.x, @player.y, vx, vy)
+        else
+          rx += x0
+          ry += y0
+          dof += 1
+        end
+      end
+      puts "#{rrx} rrx #{rry} #{rx} rx #{ry} ry"
+    end
+    rx = hx
+    ry = hy
+    if dist_v < dist_h
+      rx = vx
+      ry = vy
+    end
+    Flaty.draw_line(@player.x + pdx, @player.y + pdy, rx, ry, Flaty::Colors::GREEN)
+  end
+
   def draw_player
     color = Flaty::Colors::YELLOW
-    Flaty.draw_center_rect(@player.x, @player.y, PLAYER_SIZE, PLAYER_SIZE, color, @angle)
+    Flaty.draw_center_rect(@player.x, @player.y, PLAYER_SIZE, PLAYER_SIZE, color, -@angle / RAD)
     px = @player.x
     py = @player.y
-    pdx = 0.5 * Math.cos(-@angle * RAD)
-    pdy = 0.5 * Math.sin(-@angle * RAD)
+    pdx = 0.5 * Math.cos(@angle)
+    pdy = 0.5 * Math.sin(@angle)
     Flaty.draw_line(px, py, px + pdx, py + pdy, color)
+    Flaty.draw_text_in_pixels(@font, "angle: #{@angle}", 9, 9)
   end
 
   def draw_map
