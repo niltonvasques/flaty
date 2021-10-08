@@ -75,19 +75,21 @@ class RayCast < Flaty::GameWindow
   end
 
   def draw_rays
-    ray_angle = @angle
+    ray_angle = @angle - 30 * RAD
     rx = 0.0
     ry = 0.0
     y0 = 0
     x0 = 0
 
+    dist_v = 10000000000.0
     dist_h = 10000000000.0
-    hx = @player.x
-    hy = @player.y
+    hx = vx = @player.x
+    hy = vy = @player.y
     pdx = 0.5 * Math.cos(@angle)
     pdy = 0.5 * Math.sin(@angle)
     # horizontal lines
-    0.upto(1) do |r|
+    -30.upto(30) do |r|
+      ray_angle = @angle - r * RAD
       dof = 0.0
       atan = -1 / Math.tan(ray_angle)
 
@@ -125,13 +127,10 @@ class RayCast < Flaty::GameWindow
         hy = ry
       end
       #Flaty.draw_line(@player.x + pdx, @player.y + pdy, rx, ry, Flaty::Colors::RED)
-    end
 
-    # vertical lines
-    dist_v = 10000000000.0
-    vx = @player.x
-    vy = @player.y
-    0.upto(1) do |r|
+      # vertical lines
+      vx = @player.x
+      vy = @player.y
       dof = 0.0
       atan = -Math.tan(ray_angle)
 
@@ -172,15 +171,17 @@ class RayCast < Flaty::GameWindow
         vy = ry
       end
       #puts "(#{@player.x.round(2)}, #{@player.y.round(2)})p (#{rrx.round(2)}, #{rry.round(2)}) o (#{rx.round(2)},#{ry.round(2)}) r #{(ray_angle / RAD).round} angle #{left ? "left" : "right"}"
+      rx = hx
+      ry = hy
+      if dist_v < dist_h
+        rx = vx
+        ry = vy
+      end
+      dist_v = 10000000000.0
+      dist_h = 10000000000.0
+      Flaty.draw_line(@player.x, @player.y, rx, ry, Flaty::Colors::GREEN)
     end
     #Flaty.draw_line(@player.x + pdx, @player.y + pdy, vx, vy, Flaty::Colors::GREEN)
-    rx = hx
-    ry = hy
-    if dist_v < dist_h
-      rx = vx
-      ry = vy
-    end
-    Flaty.draw_line(@player.x + pdx, @player.y + pdy, rx, ry, Flaty::Colors::GREEN)
   end
 
   def draw_player
