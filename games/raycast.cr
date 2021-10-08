@@ -2,10 +2,11 @@ require "flaty/flaty"
 require "flaty/fps"
 
 class RayCast < Flaty::GameWindow
-  SCREEN_WIDTH        = 1500
+  SCREEN_WIDTH        = 3000
   SCREEN_HEIGHT       = 1500
-  CAMERA_WIDTH_UNITS  = 8.0
+  CAMERA_WIDTH_UNITS  = 16.0
   CAMERA_HEIGHT_UNITS = 8.0
+  FIELD_WIDTH         = CAMERA_WIDTH_UNITS / 2
   SCALE               = SCREEN_WIDTH / CAMERA_WIDTH_UNITS
   PLAYER_SIZE         = 0.1
 
@@ -48,14 +49,15 @@ class RayCast < Flaty::GameWindow
     @player.y += 0.01 if Flaty.pressed?(SF::Keyboard::W)
     @player.y -= 0.01 if Flaty.pressed?(SF::Keyboard::S)
 
-    if Flaty.pressed?(SF::Keyboard::Left)
-      @angle += 0.01
-      @angle -= 2 * Math::PI if @angle > 2 * Math::PI
-    end
-    if Flaty.pressed?(SF::Keyboard::Right)
-      @angle -= 0.01
-      @angle += 2 * Math::PI if @angle < 0
-    end
+    @angle += 0.01 if Flaty.pressed?(SF::Keyboard::Left)
+    @angle -= 0.01 if Flaty.pressed?(SF::Keyboard::Right)
+    @angle = normalize_angle(@angle)
+  end
+
+  def normalize_angle(angle)
+    return angle - 2 * Math::PI if angle > 2 * Math::PI
+    return angle + 2 * Math::PI if angle < 0
+    angle
   end
 
   RAD = Math::PI / 180
@@ -81,15 +83,16 @@ class RayCast < Flaty::GameWindow
     y0 = 0
     x0 = 0
 
+    dist_t = 0.0
     dist_v = 10000000000.0
     dist_h = 10000000000.0
     hx = vx = @player.x
     hy = vy = @player.y
     pdx = 0.5 * Math.cos(@angle)
     pdy = 0.5 * Math.sin(@angle)
+    angles = 60
     # horizontal lines
-    -30.upto(30) do |r|
-      ray_angle = @angle - r * RAD
+    angles.times do |r|
       dof = 0.0
       atan = -1 / Math.tan(ray_angle)
 
@@ -173,13 +176,29 @@ class RayCast < Flaty::GameWindow
       #puts "(#{@player.x.round(2)}, #{@player.y.round(2)})p (#{rrx.round(2)}, #{rry.round(2)}) o (#{rx.round(2)},#{ry.round(2)}) r #{(ray_angle / RAD).round} angle #{left ? "left" : "right"}"
       rx = hx
       ry = hy
+      dist_t = dist_h
       if dist_v < dist_h
         rx = vx
         ry = vy
+        dist_t = dist_v
       end
       dist_v = 10000000000.0
       dist_h = 10000000000.0
       Flaty.draw_line(@player.x, @player.y, rx, ry, Flaty::Colors::GREEN)
+
+      diff_angle = normalize_angle(ray_angle - @angle)
+      dist_t = dist_t * Math.cos(diff_angle)
+
+      line_width = angles.to_f / FIELD_WIDTH
+
+      line_h = (1.0 * CAMERA_HEIGHT_UNITS / 2) / dist_t
+      x1 = CAMERA_WIDTH_UNITS - (r / line_width)
+      y1 = 0.0
+      x2 = x1
+      y2 = line_h
+      offset = CAMERA_HEIGHT_UNITS / 2 - line_h / 2
+      Flaty.draw_rect(x1, y1 + offset, 1 / line_width, ( y1-y2 ).abs, Flaty::Colors::RED)
+      ray_angle += RAD
     end
     #Flaty.draw_line(@player.x + pdx, @player.y + pdy, vx, vy, Flaty::Colors::GREEN)
   end
