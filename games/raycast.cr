@@ -187,7 +187,7 @@ class RayCast < Flaty::GameWindow
       Flaty.draw_line(@player.x, @player.y, rx, ry, Flaty::Colors::GREEN)
 
       diff_angle = normalize_angle(ray_angle - @angle)
-      dist_t = dist_t * Math.cos(diff_angle)
+      dist_t = dist_t * Math.cos(diff_angle) # fix fisheye
 
       line_width = angles.to_f / FIELD_WIDTH
 
