@@ -7,6 +7,7 @@ class RayCast < Flaty::GameWindow
   CAMERA_WIDTH_UNITS  = 8.0
   CAMERA_HEIGHT_UNITS = 8.0
   SCALE               = SCREEN_WIDTH / CAMERA_WIDTH_UNITS
+  PLAYER_SIZE         = 0.1
 
   # map
   MAP = [
@@ -34,16 +35,43 @@ class RayCast < Flaty::GameWindow
     @font      = SF::Font.from_file("assets/Cantarell-Regular.otf")
 
     @fps = Flaty::FPS.new(SCREEN_WIDTH, @font)
+
+    @player = Vec2d.new(3, 3)
+    @angle = 0.0
   end
 
   def update(delta)
+    @player.x -= 0.01 if Flaty.pressed?(SF::Keyboard::A)
+    @player.x += 0.01 if Flaty.pressed?(SF::Keyboard::D)
+    @player.y += 0.01 if Flaty.pressed?(SF::Keyboard::W)
+    @player.y -= 0.01 if Flaty.pressed?(SF::Keyboard::S)
+
+    @angle -= 1 if Flaty.pressed?(SF::Keyboard::Left)
+    @angle += 1 if Flaty.pressed?(SF::Keyboard::Right)
   end
 
+  RAD = Math::PI / 180
   def draw(target, states)
     Flaty.paint(Flaty::Colors::GRAY)
 
+    draw_map
+    draw_player
     draw_hud
 
+    @camera_debug.draw if debug?
+  end
+
+  def draw_player
+    color = Flaty::Colors::YELLOW
+    Flaty.draw_center_rect(@player.x, @player.y, PLAYER_SIZE, PLAYER_SIZE, color, @angle)
+    px = @player.x
+    py = @player.y
+    pdx = 0.5 * Math.cos(-@angle * RAD)
+    pdy = 0.5 * Math.sin(-@angle * RAD)
+    Flaty.draw_line(px, py, px + pdx, py + pdy, color)
+  end
+
+  def draw_map
     space  = 0.02
     width  = 1.0 - space
     height = 1.0 - space
@@ -57,8 +85,6 @@ class RayCast < Flaty::GameWindow
         Flaty.draw_rect(px, py, width, height, color)
       end
     end
-
-    @camera_debug.draw if debug?
   end
 
   def button_down(code)

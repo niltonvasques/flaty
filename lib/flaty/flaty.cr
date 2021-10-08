@@ -100,10 +100,21 @@ module Flaty
     Flaty.window.draw connection, Flaty.states
   end
 
-  def self.draw_rect(x = 0.0, y = 0.0, width = 1.0, height = 1.0, color = Flaty::Colors::RED)
+  def self.draw_rect(x = 0.0, y = 0.0, width = 1.0, height = 1.0, color = Flaty::Colors::RED,
+      angle = 0.0)
     connection = SF::RectangleShape.new({ width, height }).left_bottom_origin!
     connection.fill_color = color
     connection.position = SF::Vector2.new(x, -y)
+    connection.rotate(angle)
+    Flaty.window.draw connection, Flaty.states
+  end
+
+  def self.draw_center_rect(x = 0.0, y = 0.0, width = 1.0, height = 1.0, color = Flaty::Colors::RED,
+      angle = 0.0)
+    connection = SF::RectangleShape.new({ width, height }).center!
+    connection.fill_color = color
+    connection.position = SF::Vector2.new(x, -y)
+    connection.rotate(angle)
     Flaty.window.draw connection, Flaty.states
   end
 
