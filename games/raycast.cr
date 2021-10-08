@@ -167,13 +167,14 @@ class RayCast < Flaty::GameWindow
       end
       puts "#{rrx} rrx #{rry} #{rx} rx #{ry} ry"
     end
+    Flaty.draw_line(@player.x + pdx, @player.y + pdy, vx, vy, Flaty::Colors::GREEN)
     rx = hx
     ry = hy
     if dist_v < dist_h
       rx = vx
       ry = vy
     end
-    Flaty.draw_line(@player.x + pdx, @player.y + pdy, rx, ry, Flaty::Colors::GREEN)
+    #Flaty.draw_line(@player.x + pdx, @player.y + pdy, rx, ry, Flaty::Colors::GREEN)
   end
 
   def draw_player
