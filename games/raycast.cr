@@ -89,8 +89,9 @@ class RayCast < Flaty::GameWindow
 
   def draw_rays
     ray_angle = @angle - 30 * RAD
-    rx = 0.0
-    ry = 0.0
+    ray = Vec2d.new(0, 0)
+    ray.x = rx = 0.0
+    ray.y = ry = 0.0
     y0 = 0
     x0 = 0
 
@@ -108,21 +109,21 @@ class RayCast < Flaty::GameWindow
 
       y0 = -1
       if face_up?(ray_angle)
-        ry = @player.y.ceil
-        rx = (@player.y - ry) * atan + @player.x
+        ray.y = ry = @player.y.ceil
+        ray.x = rx = (@player.y - ry) * atan + @player.x
         y0 = 1
       else
-        ry = @player.y.floor - 0.0001
-        rx = (@player.y - ry) * atan + @player.x
+        ray.y = ry = @player.y.floor - 0.0001
+        ray.x = rx = (@player.y - ry) * atan + @player.x
       end
       if ray_angle == 0 || ray_angle == Math::PI
-        rx = @player.x + pdx
-        ry = @player.y + pdy
+        ray.x = rx = @player.x + pdx
+        ray.y = ry = @player.y + pdy
         dof = 8
       end
       x0 = -y0 * atan
 
-      hx, hy, dist_h = find_wall(dof, rx, ry, x0, y0)
+      hx, hy, dist_h = find_wall(dof, ray, x0, y0)
       #Flaty.draw_line(@player.x + pdx, @player.y + pdy, rx, ry, Flaty::Colors::RED)
 
       # vertical lines
@@ -132,57 +133,57 @@ class RayCast < Flaty::GameWindow
       atan = -Math.tan(ray_angle)
 
       if face_left?(ray_angle)
-        rx = @player.x.floor - 0.0001
-        ry = (@player.x - rx) * atan + @player.y
+        ray.x = rx = @player.x.floor - 0.0001
+        ray.y = ry = (@player.x - rx) * atan + @player.y
         x0 = -1
         y0 = -x0 * atan
       else
-        rx = @player.x.ceil
-        ry = (@player.x - rx) * atan + @player.y
+        ray.x = rx = @player.x.ceil
+        ray.y = ry = (@player.x - rx) * atan + @player.y
         x0 = 1
         y0 = -x0 * atan
       end
       if ray_angle == 0 || ray_angle == Math::PI
-        rx = @player.x + pdx
-        ry = @player.y + pdy
+        ray.x = rx = @player.x + pdx
+        ray.y = ry = @player.y + pdy
         dof = 8
       end
 
-      vx, vy, dist_v = find_wall(dof, rx, ry, x0, y0, face_left?(ray_angle))
+      vx, vy, dist_v = find_wall(dof, ray, x0, y0, face_left?(ray_angle))
 
-      rx = hx
-      ry = hy
+      ray.x = rx = hx
+      ray.y = ry = hy
       dist_t = dist_h
       wall_color = SF::Color.new(200, 0, 0)
       if dist_v < dist_h
-        rx = vx
-        ry = vy
+        ray.x = rx = vx
+        ray.y = ry = vy
         dist_t = dist_v
         wall_color = SF::Color.new(240, 0, 0)
       end
-      dist_v = 10000000000.0
-      dist_h = 10000000000.0
-      Flaty.draw_line(@player.x, @player.y, rx, ry, Flaty::Colors::GREEN)
+      Flaty.draw_line(@player.x, @player.y, ray.x, ray.y, Flaty::Colors::GREEN)
 
       draw_projection(ray_angle, dist_t, r, wall_color)
 
+      dist_v = 10000000000.0
+      dist_h = 10000000000.0
       ray_angle += RAD
     end
   end
 
-  def find_wall(dof, rx, ry, x0, y0, left = false)
+  def find_wall(dof, ray, x0, y0, left = false)
     distance = 100000000000.0
     while dof < 8
-      if wall?(rx, ry, left)
+      if wall?(ray.x, ray.y, left)
         dof = 8
-        distance = dist(@player.x, @player.y, rx, ry)
+        distance = dist(@player.x, @player.y, ray.x, ray.y)
       else
-        rx += x0
-        ry += y0
+        ray.x += x0
+        ray.y += y0
         dof += 1
       end
     end
-    [rx, ry, distance]
+    [ray.x, ray.y, distance]
   end
 
   def draw_projection(ray_angle, dist_t, r, wall_color)
