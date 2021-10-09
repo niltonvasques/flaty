@@ -90,7 +90,7 @@ class RayCast < Flaty::GameWindow
   def draw_rays
     ray_angle = @angle - (ANGLES / 2) * RAD
     ray = Vec2d.new(0, 0)
-    dxdy = Vec2d.new(0, 0)
+    step = Vec2d.new(0, 0)
     h = v = @player
 
     dist_t = dist_h = dist_v = 10000000000.0
@@ -102,21 +102,21 @@ class RayCast < Flaty::GameWindow
       dof = 0.0
       atan = -1 / Math.tan(ray_angle)
 
-      dxdy.y = -1
+      step.y = -1
       if face_up?(ray_angle)
         ray = Vec2d.new((@player.y - @player.y.ceil) * atan + @player.x, @player.y.ceil)
-        dxdy.y = 1
+        step.y = 1
       else
-        ray.y = @player.y.floor - 0.0001
-        ray.x = (@player.y - ray.y) * atan + @player.x
+        ray = Vec2d.new((@player.y - @player.y.floor - 0.0001) * atan + @player.x,
+                        @player.y.floor - 0.0001)
       end
       if ray_angle == 0 || ray_angle == Math::PI
         ray = Vec2d.new(@player.x + pdx, @player.y + pdy)
         dof = 8
       end
-      dxdy.x = -dxdy.y * atan
+      step.x = -step.y * atan
 
-      h.x, h.y, dist_h = find_wall(dof, ray, dxdy)
+      h.x, h.y, dist_h = find_wall(dof, ray, step)
       #Flaty.draw_line(@player.x + pdx, @player.y + pdy, ray.x, ray.y, Flaty::Colors::RED)
 
       # vertical lines
@@ -126,10 +126,10 @@ class RayCast < Flaty::GameWindow
       if face_left?(ray_angle)
         ray = Vec2d.new(@player.x.floor - 0.0001,
                         (@player.x - @player.x.floor - 0.0001) * atan + @player.y)
-        dxdy = Vec2d.new(-1, 1 * atan)
+        step = Vec2d.new(-1, 1 * atan)
       else
         ray = Vec2d.new(@player.x.ceil, (@player.x - @player.x.ceil) * atan + @player.y)
-        dxdy = Vec2d.new(1, -1 * atan)
+        step = Vec2d.new(1, -1 * atan)
       end
 
       if ray_angle == 0 || ray_angle == Math::PI
@@ -137,7 +137,7 @@ class RayCast < Flaty::GameWindow
         dof = 8
       end
 
-      v.x, v.y, dist_v = find_wall(dof, ray, dxdy, face_left?(ray_angle))
+      v.x, v.y, dist_v = find_wall(dof, ray, step, face_left?(ray_angle))
 
       ray = h
       dist_t = dist_h
