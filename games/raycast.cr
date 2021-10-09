@@ -90,8 +90,6 @@ class RayCast < Flaty::GameWindow
   def draw_rays
     ray_angle = @angle - 30 * RAD
     ray = Vec2d.new(0, 0)
-    ray.x = ray.x = 0.0
-    ray.y = ry = 0.0
     y0 = 0
     x0 = 0
 
@@ -109,22 +107,21 @@ class RayCast < Flaty::GameWindow
 
       y0 = -1
       if face_up?(ray_angle)
-        ray.y = ry = @player.y.ceil
-        ray.x = ray.x = (@player.y - ry) * atan + @player.x
+        ray.y = @player.y.ceil
+        ray.x = (@player.y - ray.y) * atan + @player.x
         y0 = 1
       else
-        ray.y = ry = @player.y.floor - 0.0001
-        ray.x = ray.x = (@player.y - ry) * atan + @player.x
+        ray.y = @player.y.floor - 0.0001
+        ray.x = (@player.y - ray.y) * atan + @player.x
       end
       if ray_angle == 0 || ray_angle == Math::PI
-        ray.x = ray.x = @player.x + pdx
-        ray.y = ry = @player.y + pdy
+        ray = Vec2d.new(@player.x + pdx, @player.y + pdy)
         dof = 8
       end
       x0 = -y0 * atan
 
       hx, hy, dist_h = find_wall(dof, ray, x0, y0)
-      #Flaty.draw_line(@player.x + pdx, @player.y + pdy, ray.x, ry, Flaty::Colors::RED)
+      #Flaty.draw_line(@player.x + pdx, @player.y + pdy, ray.x, ray.y, Flaty::Colors::RED)
 
       # vertical lines
       vx = @player.x
@@ -133,31 +130,29 @@ class RayCast < Flaty::GameWindow
       atan = -Math.tan(ray_angle)
 
       if face_left?(ray_angle)
-        ray.x = ray.x = @player.x.floor - 0.0001
-        ray.y = ry = (@player.x - ray.x) * atan + @player.y
+        ray = Vec2d.new(@player.x.floor - 0.0001,
+                        (@player.x - @player.x.floor - 0.0001) * atan + @player.y)
         x0 = -1
         y0 = -x0 * atan
       else
-        ray.x = ray.x = @player.x.ceil
-        ray.y = ry = (@player.x - ray.x) * atan + @player.y
+        ray = Vec2d.new(@player.x.ceil, (@player.x - @player.x.ceil) * atan + @player.y)
         x0 = 1
         y0 = -x0 * atan
       end
       if ray_angle == 0 || ray_angle == Math::PI
-        ray.x = ray.x = @player.x + pdx
-        ray.y = ry = @player.y + pdy
+        ray = Vec2d.new(@player.x + pdx, @player.y + pdy)
         dof = 8
       end
 
       vx, vy, dist_v = find_wall(dof, ray, x0, y0, face_left?(ray_angle))
 
-      ray.x = ray.x = hx
-      ray.y = ry = hy
+      ray.x = hx
+      ray.y = hy
       dist_t = dist_h
       wall_color = SF::Color.new(200, 0, 0)
       if dist_v < dist_h
-        ray.x = ray.x = vx
-        ray.y = ry = vy
+        ray.x = vx
+        ray.y = vy
         dist_t = dist_v
         wall_color = SF::Color.new(240, 0, 0)
       end
