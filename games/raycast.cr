@@ -89,11 +89,10 @@ class RayCast < Flaty::GameWindow
 
   def draw_rays
     ray_angle = @angle - (ANGLES / 2) * RAD
-    ray = Vec2d.new(0, 0)
-    step = Vec2d.new(0, 0)
+    step = ray = Vec2d.new(0, 0)
     h = v = @player
 
-    dist_t = dist_h = dist_v = 10000000000.0
+    dist_h = dist_v = 10000000000.0
 
     pdx = 0.5 * Math.cos(@angle)
     pdy = 0.5 * Math.sin(@angle)
@@ -140,16 +139,14 @@ class RayCast < Flaty::GameWindow
       v.x, v.y, dist_v = find_wall(dof, ray, step, face_left?(ray_angle))
 
       ray = h
-      dist_t = dist_h
       wall_color = SF::Color.new(200, 0, 0)
       if dist_v < dist_h
         ray = v
-        dist_t = dist_v
         wall_color = SF::Color.new(240, 0, 0)
       end
       Flaty.draw_line(@player.x, @player.y, ray.x, ray.y, Flaty::Colors::GREEN)
 
-      draw_projection(ray_angle, dist_t, r, wall_color)
+      draw_projection(ray_angle, Math.min(dist_v, dist_h), r, wall_color)
 
       dist_h = dist_v = 10000000000.0
       ray_angle += RAD
