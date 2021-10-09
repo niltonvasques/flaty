@@ -96,8 +96,7 @@ class RayCast < Flaty::GameWindow
     dist_t = 0.0
     dist_v = 10000000000.0
     dist_h = 10000000000.0
-    hx = vx = @player.x
-    hy = vy = @player.y
+    h = v = @player
     pdx = 0.5 * Math.cos(@angle)
     pdy = 0.5 * Math.sin(@angle)
     # horizontal lines
@@ -120,12 +119,12 @@ class RayCast < Flaty::GameWindow
       end
       x0 = -y0 * atan
 
-      hx, hy, dist_h = find_wall(dof, ray, x0, y0)
+      h.x, h.y, dist_h = find_wall(dof, ray, x0, y0)
       #Flaty.draw_line(@player.x + pdx, @player.y + pdy, ray.x, ray.y, Flaty::Colors::RED)
 
       # vertical lines
-      vx = @player.x
-      vy = @player.y
+      v.x = @player.x
+      v.y = @player.y
       dof = 0.0
       atan = -Math.tan(ray_angle)
 
@@ -144,15 +143,13 @@ class RayCast < Flaty::GameWindow
         dof = 8
       end
 
-      vx, vy, dist_v = find_wall(dof, ray, x0, y0, face_left?(ray_angle))
+      v.x, v.y, dist_v = find_wall(dof, ray, x0, y0, face_left?(ray_angle))
 
-      ray.x = hx
-      ray.y = hy
+      ray = h
       dist_t = dist_h
       wall_color = SF::Color.new(200, 0, 0)
       if dist_v < dist_h
-        ray.x = vx
-        ray.y = vy
+        ray = v
         dist_t = dist_v
         wall_color = SF::Color.new(240, 0, 0)
       end
