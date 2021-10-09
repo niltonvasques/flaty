@@ -9,15 +9,26 @@ class RayCast < Flaty::GameWindow
   FIELD_WIDTH         = CAMERA_WIDTH_UNITS / 2
   SCALE               = SCREEN_WIDTH / CAMERA_WIDTH_UNITS
   PLAYER_SIZE         = 0.1
+  ANGLES              = 60
 
   # map
+  #MAP = [
+  #  [1,1,1,1,1,1,1,1],
+  #  [1,0,1,0,0,0,0,1],
+  #  [1,0,1,0,0,0,0,1],
+  #  [1,0,1,0,0,0,0,1],
+  #  [1,0,0,0,0,0,0,1],
+  #  [1,0,0,0,0,1,0,1],
+  #  [1,0,0,0,0,0,0,1],
+  #  [1,1,1,1,1,1,1,1]
+  #]
   MAP = [
     [1,1,1,1,1,1,1,1],
-    [1,0,1,0,0,0,0,1],
-    [1,0,1,0,0,0,0,1],
-    [1,0,1,0,0,0,0,1],
+    [1,0,0,0,1,0,0,1],
     [1,0,0,0,0,0,0,1],
-    [1,0,0,0,0,1,0,1],
+    [1,0,0,0,1,1,1,1],
+    [1,0,1,0,0,0,0,1],
+    [1,0,1,1,1,1,0,1],
     [1,0,0,0,0,0,0,1],
     [1,1,1,1,1,1,1,1]
   ]
@@ -65,8 +76,8 @@ class RayCast < Flaty::GameWindow
     Flaty.paint(Flaty::Colors::GRAY)
 
     draw_map
-    draw_player
     draw_rays
+    draw_player
     draw_hud
 
     @camera_debug.draw if debug?
@@ -90,45 +101,28 @@ class RayCast < Flaty::GameWindow
     hy = vy = @player.y
     pdx = 0.5 * Math.cos(@angle)
     pdy = 0.5 * Math.sin(@angle)
-    angles = 60
     # horizontal lines
-    angles.times do |r|
+    ANGLES.times do |r|
       dof = 0.0
       atan = -1 / Math.tan(ray_angle)
 
-      if (ray_angle > 0 && ray_angle < Math::PI) # up
+      y0 = -1
+      if face_up?(ray_angle)
         ry = @player.y.ceil
         rx = (@player.y - ry) * atan + @player.x
         y0 = 1
-        x0 = -y0 * atan
       else
         ry = @player.y.floor - 0.0001
         rx = (@player.y - ry) * atan + @player.x
-        y0 = -1
-        x0 = -y0 * atan
       end
       if ray_angle == 0 || ray_angle == Math::PI
         rx = @player.x + pdx
         ry = @player.y + pdy
-        y0 = -1
-        x0 = -y0 * atan
         dof = 8
       end
+      x0 = -y0 * atan
 
-      while dof < 8
-        mx = rx.to_i64
-        my = ry.to_i64
-        if my < 8 && my >= 0 && mx < 8 && mx >= 0 && MAP[8 - my - 1][mx] == 1
-          dof = 8
-          dist_h = dist(@player.x, @player.y, rx, ry)
-        else
-          rx += x0
-          ry += y0
-          dof += 1
-        end
-        hx = rx
-        hy = ry
-      end
+      hx, hy, dist_h = find_wall(dof, rx, ry, x0, y0)
       #Flaty.draw_line(@player.x + pdx, @player.y + pdy, rx, ry, Flaty::Colors::RED)
 
       # vertical lines
@@ -137,15 +131,12 @@ class RayCast < Flaty::GameWindow
       dof = 0.0
       atan = -Math.tan(ray_angle)
 
-      left = true
-
-      if (ray_angle > Math::PI/2 && ray_angle < Math::PI + Math::PI/2)
+      if face_left?(ray_angle)
         rx = @player.x.floor - 0.0001
         ry = (@player.x - rx) * atan + @player.y
         x0 = -1
         y0 = -x0 * atan
       else
-        left = false
         rx = @player.x.ceil
         ry = (@player.x - rx) * atan + @player.y
         x0 = 1
@@ -157,50 +148,73 @@ class RayCast < Flaty::GameWindow
         dof = 8
       end
 
-      rrx = rx
-      rry = ry
-      while dof < 8
-        mx = rx.to_i64
-        my = ry.to_i64
-        if my < 8 && my >= 0 && mx < 8 && mx >= 0 && (MAP[8 - my - 1][mx] == 1 || (left && MAP[8 - my - 1][mx + 1] == 1) ) #|| (!left && MAP[8 - my - 1][mx - 1] == 1))
-          dof = 8
-          dist_v = dist(@player.x, @player.y, rx, ry)
-        else
-          rx += x0
-          ry += y0
-          dof += 1
-        end
-        vx = rx
-        vy = ry
-      end
-      #puts "(#{@player.x.round(2)}, #{@player.y.round(2)})p (#{rrx.round(2)}, #{rry.round(2)}) o (#{rx.round(2)},#{ry.round(2)}) r #{(ray_angle / RAD).round} angle #{left ? "left" : "right"}"
+      vx, vy, dist_v = find_wall(dof, rx, ry, x0, y0, face_left?(ray_angle))
+
       rx = hx
       ry = hy
       dist_t = dist_h
+      wall_color = SF::Color.new(200, 0, 0)
       if dist_v < dist_h
         rx = vx
         ry = vy
         dist_t = dist_v
+        wall_color = SF::Color.new(240, 0, 0)
       end
       dist_v = 10000000000.0
       dist_h = 10000000000.0
       Flaty.draw_line(@player.x, @player.y, rx, ry, Flaty::Colors::GREEN)
 
-      diff_angle = normalize_angle(ray_angle - @angle)
-      dist_t = dist_t * Math.cos(diff_angle) # fix fisheye
+      draw_projection(ray_angle, dist_t, r, wall_color)
 
-      line_width = angles.to_f / FIELD_WIDTH
-
-      line_h = (1.0 * CAMERA_HEIGHT_UNITS / 2) / dist_t
-      x1 = CAMERA_WIDTH_UNITS - (r / line_width)
-      y1 = 0.0
-      x2 = x1
-      y2 = line_h
-      offset = CAMERA_HEIGHT_UNITS / 2 - line_h / 2
-      Flaty.draw_rect(x1, y1 + offset, 1 / line_width, ( y1-y2 ).abs, Flaty::Colors::RED)
       ray_angle += RAD
     end
-    #Flaty.draw_line(@player.x + pdx, @player.y + pdy, vx, vy, Flaty::Colors::GREEN)
+  end
+
+  def find_wall(dof, rx, ry, x0, y0, left = false)
+    distance = 100000000000.0
+    while dof < 8
+      if wall?(rx, ry, left)
+        dof = 8
+        distance = dist(@player.x, @player.y, rx, ry)
+      else
+        rx += x0
+        ry += y0
+        dof += 1
+      end
+    end
+    [rx, ry, distance]
+  end
+
+  def draw_projection(ray_angle, dist_t, r, wall_color)
+    diff_angle = normalize_angle(ray_angle - @angle)
+    dist_t = dist_t * Math.cos(diff_angle) # fix fisheye
+
+    line_width = ANGLES.to_f / FIELD_WIDTH
+
+    line_h = (1.0 * CAMERA_HEIGHT_UNITS / 2) / dist_t
+    x1 = CAMERA_WIDTH_UNITS - (r / line_width)
+    y1 = 0.0
+    x2 = x1
+    y2 = line_h
+    offset = CAMERA_HEIGHT_UNITS / 2 - line_h / 2 # draw project to right side of board
+    Flaty.draw_rect(x1, y1 + offset, 1 / line_width, ( y1-y2 ).abs, wall_color)
+  end
+
+  def face_up?(angle)
+    angle > 0 && angle < Math::PI
+  end
+
+  def face_left?(angle)
+    angle > Math::PI/2 && angle < Math::PI + Math::PI / 2
+  end
+
+  def wall?(mx, my, left = false)
+    mx = mx.to_i64
+    my = my.to_i64
+    return false unless my < 8 && my >= 0 && mx < 8 && mx >= 0
+    return true if MAP[8 - my - 1][mx] == 1
+    return true if (left && MAP[8 - my - 1][mx + 1] == 1)
+    false
   end
 
   def draw_player
