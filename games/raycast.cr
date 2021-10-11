@@ -23,14 +23,14 @@ class RayCast < Flaty::GameWindow
   #  [1,1,1,1,1,1,1,1]
   #]
   MAP = [
-    [1,1,1,1,1,1,1,1],
+    [1,2,2,1,1,1,1,1],
     [1,0,0,0,1,0,0,1],
     [1,0,0,0,0,0,0,1],
     [1,0,0,0,1,1,1,1],
-    [1,0,1,0,0,0,0,1],
+    [1,0,2,0,0,0,0,1],
     [1,0,1,1,1,1,0,1],
-    [1,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1]
+    [1,0,0,0,0,0,0,3],
+    [1,1,1,1,1,1,3,3]
   ]
 
   @angle : Float64
@@ -105,7 +105,7 @@ class RayCast < Flaty::GameWindow
     ray_angle = @angle - (ANGLES / 2) * RAD
     step = ray = Vec2d.new(0, 0)
     h = v = @player
-    color_h = color_v = 0.0
+    color_h = color_v = 0
 
     dist_h = dist_v = 10000000000.0
 
@@ -130,7 +130,9 @@ class RayCast < Flaty::GameWindow
       end
       step.x = -step.y * atan
 
-      h.x, h.y, dist_h = find_wall(dof, ray, step)
+      xx, yy, dist_h, color_h = find_wall(dof, ray, step)
+      h.x = xx.as(Float64)
+      h.y = yy.as(Float64)
       #Flaty.draw_line(@player.x + pdx, @player.y + pdy, ray.x, ray.y, Flaty::Colors::RED)
 
       # vertical lines
@@ -151,17 +153,21 @@ class RayCast < Flaty::GameWindow
         dof = 8
       end
 
-      v.x, v.y, dist_v = find_wall(dof, ray, step, face_left?(ray_angle))
+      xx, yy, dist_v, color_v = find_wall(dof, ray, step, face_left?(ray_angle))
+      v.x = xx.as(Float64)
+      v.y = yy.as(Float64)
 
       ray = h
-      wall_color = SF::Color.new(200, 0, 0)
+      side_wall = true
+      tile_type = color_h
       if dist_v < dist_h
+        side_wall = false
+        tile_type = color_v
         ray = v
-        wall_color = SF::Color.new(240, 0, 0)
       end
       Flaty.draw_line(@player.x, @player.y, ray.x, ray.y, Flaty::Colors::GREEN)
 
-      draw_projection(ray_angle, Math.min(dist_v, dist_h), r, wall_color)
+      draw_projection(ray_angle, Math.min(dist_v, dist_h), r, wall_color(tile_type.to_i, side_wall))
 
       dist_h = dist_v = 10000000000.0
       ray_angle += RAD
@@ -170,7 +176,7 @@ class RayCast < Flaty::GameWindow
 
   def find_wall(dof, ray, step, left = false)
     distance = 100000000000.0
-    color = 0.0
+    color : Int32 = 0
     while dof < 8
       color = wall?(ray.x, ray.y, left)
       if color > 0
@@ -181,7 +187,7 @@ class RayCast < Flaty::GameWindow
         dof += 1
       end
     end
-    [ray.x, ray.y, distance]
+    [ray.x, ray.y, distance, color]
   end
 
   def draw_projection(ray_angle, dist_t, r, wall_color)
@@ -211,8 +217,8 @@ class RayCast < Flaty::GameWindow
     mx = mx.to_i64
     my = my.to_i64
     return 0 unless my < 8 && my >= 0 && mx < 8 && mx >= 0
-    return MAP[8 - my - 1][mx] if MAP[8 - my - 1][mx] == 1
-    return MAP[8 - my - 1][mx + 1] if (left && MAP[8 - my - 1][mx + 1] == 1)
+    return MAP[8 - my - 1][mx] if MAP[8 - my - 1][mx] > 0
+    return MAP[8 - my - 1][mx + 1] if (left && MAP[8 - my - 1][mx + 1] > 0)
     0
   end
 
@@ -237,7 +243,7 @@ class RayCast < Flaty::GameWindow
         px = x + space
         py = (MAP.size - y - 1) + space
         color = Flaty::Colors::BLACK
-        color = Flaty::Colors::WHITE if MAP[y][x] == 1
+        color = wall_color(MAP[y][x], false) if MAP[y][x] > 0 #Flaty::Colors::WHITE if MAP[y][x] == 1
         Flaty.draw_rect(px, py, width, height, color)
       end
     end
@@ -250,6 +256,22 @@ class RayCast < Flaty::GameWindow
   def draw_hud
     @fps.draw(@delta)
   end
+
+  def wall_color(tile_type : Int32, side_wall = true)
+    case tile_type
+    when 1
+      return SF::Color.new(200, 0, 0) if side_wall
+      return SF::Color.new(240, 0, 0)
+    when 2
+      return SF::Color.new(0, 200, 0) if side_wall
+      return SF::Color.new(0, 240, 0)
+    when 3
+      return SF::Color.new(0, 0, 200) if side_wall
+      return SF::Color.new(0, 0, 240)
+    end
+    SF::Color.new(0, 0, 0)
+  end
+
 end
 
 game = RayCast.new
