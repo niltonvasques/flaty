@@ -105,6 +105,7 @@ class RayCast < Flaty::GameWindow
     ray_angle = @angle - (ANGLES / 2) * RAD
     step = ray = Vec2d.new(0, 0)
     h = v = @player
+    color_h = color_v = 0.0
 
     dist_h = dist_v = 10000000000.0
 
@@ -169,8 +170,10 @@ class RayCast < Flaty::GameWindow
 
   def find_wall(dof, ray, step, left = false)
     distance = 100000000000.0
+    color = 0.0
     while dof < 8
-      if wall?(ray.x, ray.y, left)
+      color = wall?(ray.x, ray.y, left)
+      if color > 0
         dof = 8
         distance = dist(@player.x, @player.y, ray.x, ray.y)
       else
@@ -207,10 +210,10 @@ class RayCast < Flaty::GameWindow
   def wall?(mx, my, left = false)
     mx = mx.to_i64
     my = my.to_i64
-    return false unless my < 8 && my >= 0 && mx < 8 && mx >= 0
-    return true if MAP[8 - my - 1][mx] == 1
-    return true if (left && MAP[8 - my - 1][mx + 1] == 1)
-    false
+    return 0 unless my < 8 && my >= 0 && mx < 8 && mx >= 0
+    return MAP[8 - my - 1][mx] if MAP[8 - my - 1][mx] == 1
+    return MAP[8 - my - 1][mx + 1] if (left && MAP[8 - my - 1][mx + 1] == 1)
+    0
   end
 
   def draw_player
