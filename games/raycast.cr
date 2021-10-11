@@ -55,14 +55,28 @@ class RayCast < Flaty::GameWindow
   end
 
   def update(delta)
-    @player.x -= 0.01 if Flaty.pressed?(SF::Keyboard::A)
-    @player.x += 0.01 if Flaty.pressed?(SF::Keyboard::D)
-    @player.y += 0.01 if Flaty.pressed?(SF::Keyboard::W)
-    @player.y -= 0.01 if Flaty.pressed?(SF::Keyboard::S)
+    move = Vec2d.new(0, 0)
+    move.x -= 0.01 if Flaty.pressed?(SF::Keyboard::A)
+    move.x += 0.01 if Flaty.pressed?(SF::Keyboard::D)
+    move.y += 0.01 if Flaty.pressed?(SF::Keyboard::W)
+    move.y -= 0.01 if Flaty.pressed?(SF::Keyboard::S)
 
     @angle += 0.01 if Flaty.pressed?(SF::Keyboard::Left)
     @angle -= 0.01 if Flaty.pressed?(SF::Keyboard::Right)
     @angle = normalize_angle(@angle)
+
+    if move.x != 0 || move.y != 0
+      # front and backward movement
+      pdx = move.y * Math.cos(@angle)
+      pdy = move.y * Math.sin(@angle)
+      # left and right movement
+      angle = @angle - 90 * RAD # pointing the movement to the right side of the player
+      qdx = move.x * Math.cos(angle)
+      qdy = move.x * Math.sin(angle)
+      move = Vec2d.new(pdx + qdx, pdy + qdy)
+    end
+
+    @player += move
   end
 
   def normalize_angle(angle)
