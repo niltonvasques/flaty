@@ -110,6 +110,13 @@ module Flaty
     Flaty.window.draw connection, Flaty.states
   end
 
+  def self.draw_center_circle(x = 0.0, y = 0.0, radius = 1.0, color = Flaty::Colors::RED)
+    connection = SF::CircleShape.new(radius)
+    connection.fill_color = color
+    connection.position = SF::Vector2.new(x-radius, -y-radius) # xy left bottom
+    Flaty.window.draw connection, Flaty.states
+  end
+
   def self.draw_rect(x = 0.0, y = 0.0, width = 1.0, height = 1.0, color = Flaty::Colors::RED,
       angle = 0.0)
     connection = SF::RectangleShape.new({ width, height }).left_bottom_origin!
