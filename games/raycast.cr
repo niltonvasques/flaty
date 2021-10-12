@@ -181,7 +181,7 @@ class RayCast < Flaty::GameWindow
       draw_projection(ray_angle, Math.min(dist_v, dist_h), r, wall_color(tile_type.to_i, side_wall))
 
       dist_h = dist_v = 10000000000.0
-      ray_angle += RAD
+      ray_angle = normalize_angle(ray_angle + RAD)
     end
   end
 

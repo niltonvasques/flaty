@@ -49,6 +49,16 @@ alias Vec2i = SF::Vector2(Int32)
 alias Rect  = SF::Rect(Float64)
 alias RectI = SF::Rect(Int32)
 
+struct SF::Vector2
+  def round
+    SF::Vector2.new(self.x.round, self.y.round)
+  end
+
+  def to_s
+    "(#{self.x},#{self.y})"
+  end
+end
+
 module Flaty
   DEFAULT_WINDOW = SF::RenderWindow.new(SF::VideoMode.new(10, 10), "Flaty")
   DEFAULT_STATES = SF::RenderStates.new(
