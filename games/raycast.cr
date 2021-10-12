@@ -51,6 +51,21 @@ class RayCast < Flaty::GameWindow
     [1,1,1,1,1,1,1,1,1,1,3,3]
   ]
 
+  FLOOR = [
+    [0,1,0,1,0,1,0,1,0,1,0,1],
+    [1,0,1,0,1,0,1,0,1,0,1,0],
+    [0,1,0,1,0,1,0,1,0,1,0,1],
+    [1,0,1,0,1,0,1,0,1,0,1,0],
+    [0,1,0,1,0,1,0,1,0,1,0,1],
+    [1,0,1,0,1,0,1,0,1,0,1,0],
+    [0,1,0,1,0,1,0,1,0,1,0,1],
+    [1,0,1,0,1,0,1,0,1,0,1,0],
+    [0,1,0,1,0,1,0,1,0,1,0,1],
+    [1,0,1,0,1,0,1,0,1,0,1,0],
+    [0,1,0,1,0,1,0,1,0,1,0,1],
+    [1,0,1,0,1,0,1,0,1,0,1,0]
+  ]
+
   @angle : Float64
 
   def initialize
@@ -186,9 +201,10 @@ class RayCast < Flaty::GameWindow
         tile_type = color_v
         ray = v
       end
+      wall_color = tile_color(tile_type.to_i, side_wall)
       Flaty.draw_line(@player.x, @player.y, ray.x, ray.y, Flaty::Colors::GREEN)
 
-      draw_projection(ray_angle, Math.min(dist_v, dist_h), r, wall_color(tile_type.to_i, side_wall))
+      draw_projection(ray_angle, Math.min(dist_v, dist_h), r, wall_color)
 
       dist_h = dist_v = 10000000000.0
       ray_angle = Flaty.norm_angle(ray_angle + RAY_ANGLE)
@@ -224,6 +240,26 @@ class RayCast < Flaty::GameWindow
     y2 = line_h
     offset = CAMERA_HEIGHT_UNITS / 2 - line_h / 2 # draw project to right side of board
     Flaty.draw_rect(x1, y1 + offset, 1 / line_width, ( y1-y2 ).abs, wall_color)
+
+    floor_h = offset
+    #Flaty.draw_rect(x1, y1, 1 / line_width, floor_h.abs, floor_color)
+
+    y = floor_h
+    step_height = 0.10
+    while y >= 0
+      p = (offset / 2.0) - y
+      pos_z = offset / 2.0
+      row_distance = pos_z / p
+      floor_x = @player.x + row_distance * x1
+      floor_y = @player.y + row_distance * y1
+
+      puts "#{floor_x.round},#{floor_y.round}"
+      floor_color = tile_color(floor?(floor_x, floor_y).to_i)
+
+      #Flaty.draw_rect(x1, y1 + offset, 1 / line_width, ( y1-y2 ).abs, wall_color)
+      Flaty.draw_rect(x1, y, 1 / line_width, step_height.abs, floor_color)
+      y -= step_height
+    end
   end
 
   def face_up?(angle)
@@ -240,6 +276,15 @@ class RayCast < Flaty::GameWindow
     return 0 unless my < MAP.size && my >= 0 && mx < MAP.size && mx >= 0
     return MAP[MAP.size - my - 1][mx] if MAP[MAP.size - my - 1][mx] > 0
     return MAP[MAP.size - my - 1][mx + 1] if (left && MAP[MAP.size - my - 1][mx + 1] > 0)
+    0
+  end
+
+  def floor?(mx, my, left = false)
+    mx = mx.to_i64
+    my = my.to_i64
+    return 0 unless my < FLOOR.size && my >= 0 && mx < FLOOR.size && mx >= 0
+    return FLOOR[FLOOR.size - my - 1][mx] if FLOOR[FLOOR.size - my - 1][mx] > 0
+    return FLOOR[FLOOR.size - my - 1][mx + 1] if (left && FLOOR[FLOOR.size - my - 1][mx + 1] > 0)
     0
   end
 
@@ -264,7 +309,7 @@ class RayCast < Flaty::GameWindow
         px = x + space
         py = (MAP.size - y - 1) + space
         color = Flaty::Colors::BLACK
-        color = wall_color(MAP[y][x], false) if MAP[y][x] > 0 #Flaty::Colors::WHITE if MAP[y][x] == 1
+        color = tile_color(MAP[y][x], false) if MAP[y][x] > 0 #Flaty::Colors::WHITE if MAP[y][x] == 1
         Flaty.draw_rect(px, py, width, height, color)
       end
     end
@@ -278,7 +323,7 @@ class RayCast < Flaty::GameWindow
     @fps.draw(@delta)
   end
 
-  def wall_color(tile_type : Int32, side_wall = true)
+  def tile_color(tile_type : Int32, side_wall = true)
     case tile_type
     when 1
       return SF::Color.new(80, 80, 80) if side_wall
