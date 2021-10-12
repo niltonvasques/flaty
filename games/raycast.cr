@@ -2,19 +2,6 @@ require "flaty/flaty"
 require "flaty/fps"
 
 class RayCast < Flaty::GameWindow
-  SCREEN_WIDTH        = 3000
-  SCREEN_HEIGHT       = 1500
-  CAMERA_WIDTH_UNITS  = 24.0
-  CAMERA_HEIGHT_UNITS = 12.0
-  MAX_DEPTH_OF_FIELD  = 12
-  FIELD_WIDTH         = CAMERA_WIDTH_UNITS / 2
-  SCALE               = SCREEN_WIDTH / CAMERA_WIDTH_UNITS
-  PLAYER_SIZE         = 0.1
-  #RAYS                = 1000
-  RAYS                = 100
-  FOV                 = 45
-  RAY_ANGLE           = Flaty::RAD / (RAYS / FOV)
-
   # map
   #MAP = [
   #  [1,1,1,1,1,1,1,1],
@@ -26,30 +13,43 @@ class RayCast < Flaty::GameWindow
   #  [1,0,0,0,0,0,0,1],
   #  [1,1,1,1,1,1,1,1]
   #]
-  #MAP = [
-  #  [1,2,2,1,1,1,1,1],
-  #  [1,0,0,0,1,0,0,1],
-  #  [1,0,0,0,0,0,0,1],
-  #  [1,0,0,0,1,1,1,1],
-  #  [1,0,2,0,0,0,0,1],
-  #  [1,0,1,1,1,1,0,1],
-  #  [1,0,0,0,0,0,0,3],
-  #  [1,1,1,1,1,1,3,3]
-  #]
   MAP = [
-    [1,1,1,1,1,2,2,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,1,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,1,1,1,1],
-    [1,0,0,0,0,0,2,0,0,0,0,1],
-    [1,0,0,0,0,0,1,1,1,1,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,3],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,4,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,3],
-    [1,1,1,1,1,1,1,1,1,1,3,3]
+    [1,2,2,1,1,1,1,1],
+    [1,0,0,0,1,0,0,1],
+    [1,0,0,0,0,0,0,1],
+    [1,0,0,0,1,1,1,1],
+    [1,0,2,0,0,0,0,1],
+    [1,0,1,1,1,1,0,1],
+    [1,0,0,0,0,0,0,3],
+    [1,1,1,1,1,1,3,3]
   ]
+  #MAP = [
+  #  [1,1,1,1,1,2,2,1,1,1,1,1],
+  #  [1,0,0,0,0,0,0,0,1,0,0,1],
+  #  [1,0,0,0,0,0,0,0,0,0,0,1],
+  #  [1,0,0,0,0,0,0,0,1,1,1,1],
+  #  [1,0,0,0,0,0,2,0,0,0,0,1],
+  #  [1,0,0,0,0,0,1,1,1,1,0,1],
+  #  [1,0,0,0,0,0,0,0,0,0,0,3],
+  #  [1,0,0,0,0,0,0,0,0,0,0,1],
+  #  [1,0,0,0,0,0,0,0,4,0,0,1],
+  #  [1,0,0,0,0,0,0,0,0,0,0,1],
+  #  [1,0,0,0,0,0,0,0,0,0,0,3],
+  #  [1,1,1,1,1,1,1,1,1,1,3,3]
+  #]
+  SCREEN_WIDTH        = 3000
+  SCREEN_HEIGHT       = 1500
+  CAMERA_WIDTH_UNITS  = MAP.size * 2.0
+  CAMERA_HEIGHT_UNITS = CAMERA_WIDTH_UNITS / 2
+  MAX_DEPTH_OF_FIELD  = MAP.size
+  FIELD_WIDTH         = CAMERA_WIDTH_UNITS / 2
+  SCALE               = SCREEN_WIDTH / CAMERA_WIDTH_UNITS
+  PLAYER_SIZE         = 0.1
+  #RAYS                = 1000
+  RAYS                = 100
+  FOV                 = 45
+  RAY_ANGLE           = Flaty::RAD / (RAYS / FOV)
+
 
   @angle : Float64
 
@@ -78,8 +78,8 @@ class RayCast < Flaty::GameWindow
     move.y += 0.01 if Flaty.pressed?(SF::Keyboard::W)
     move.y -= 0.01 if Flaty.pressed?(SF::Keyboard::S)
 
-    @angle += 0.01 if Flaty.pressed?(SF::Keyboard::Left)
-    @angle -= 0.01 if Flaty.pressed?(SF::Keyboard::Right)
+    @angle += 0.02 if Flaty.pressed?(SF::Keyboard::Left)
+    @angle -= 0.02 if Flaty.pressed?(SF::Keyboard::Right)
     @angle = Flaty.norm_angle(@angle)
 
     if move.x != 0 || move.y != 0
