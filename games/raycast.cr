@@ -76,7 +76,18 @@ class RayCast < Flaty::GameWindow
       move = Vec2d.new(pdx + qdx, pdy + qdy)
     end
 
+    previous = @player
     @player += move
+
+    # solving collisions
+    if wall?(@player.x, @player.y) > 0
+      @player.x = @player.x - move.x
+    end
+
+    if wall?(@player.x, @player.y) > 0
+      @player = previous
+      @player.y = @player.y - move.y
+    end
   end
 
   def normalize_angle(angle)
