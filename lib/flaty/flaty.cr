@@ -43,7 +43,6 @@ class SF::Transformable
   end
 end
 
-RAD = Math::PI / 180
 alias Vec2d = SF::Vector2(Float64)
 alias Vec2i = SF::Vector2(Int32)
 alias Rect  = SF::Rect(Float64)
@@ -60,6 +59,7 @@ struct SF::Vector2
 end
 
 module Flaty
+  RAD = Math::PI / 180
   DEFAULT_WINDOW = SF::RenderWindow.new(SF::VideoMode.new(10, 10), "Flaty")
   DEFAULT_STATES = SF::RenderStates.new(
     transform: SF::Transform.new
@@ -196,6 +196,12 @@ module Flaty
 
   def self.playing?(sound : SF::Sound)
     sound.status == SF::SoundSource::Status::Playing
+  end
+
+  def self.norm_angle(angle)
+    return angle - 2 * Math::PI if angle > 2 * Math::PI
+    return angle + 2 * Math::PI if angle < 0
+    angle
   end
 
   module Colors

@@ -4,12 +4,16 @@ require "flaty/fps"
 class RayCast < Flaty::GameWindow
   SCREEN_WIDTH        = 3000
   SCREEN_HEIGHT       = 1500
-  CAMERA_WIDTH_UNITS  = 16.0
-  CAMERA_HEIGHT_UNITS = 8.0
+  CAMERA_WIDTH_UNITS  = 24.0
+  CAMERA_HEIGHT_UNITS = 12.0
+  MAX_DEPTH_OF_FIELD  = 12
   FIELD_WIDTH         = CAMERA_WIDTH_UNITS / 2
   SCALE               = SCREEN_WIDTH / CAMERA_WIDTH_UNITS
   PLAYER_SIZE         = 0.1
-  ANGLES              = 60
+  #RAYS                = 1000
+  RAYS                = 100
+  FOV                 = 45
+  RAY_ANGLE           = Flaty::RAD / (RAYS / FOV)
 
   # map
   #MAP = [
@@ -22,15 +26,29 @@ class RayCast < Flaty::GameWindow
   #  [1,0,0,0,0,0,0,1],
   #  [1,1,1,1,1,1,1,1]
   #]
+  #MAP = [
+  #  [1,2,2,1,1,1,1,1],
+  #  [1,0,0,0,1,0,0,1],
+  #  [1,0,0,0,0,0,0,1],
+  #  [1,0,0,0,1,1,1,1],
+  #  [1,0,2,0,0,0,0,1],
+  #  [1,0,1,1,1,1,0,1],
+  #  [1,0,0,0,0,0,0,3],
+  #  [1,1,1,1,1,1,3,3]
+  #]
   MAP = [
-    [1,2,2,1,1,1,1,1],
-    [1,0,0,0,1,0,0,1],
-    [1,0,0,0,0,0,0,1],
-    [1,0,0,0,1,1,1,1],
-    [1,0,2,0,0,0,0,1],
-    [1,0,1,1,1,1,0,1],
-    [1,0,0,0,0,0,0,3],
-    [1,1,1,1,1,1,3,3]
+    [1,1,1,1,1,2,2,1,1,1,1,1],
+    [1,0,0,0,0,0,0,0,1,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,1,1,1,1],
+    [1,0,0,0,0,0,2,0,0,0,0,1],
+    [1,0,0,0,0,0,1,1,1,1,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,3],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,4,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,3],
+    [1,1,1,1,1,1,1,1,1,1,3,3]
   ]
 
   @angle : Float64
@@ -38,20 +56,19 @@ class RayCast < Flaty::GameWindow
   def initialize
     super(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS, SCALE, "RayCast")
 
+    ## assets
+    @font      = SF::Font.from_file("assets/Cantarell-Regular.otf")
+
     @camera.size(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS)
     @camera.look(CAMERA_WIDTH_UNITS / 2, CAMERA_HEIGHT_UNITS / 2)
     update_camera
 
-    axis_colors = { lines: Flaty::Colors::WHITE, text: Flaty::Colors::WHITE }
+    axis_colors   = { lines: Flaty::Colors::WHITE, text: Flaty::Colors::WHITE }
     @camera_debug = Flaty::CameraDebug.new(@camera, axis_colors)
 
-    ## assets
-    @font      = SF::Font.from_file("assets/Cantarell-Regular.otf")
-
-    @fps = Flaty::FPS.new(SCREEN_WIDTH, @font)
-
+    @fps    = Flaty::FPS.new(SCREEN_WIDTH, @font)
     @player = Vec2d.new(3, 3)
-    @angle = Math::PI / 2.0
+    @angle  = Math::PI / 2.0
   end
 
   def update(delta)
@@ -63,14 +80,14 @@ class RayCast < Flaty::GameWindow
 
     @angle += 0.01 if Flaty.pressed?(SF::Keyboard::Left)
     @angle -= 0.01 if Flaty.pressed?(SF::Keyboard::Right)
-    @angle = normalize_angle(@angle)
+    @angle = Flaty.norm_angle(@angle)
 
     if move.x != 0 || move.y != 0
       # front and backward movement
       pdx = move.y * Math.cos(@angle)
       pdy = move.y * Math.sin(@angle)
       # left and right movement
-      angle = @angle - 90 * RAD # pointing the movement to the right side of the player
+      angle = @angle - 90 * Flaty::RAD # pointing the movement to the right side of the player
       qdx = move.x * Math.cos(angle)
       qdy = move.x * Math.sin(angle)
       move = Vec2d.new(pdx + qdx, pdy + qdy)
@@ -90,13 +107,6 @@ class RayCast < Flaty::GameWindow
     end
   end
 
-  def normalize_angle(angle)
-    return angle - 2 * Math::PI if angle > 2 * Math::PI
-    return angle + 2 * Math::PI if angle < 0
-    angle
-  end
-
-  RAD = Math::PI / 180
   def draw(target, states)
     Flaty.paint(Flaty::Colors::GRAY)
 
@@ -113,7 +123,7 @@ class RayCast < Flaty::GameWindow
   end
 
   def draw_rays
-    ray_angle = @angle - (ANGLES / 2) * RAD
+    ray_angle = @angle - (FOV / 2) * Flaty::RAD
     step = ray = Vec2d.new(0, 0)
     h = v = @player
     color_h = color_v = 0
@@ -123,7 +133,7 @@ class RayCast < Flaty::GameWindow
     pdx = 0.5 * Math.cos(@angle)
     pdy = 0.5 * Math.sin(@angle)
     # horizontal lines
-    ANGLES.times do |r|
+    RAYS.times do |r|
       dof = 0.0
       atan = -1 / Math.tan(ray_angle)
 
@@ -137,7 +147,7 @@ class RayCast < Flaty::GameWindow
       end
       if ray_angle == 0 || ray_angle == Math::PI
         ray = Vec2d.new(@player.x + pdx, @player.y + pdy)
-        dof = 8
+        dof = MAX_DEPTH_OF_FIELD
       end
       step.x = -step.y * atan
 
@@ -161,7 +171,7 @@ class RayCast < Flaty::GameWindow
 
       if ray_angle == 0 || ray_angle == Math::PI
         ray = Vec2d.new(@player.x + pdx, @player.y + pdy)
-        dof = 8
+        dof = MAX_DEPTH_OF_FIELD
       end
 
       xx, yy, dist_v, color_v = find_wall(dof, ray, step, face_left?(ray_angle))
@@ -181,17 +191,17 @@ class RayCast < Flaty::GameWindow
       draw_projection(ray_angle, Math.min(dist_v, dist_h), r, wall_color(tile_type.to_i, side_wall))
 
       dist_h = dist_v = 10000000000.0
-      ray_angle = normalize_angle(ray_angle + RAD)
+      ray_angle = Flaty.norm_angle(ray_angle + RAY_ANGLE)
     end
   end
 
   def find_wall(dof, ray, step, left = false)
     distance = 100000000000.0
     color : Int32 = 0
-    while dof < 8
+    while dof < MAX_DEPTH_OF_FIELD
       color = wall?(ray.x, ray.y, left)
       if color > 0
-        dof = 8
+        dof = MAX_DEPTH_OF_FIELD
         distance = dist(@player.x, @player.y, ray.x, ray.y)
       else
         ray += step
@@ -202,10 +212,10 @@ class RayCast < Flaty::GameWindow
   end
 
   def draw_projection(ray_angle, dist_t, r, wall_color)
-    diff_angle = normalize_angle(ray_angle - @angle)
+    diff_angle = Flaty.norm_angle(ray_angle - @angle)
     dist_t = dist_t * Math.cos(diff_angle) # fix fisheye
 
-    line_width = ANGLES.to_f / FIELD_WIDTH
+    line_width = RAYS.to_f / FIELD_WIDTH
 
     line_h = (1.0 * CAMERA_HEIGHT_UNITS / 2) / dist_t
     x1 = CAMERA_WIDTH_UNITS - (r / line_width)
@@ -227,15 +237,15 @@ class RayCast < Flaty::GameWindow
   def wall?(mx, my, left = false)
     mx = mx.to_i64
     my = my.to_i64
-    return 0 unless my < 8 && my >= 0 && mx < 8 && mx >= 0
-    return MAP[8 - my - 1][mx] if MAP[8 - my - 1][mx] > 0
-    return MAP[8 - my - 1][mx + 1] if (left && MAP[8 - my - 1][mx + 1] > 0)
+    return 0 unless my < MAP.size && my >= 0 && mx < MAP.size && mx >= 0
+    return MAP[MAP.size - my - 1][mx] if MAP[MAP.size - my - 1][mx] > 0
+    return MAP[MAP.size - my - 1][mx + 1] if (left && MAP[MAP.size - my - 1][mx + 1] > 0)
     0
   end
 
   def draw_player
     color = Flaty::Colors::YELLOW
-    Flaty.draw_center_rect(@player.x, @player.y, PLAYER_SIZE, PLAYER_SIZE, color, -@angle / RAD)
+    Flaty.draw_center_rect(@player.x, @player.y, PLAYER_SIZE, PLAYER_SIZE, color, -@angle / Flaty::RAD)
     px = @player.x
     py = @player.y
     pdx = 0.5 * Math.cos(@angle)
@@ -271,14 +281,17 @@ class RayCast < Flaty::GameWindow
   def wall_color(tile_type : Int32, side_wall = true)
     case tile_type
     when 1
-      return SF::Color.new(200, 0, 0) if side_wall
-      return SF::Color.new(240, 0, 0)
+      return SF::Color.new(80, 80, 80) if side_wall
+      return SF::Color.new(100, 100, 100)
     when 2
       return SF::Color.new(0, 200, 0) if side_wall
       return SF::Color.new(0, 240, 0)
     when 3
       return SF::Color.new(0, 0, 200) if side_wall
       return SF::Color.new(0, 0, 240)
+    when 4
+      return SF::Color.new(200, 0, 0) if side_wall
+      return SF::Color.new(240, 0, 0)
     end
     SF::Color.new(0, 0, 0)
   end
