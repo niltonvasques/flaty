@@ -1,11 +1,15 @@
 require "flaty/flaty"
 require "flaty/fps"
 
+def sigmoid(x : Float64)
+  1.0 / (1.0 + Math.exp(-x))
+end
+
 class Neuron
   property activation, weights
 
   def initialize(@activation : Float64 = 0.0, weights = 0)
-    @weights = Array(Float64).new(weights, 0.0)
+    @weights = Array(Float64).new(weights) { rand }
   end
 end
 
@@ -14,6 +18,20 @@ class Layer
 
   def initialize(neurons : Int32, next_layer_size : Int32 = 0)
     @neurons = Array(Neuron).new(neurons) { Neuron.new(0.0, next_layer_size) }
+  end
+
+  def feed(inputs : Array(Float64))
+    @neurons.each_with_index { |n, index| n.activation = inputs[index] }
+  end
+
+  def feed_forward(previous_layer : Layer)
+    @neurons.each_with_index do |neuron, index|
+      neuron.activation = previous_layer.weighted_sum(index)
+    end
+  end
+
+  def weighted_sum(index)
+    sigmoid(@neurons.reduce(0.0) { |acc, neuron| neuron.activation * neuron.weights[index] })
   end
 
   def size
@@ -25,6 +43,11 @@ class Network
   property layers
 
   def initialize(@layers : Array(Layer))
+  end
+
+  def feed_forward(inputs : Array(Float64))
+    @layers.first.feed(inputs)
+    1.upto(@layers.size - 1) { |i| @layers[i].feed_forward(@layers[i - 1]) }
   end
 end
 
@@ -51,6 +74,7 @@ class Neural < Flaty::GameWindow
     @fps    = Flaty::FPS.new(SCREEN_WIDTH, @font)
     #@network = Network.new([Layer.new(7, 5), Layer.new(5, 5), Layer.new(5, 3), Layer.new(3, 2), Layer.new(2)])
     @network = Network.new([Layer.new(3, 2), Layer.new(2, 1), Layer.new(1)])
+    @network.feed_forward([1.0, 2.0, 3.0])
     puts "#{@network.layers.first.neurons.size}"
   end
 
@@ -65,14 +89,17 @@ class Neural < Flaty::GameWindow
     @network.layers.size.times do |y|
       layer = @network.layers[y]
       distance = 10.0 / (layer.size + 1)
-      layer.neurons.size.times do |neuron|
-        Flaty.draw_center_circle(y * 1.5 + 1.0, (neuron + 1) * distance, radius, Flaty::Colors::BLACK)
+      layer.neurons.each_with_index do |neuron, index|
+        nx = y * 1.5 + 1.0
+        ny = (index + 1) * distance
+        Flaty.draw_center_circle(nx, ny, radius, Flaty::Colors::BLACK)
+        Flaty.draw_text_world(@font, "#{neuron.activation}", nx, ny, 24, Flaty::Colors::YELLOW)
 
         if y + 1 < @network.layers.size
           next_layer = @network.layers[y + 1]
           distance_2 = 10.0 / (next_layer.size + 1)
           next_layer.neurons.size.times do |connected_neuron|
-            Flaty.draw_line(y * 1.5 + 1.0, (neuron + 1) * distance, (y + 1) * 1.5 + 1.0,
+            Flaty.draw_line(y * 1.5 + 1.0, (index + 1) * distance, (y + 1) * 1.5 + 1.0,
                             (connected_neuron + 1) * distance_2, Flaty::Colors::WHITE)
           end
         end
