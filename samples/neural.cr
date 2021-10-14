@@ -2,18 +2,18 @@ require "flaty/flaty"
 require "flaty/fps"
 
 class Neuron
-  property weight
+  property activation, weights
 
-  def initialize(@weight : Float64 = 0.0)
+  def initialize(@activation : Float64 = 0.0, weights = 0)
+    @weights = Array(Float64).new(weights, 0.0)
   end
 end
 
 class Layer
-  property neurons, weights
+  property neurons
 
-  def initialize(neurons : Int32)
-    @neurons = Array(Neuron).new
-    neurons.times { |n| @neurons << Neuron.new }
+  def initialize(neurons : Int32, next_layer_size : Int32 = 0)
+    @neurons = Array(Neuron).new(neurons) { Neuron.new(0.0, next_layer_size) }
   end
 
   def size
@@ -49,7 +49,8 @@ class Neural < Flaty::GameWindow
     @camera_debug = Flaty::CameraDebug.new(@camera, axis_colors)
 
     @fps    = Flaty::FPS.new(SCREEN_WIDTH, @font)
-    @network = Network.new([Layer.new(7), Layer.new(5), Layer.new(5), Layer.new(3), Layer.new(2)])
+    #@network = Network.new([Layer.new(7, 5), Layer.new(5, 5), Layer.new(5, 3), Layer.new(3, 2), Layer.new(2)])
+    @network = Network.new([Layer.new(3, 2), Layer.new(2, 1), Layer.new(1)])
     puts "#{@network.layers.first.neurons.size}"
   end
 
@@ -66,6 +67,15 @@ class Neural < Flaty::GameWindow
       distance = 10.0 / (layer.size + 1)
       layer.neurons.size.times do |neuron|
         Flaty.draw_center_circle(y * 1.5 + 1.0, (neuron + 1) * distance, radius, Flaty::Colors::BLACK)
+
+        if y + 1 < @network.layers.size
+          next_layer = @network.layers[y + 1]
+          distance_2 = 10.0 / (next_layer.size + 1)
+          next_layer.neurons.size.times do |connected_neuron|
+            Flaty.draw_line(y * 1.5 + 1.0, (neuron + 1) * distance, (y + 1) * 1.5 + 1.0,
+                            (connected_neuron + 1) * distance_2, Flaty::Colors::WHITE)
+          end
+        end
       end
     end
 
