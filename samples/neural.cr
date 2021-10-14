@@ -1,10 +1,23 @@
 require "flaty/flaty"
 require "flaty/fps"
 
-class Layer
-  property neurons
+class Neuron
+  property weight
 
-  def initialize(@neurons : Int32)
+  def initialize(@weight : Float64 = 0.0)
+  end
+end
+
+class Layer
+  property neurons, weights
+
+  def initialize(neurons : Int32)
+    @neurons = Array(Neuron).new
+    neurons.times { |n| @neurons << Neuron.new }
+  end
+
+  def size
+    @neurons.size
   end
 end
 
@@ -36,7 +49,8 @@ class Neural < Flaty::GameWindow
     @camera_debug = Flaty::CameraDebug.new(@camera, axis_colors)
 
     @fps    = Flaty::FPS.new(SCREEN_WIDTH, @font)
-    @network = Network.new([Layer.new(7), Layer.new(5), Layer.new(5), Layer.new(3)])
+    @network = Network.new([Layer.new(7), Layer.new(5), Layer.new(5), Layer.new(3), Layer.new(2)])
+    puts "#{@network.layers.first.neurons.size}"
   end
 
   def update(delta)
@@ -49,13 +63,14 @@ class Neural < Flaty::GameWindow
     max_size = @network.layers.first.neurons
     @network.layers.size.times do |y|
       layer = @network.layers[y]
-      layer.neurons.times do |neuron|
-        Flaty.draw_center_circle(y + 1.0, neuron.to_f + 1.0, radius, Flaty::Colors::BLACK)
+      distance = 10.0 / (layer.size + 1)
+      layer.neurons.size.times do |neuron|
+        Flaty.draw_center_circle(y * 1.5 + 1.0, (neuron + 1) * distance, radius, Flaty::Colors::BLACK)
       end
     end
 
     @fps.draw(@delta)
-    @camera_debug.draw #if debug?
+    @camera_debug.draw if debug?
   end
 
   def button_down(code)
