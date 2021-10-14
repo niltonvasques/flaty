@@ -10,9 +10,9 @@ class Layer
   property mat_a, mat_w, mat_b
 
   def initialize(neurons : Int32, next_layer_size : Int32 = 0)
-    @mat_a = Matrix(Float64).new(neurons, 1) { |idx, row, col| 0.0 }
-    @mat_b = Matrix(Float64).new(neurons, 1) { |idx, row, col| (rand * -10.0) }
-    @mat_w = Matrix(Float64).new(next_layer_size, neurons) { |idx, row, col| rand }
+    @mat_a = Matrix(Float64).new(neurons, 1) { 0.0 }
+    @mat_b = Matrix(Float64).new(neurons, 1) { rand * -10.0 }
+    @mat_w = Matrix(Float64).new(next_layer_size, neurons) { rand }
   end
 
   def feed(inputs : Array(Float64))
@@ -73,9 +73,10 @@ class Neural < Flaty::GameWindow
     @camera_debug = Flaty::CameraDebug.new(@camera, axis_colors)
 
     @fps    = Flaty::FPS.new(SCREEN_WIDTH, @font)
-    #@network = Network.new([Layer.new(7, 5), Layer.new(5, 5), Layer.new(5, 3), Layer.new(3, 2), Layer.new(2)])
-    @network = Network.new([Layer.new(3, 2), Layer.new(2, 1), Layer.new(1)])
-    @network.feed_forward([1.0, 2.0, 3.0])
+    @network = Network.new([Layer.new(7, 5), Layer.new(5, 5), Layer.new(5, 3), Layer.new(3, 2), Layer.new(2)])
+    #@network = Network.new([Layer.new(3, 2), Layer.new(2, 1), Layer.new(1)])
+    #@network.feed_forward([1.0, 2.0, 3.0])
+    @network.feed_forward([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0])
   end
 
   def update(delta)
@@ -99,8 +100,15 @@ class Neural < Flaty::GameWindow
           next_layer = @network.layers[y + 1]
           distance_2 = 10.0 / (next_layer.size + 1)
           next_layer.neurons.size.times do |connected_neuron|
-            Flaty.draw_line(y * 1.5 + 1.0, (index + 1) * distance, (y + 1) * 1.5 + 1.0,
-                            (connected_neuron + 1) * distance_2, Flaty::Colors::WHITE)
+            cnx = (y + 1) * 1.5 + 1.0
+            cny = (connected_neuron + 1) * distance_2
+
+            Flaty.draw_line(nx, ny, cnx, cny, Flaty::Colors::WHITE)
+
+            cny += (ny-cny)/2.0
+            cnx -= 1.7/2
+            w = layer.mat_w[connected_neuron, index]
+            Flaty.draw_text_world(@font, "#{w.round(2)}", cnx, cny, 16, Flaty::Colors::RED)
           end
         end
       end
