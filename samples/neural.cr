@@ -6,16 +6,6 @@ def sigmoid(x : Float64)
   1.0 / (1.0 + Math.exp(-x))
 end
 
-#weights = Matrix.rows([
-#  [1,2,3],
-#  [4,5,6],
-#  [7,8,9],
-#])
-#activations = Matrix.rows([
-#  [0.5],
-#  [0.2],
-#  [0.9],
-#])
 class Layer
   property mat_a, mat_w, mat_b
 
@@ -127,29 +117,3 @@ end
 
 game = Neural.new
 game.loop
-#layers = [Layer.new(3, 2), Layer.new(2, 1), Layer.new(1)]
-#network = Network.new(layers)
-#network.feed_forward([1.0, 2.0, 3.0])
-#layers[1].forward(layers[0])
-#puts network.layers[0].mat_a
-#puts network.layers[0].mat_w
-#puts network.layers[0].mat_w * network.layers[0].mat_a
-#puts Matrix.rows([[1,1,1], [1,1,1]])
-#puts "X"
-#puts Matrix.columns([[2,2,2]])
-#puts "="
-##puts Matrix.rows([[1,1,1], [1,1,1]]) * Matrix.columns([[2,2,2]])
-#puts Matrix.rows([[1,2],[3,4]]) * Matrix.columns([[1,2]])
-#puts Matrix.rows([[1,2,3],[3,4,5],[3,4,5]]) * Matrix.columns([[1,2,3]])
-#weights = Matrix.rows([
-#  [1,2,3],
-#  [4,5,6],
-#  [7,8,9],
-#])
-#activations = Matrix.rows([
-#  [0.5],
-#  [0.2],
-#  [0.9],
-#])
-#puts weights * activations
-#puts Matrix.rows([[4]]) * Matrix.columns([[1,2,3,5]])
