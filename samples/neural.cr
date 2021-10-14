@@ -1,47 +1,52 @@
 require "flaty/flaty"
 require "flaty/fps"
+require "flaty/math/matrix"
 
 def sigmoid(x : Float64)
   1.0 / (1.0 + Math.exp(-x))
 end
 
-class Neuron
-  property activation, weights
-  property bias : Float64
-
-  def initialize(@activation : Float64 = 0.0, weights = 0)
-    @weights = Array(Float64).new(weights) { rand }
-    @bias = rand * 10.0
-  end
-
-  def to_s
-    "#{@activation.round(2)} a, #{@bias.round(2)} b"
-  end
-end
-
+#weights = Matrix.rows([
+#  [1,2,3],
+#  [4,5,6],
+#  [7,8,9],
+#])
+#activations = Matrix.rows([
+#  [0.5],
+#  [0.2],
+#  [0.9],
+#])
 class Layer
-  property neurons
+  property mat_a, mat_w, mat_b
 
   def initialize(neurons : Int32, next_layer_size : Int32 = 0)
-    @neurons = Array(Neuron).new(neurons) { Neuron.new(0.0, next_layer_size) }
+    @mat_a = Matrix(Float64).new(neurons, 1) { |idx, row, col| 0.0 }
+    @mat_b = Matrix(Float64).new(neurons, 1) { |idx, row, col| (rand * -10.0) }
+    @mat_w = Matrix(Float64).new(next_layer_size, neurons) { |idx, row, col| rand }
   end
 
   def feed(inputs : Array(Float64))
-    @neurons.each_with_index { |n, index| n.activation = inputs[index] }
+    inputs.each_with_index { |input, index| @mat_a[index, 0] = input }
   end
 
-  def feed_forward(previous_layer : Layer)
-    @neurons.each_with_index do |neuron, index|
-      neuron.activation = sigmoid(previous_layer.weighted_sum(index) - neuron.bias)
-    end
+  def neurons
+    @mat_a.round(2).to_a.zip(@mat_b.round(2))
   end
 
-  def weighted_sum(index)
-    @neurons.reduce(0.0) { |acc, neuron| neuron.activation * neuron.weights[index] }
+  def forward(previous_layer : Layer)
+    puts previous_layer.mat_w
+    puts "*"
+    puts previous_layer.mat_a
+    puts "+"
+    puts @mat_b
+    @mat_a = (previous_layer.mat_w * previous_layer.mat_a) + @mat_b
+    @mat_a.map! { |value| sigmoid(value) }
+    puts "="
+    puts @mat_a
   end
 
   def size
-    @neurons.size
+    @mat_a.rows.size
   end
 end
 
@@ -53,7 +58,7 @@ class Network
 
   def feed_forward(inputs : Array(Float64))
     @layers.first.feed(inputs)
-    1.upto(@layers.size - 1) { |i| @layers[i].feed_forward(@layers[i - 1]) }
+    1.upto(@layers.size - 1) { |i| @layers[i].forward(@layers[i - 1]) }
   end
 end
 
@@ -81,7 +86,6 @@ class Neural < Flaty::GameWindow
     #@network = Network.new([Layer.new(7, 5), Layer.new(5, 5), Layer.new(5, 3), Layer.new(3, 2), Layer.new(2)])
     @network = Network.new([Layer.new(3, 2), Layer.new(2, 1), Layer.new(1)])
     @network.feed_forward([1.0, 2.0, 3.0])
-    puts "#{@network.layers.first.neurons.size}"
   end
 
   def update(delta)
@@ -91,7 +95,7 @@ class Neural < Flaty::GameWindow
     Flaty.paint(Flaty::Colors::GRAY)
 
     radius = 0.4
-    max_size = @network.layers.first.neurons
+    max_size = @network.layers.first.size
     @network.layers.size.times do |y|
       layer = @network.layers[y]
       distance = 10.0 / (layer.size + 1)
@@ -123,3 +127,29 @@ end
 
 game = Neural.new
 game.loop
+#layers = [Layer.new(3, 2), Layer.new(2, 1), Layer.new(1)]
+#network = Network.new(layers)
+#network.feed_forward([1.0, 2.0, 3.0])
+#layers[1].forward(layers[0])
+#puts network.layers[0].mat_a
+#puts network.layers[0].mat_w
+#puts network.layers[0].mat_w * network.layers[0].mat_a
+#puts Matrix.rows([[1,1,1], [1,1,1]])
+#puts "X"
+#puts Matrix.columns([[2,2,2]])
+#puts "="
+##puts Matrix.rows([[1,1,1], [1,1,1]]) * Matrix.columns([[2,2,2]])
+#puts Matrix.rows([[1,2],[3,4]]) * Matrix.columns([[1,2]])
+#puts Matrix.rows([[1,2,3],[3,4,5],[3,4,5]]) * Matrix.columns([[1,2,3]])
+#weights = Matrix.rows([
+#  [1,2,3],
+#  [4,5,6],
+#  [7,8,9],
+#])
+#activations = Matrix.rows([
+#  [0.5],
+#  [0.2],
+#  [0.9],
+#])
+#puts weights * activations
+#puts Matrix.rows([[4]]) * Matrix.columns([[1,2,3,5]])
