@@ -11,12 +11,12 @@ class Layer
 
   def initialize(neurons : Int32, next_layer_size : Int32 = 0)
     @mat_a = Matrix(Float64).new(neurons, 1) { 0.0 }
-    @mat_b = Matrix(Float64).new(neurons, 1) { rand * -10.0 }
+    @mat_b = Matrix(Float64).new(neurons, 1) { rand * -10.0 + 5 }
     @mat_w = Matrix(Float64).new(next_layer_size, neurons) { rand }
   end
 
   def feed(inputs : Array(Float64))
-    inputs.each_with_index { |input, index| @mat_a[index, 0] = input }
+    inputs.each_with_index { |input, index| @mat_a[index, 0] = sigmoid(input) }
   end
 
   def neurons
@@ -50,6 +50,10 @@ class Network
     @layers.first.feed(inputs)
     1.upto(@layers.size - 1) { |i| @layers[i].forward(@layers[i - 1]) }
   end
+
+  def cost(expected : Matrix(Float64))
+    (@layers.last.mat_a - expected).map! { |v| v * v } #.reduce(0) { |acc, v| acc + v }
+  end
 end
 
 class Neural < Flaty::GameWindow
@@ -60,7 +64,7 @@ class Neural < Flaty::GameWindow
   SCALE               = SCREEN_WIDTH / CAMERA_WIDTH_UNITS
 
   def initialize
-    super(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS, SCALE, "RayCast")
+    super(CAMERA_WIDTH_UNITS, CAMERA_HEIGHT_UNITS, SCALE, "Neural Visualizer")
 
     ## assets
     @font      = SF::Font.from_file("assets/Cantarell-Regular.otf")
@@ -77,6 +81,8 @@ class Neural < Flaty::GameWindow
     #@network = Network.new([Layer.new(3, 2), Layer.new(2, 1), Layer.new(1)])
     #@network.feed_forward([1.0, 2.0, 3.0])
     @network.feed_forward([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0])
+    puts "cost: "
+    puts @network.cost(Matrix.columns([[1.0, 0.0]]))
   end
 
   def update(delta)
