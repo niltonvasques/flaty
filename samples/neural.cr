@@ -7,9 +7,15 @@ end
 
 class Neuron
   property activation, weights
+  property bias : Float64
 
   def initialize(@activation : Float64 = 0.0, weights = 0)
     @weights = Array(Float64).new(weights) { rand }
+    @bias = rand * 10.0
+  end
+
+  def to_s
+    "#{@activation.round(2)} a, #{@bias.round(2)} b"
   end
 end
 
@@ -26,12 +32,12 @@ class Layer
 
   def feed_forward(previous_layer : Layer)
     @neurons.each_with_index do |neuron, index|
-      neuron.activation = previous_layer.weighted_sum(index)
+      neuron.activation = sigmoid(previous_layer.weighted_sum(index) - neuron.bias)
     end
   end
 
   def weighted_sum(index)
-    sigmoid(@neurons.reduce(0.0) { |acc, neuron| neuron.activation * neuron.weights[index] })
+    @neurons.reduce(0.0) { |acc, neuron| neuron.activation * neuron.weights[index] }
   end
 
   def size
@@ -93,7 +99,7 @@ class Neural < Flaty::GameWindow
         nx = y * 1.5 + 1.0
         ny = (index + 1) * distance
         Flaty.draw_center_circle(nx, ny, radius, Flaty::Colors::BLACK)
-        Flaty.draw_text_world(@font, "#{neuron.activation}", nx, ny, 24, Flaty::Colors::YELLOW)
+        Flaty.draw_text_world(@font, neuron.to_s, nx, ny, 24, Flaty::Colors::YELLOW)
 
         if y + 1 < @network.layers.size
           next_layer = @network.layers[y + 1]
