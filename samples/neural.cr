@@ -6,12 +6,14 @@ def sigmoid(x : Float64)
   1.0 / (1.0 + Math.exp(-x))
 end
 
+# does input layer have biases?
+# does output layer have biases?
 class Layer
   property mat_a, mat_w, mat_b
 
-  def initialize(neurons : Int32, next_layer_size : Int32 = 0)
+  def initialize(neurons : Int32, next_layer_size : Int32 = 0, @type = :hidden)
     @mat_a = Matrix(Float64).new(neurons, 1) { 0.0 }
-    @mat_b = Matrix(Float64).new(neurons, 1) { rand * -10.0 + 5 }
+    @mat_b = Matrix(Float64).new(neurons, 1) { @type == :input ? 0.0 : rand }
     @mat_w = Matrix(Float64).new(next_layer_size, neurons) { rand }
   end
 
@@ -24,15 +26,33 @@ class Layer
   end
 
   def forward(previous_layer : Layer)
-    puts previous_layer.mat_w
-    puts "*"
-    puts previous_layer.mat_a
-    puts "+"
-    puts @mat_b
+    #puts previous_layer.mat_w
+    #puts "*"
+    #puts previous_layer.mat_a
+    #puts "+"
+    #puts @mat_b
     @mat_a = (previous_layer.mat_w * previous_layer.mat_a) + @mat_b
     @mat_a.map! { |value| sigmoid(value) }
-    puts "="
-    puts @mat_a
+    #puts "="
+    #puts @mat_a
+  end
+
+  def back_propagate(cost : Matrix(Float64))
+    return if @type == :input
+    n = Network::LEARNING_RATE
+    puts "back_propagate: "
+    puts cost
+    puts @mat_w.empty?
+    puts @mat_b
+    mat = Matrix(Float64).new(@mat_b.rows.size, 1, 0)
+    puts mat
+    i = 0
+    cost.each_with_index { |v, row, col| mat[i] = v / @mat_b[i]; i += 1}
+    puts mat
+    mat = mat * n
+    puts mat
+    @mat_b -= mat
+    puts @mat_b
   end
 
   def size
@@ -41,6 +61,8 @@ class Layer
 end
 
 class Network
+  LEARNING_RATE = 0.5
+
   property layers
 
   def initialize(@layers : Array(Layer))
@@ -49,6 +71,12 @@ class Network
   def feed_forward(inputs : Array(Float64))
     @layers.first.feed(inputs)
     1.upto(@layers.size - 1) { |i| @layers[i].forward(@layers[i - 1]) }
+  end
+
+  def back_propagate(expected : Matrix(Float64))
+    c = cost(expected)
+    #@layers.reverse.each { |layer| layer.back_propagate(c) }
+    @layers.last.back_propagate(c)
   end
 
   def cost(expected : Matrix(Float64))
@@ -77,11 +105,15 @@ class Neural < Flaty::GameWindow
     @camera_debug = Flaty::CameraDebug.new(@camera, axis_colors)
 
     @fps    = Flaty::FPS.new(SCREEN_WIDTH, @font)
-    @network = Network.new([Layer.new(7, 5), Layer.new(5, 5), Layer.new(5, 3), Layer.new(3, 2), Layer.new(2)])
-    #@network = Network.new([Layer.new(3, 2), Layer.new(2, 1), Layer.new(1)])
-    #@network.feed_forward([1.0, 2.0, 3.0])
-    @network.feed_forward([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0])
+    #@network = Network.new([Layer.new(7, 5), Layer.new(5, 5), Layer.new(5, 3), Layer.new(3, 2), Layer.new(2)])
+    #@network.feed_forward([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0])
+    @network = Network.new([Layer.new(3, 2, :input), Layer.new(2, 2), Layer.new(2)])
+    @network.feed_forward([1.0, 2.0, 3.0])
     puts "cost: "
+    puts @network.cost(Matrix.columns([[1.0, 0.0]]))
+    @network.back_propagate(Matrix.columns([[1.0, 0.0]]))
+    puts "after propagation: "
+    @network.feed_forward([1.0, 2.0, 3.0])
     puts @network.cost(Matrix.columns([[1.0, 0.0]]))
   end
 
