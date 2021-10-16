@@ -33,11 +33,12 @@ class MathAxis < Flaty::GameWindow
 
     @label_y = 0
     #draw_fx("sin(x)", Flaty::Colors::GREEN)   { |x| Math.sin(x) }
+    draw_fx("2/(1+e^(-2x))-1", Flaty::Colors::YELLOW) { |x| (2.0/(1+Math.exp(-2*x))) - 1 }
     draw_fx("1/(1+e^-x)", Flaty::Colors::RED) { |x| 1.0/(1+Math.exp(-x)) }
-    draw_fx("e^x", Flaty::Colors::YELLOW)     { |x| Math.exp(-x) }
+    draw_fx("e^x", Flaty::Colors::BLUE)     { |x| Math.exp(-x) }
 
     #draw_fx_and_dydx("sin(x²)") { |x| Math.sin(x**2) }
-    draw_fx_and_dydx("sin(x)", Flaty::Colors::GREEN) { |x| Math.sin(x) }
+    #draw_fx_and_dydx("sin(x)", Flaty::Colors::GREEN) { |x| Math.sin(x) }
 
     @fps.draw(@delta)
   end

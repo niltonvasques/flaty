@@ -11,10 +11,10 @@ end
 class Layer
   property mat_a, mat_w, mat_b
 
-  def initialize(neurons : Int32, next_layer_size : Int32 = 0, @type = :hidden)
+  def initialize(neurons : Int32, previous_layer_size : Int32 = 0, @type = :hidden)
     @mat_a = Matrix(Float64).new(neurons, 1) { 0.0 }
     @mat_b = Matrix(Float64).new(neurons, 1) { @type == :input ? 0.0 : rand }
-    @mat_w = Matrix(Float64).new(next_layer_size, neurons) { rand }
+    @mat_w = Matrix(Float64).new(neurons, previous_layer_size) { rand }
   end
 
   def feed(inputs : Array(Float64))
@@ -26,12 +26,13 @@ class Layer
   end
 
   def forward(previous_layer : Layer)
-    #puts previous_layer.mat_w
+    #puts "#{@mat_w.column_count} w #{previous_layer.mat_a.row_count} a"
+    #puts @mat_w
     #puts "*"
     #puts previous_layer.mat_a
     #puts "+"
     #puts @mat_b
-    @mat_a = (previous_layer.mat_w * previous_layer.mat_a) + @mat_b
+    @mat_a = (@mat_w * previous_layer.mat_a) + @mat_b
     @mat_a.map! { |value| sigmoid(value) }
     #puts "="
     #puts @mat_a
@@ -40,19 +41,27 @@ class Layer
   def back_propagate(cost : Matrix(Float64))
     return if @type == :input
     n = Network::LEARNING_RATE
-    puts "back_propagate: "
-    puts cost
-    puts @mat_w.empty?
-    puts @mat_b
     mat = Matrix(Float64).new(@mat_b.rows.size, 1, 0)
-    puts mat
     i = 0
     cost.each_with_index { |v, row, col| mat[i] = v / @mat_b[i]; i += 1}
-    puts mat
     mat = mat * n
-    puts mat
     @mat_b -= mat
-    puts @mat_b
+
+    delta = cost * n
+    i = 0
+    delta2 = Matrix(Float64).new(@mat_a.rows.size, 1, 0)
+    cost.each_with_index { |v, row, col| delta2[i] = delta[i] * @mat_a[i]; i += 1 }
+
+    puts "delta"
+    puts "#{@mat_a}"
+    puts "#{delta}"
+    puts "#{delta2}"
+
+    #mat = Matrix(Float64).new(@mat_w.rows.size, 1, 0)
+    #i = 0
+    #cost.each_with_index { |v, row, col| mat[i] = v / @mat_w[i]; i += 1}
+    #mat = mat * n
+    #@mat_w -= delta2
   end
 
   def size
@@ -107,7 +116,7 @@ class Neural < Flaty::GameWindow
     @fps    = Flaty::FPS.new(SCREEN_WIDTH, @font)
     #@network = Network.new([Layer.new(7, 5), Layer.new(5, 5), Layer.new(5, 3), Layer.new(3, 2), Layer.new(2)])
     #@network.feed_forward([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0])
-    @network = Network.new([Layer.new(3, 2, :input), Layer.new(2, 2), Layer.new(2)])
+    @network = Network.new([Layer.new(3, 0, :input), Layer.new(2, 3), Layer.new(2, 2)])
     @network.feed_forward([1.0, 2.0, 3.0])
     puts "cost: "
     puts @network.cost(Matrix.columns([[1.0, 0.0]]))
@@ -145,8 +154,8 @@ class Neural < Flaty::GameWindow
 
             cny += (ny-cny)/2.0
             cnx -= 1.7/2
-            w = layer.mat_w[connected_neuron, index]
-            Flaty.draw_text_world(@font, "#{w.round(2)}", cnx, cny, 16, Flaty::Colors::RED)
+            #w = layer.mat_w[connected_neuron, index]
+            #Flaty.draw_text_world(@font, "#{w.round(2)}", cnx, cny, 16, Flaty::Colors::RED)
           end
         end
       end
