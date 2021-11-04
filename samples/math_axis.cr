@@ -120,7 +120,6 @@ end
 dataset = [] of {Float64, Float64}
 if ARGV.size > 0 && ARGV[0] == "-stdin"
   while line = gets
-    puts "read: #{line}"
     entries = line.split(",")
     dataset << {entries[0].to_f, entries[1].to_f}
   end
