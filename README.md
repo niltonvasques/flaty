@@ -5,8 +5,10 @@ Flaty is simple 2D ruby game development engine implemented on top of Gosu game 
 ### Requirements
 
 ```sh
-rvm install ruby-3.0.2
-rvm use ruby-3.0.2
+apt-get install build-essential libsdl2-dev libgl1-mesa-dev libopenal-dev \
+                     libgmp-dev libfontconfig1-dev
+rvm install ruby-3.1.3
+rvm use ruby-3.1.3
 bundle install -j 5
 ```
 
